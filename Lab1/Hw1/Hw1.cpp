@@ -64,6 +64,10 @@ int heuristic2(string elem, string target) {
 	return fitness;
 }
 
+int heuristic3(string elem, string target) {
+
+}
+
 void calc_fitness(ga_vector &population)
 {
 	string target = GA_TARGET;
