@@ -1,7 +1,6 @@
 // Genetic5.cpp : Defines the entry point for the console application.
 //
 
-
 #pragma warning(disable:4786)		// disable debug warning
 
 #include <iostream>					// for cout etc.
@@ -48,19 +47,28 @@ void init_population(ga_vector &population,
 	buffer.resize(GA_POPSIZE);
 }
 
+int heuristic1(string elem, string target) {
+	unsigned int fitness = 0;
+	for (int j = 0; j < target.size(); j++) {
+		fitness += abs(int(elem[j] - target[j]));
+	}
+	return fitness;
+}
+
+
+int heuristic2(string elem, string target) {
+	unsigned int fitness = 0;
+	for (int j = 0; j < target.size(); j++) {
+		fitness += elem[j] == target[j] ? 0 : 1;
+	}
+	return fitness;
+}
+
 void calc_fitness(ga_vector &population)
 {
 	string target = GA_TARGET;
-	int tsize = target.size();
-	unsigned int fitness;
-
-	for (int i = 0; i<GA_POPSIZE; i++) {
-		fitness = 0;
-		for (int j = 0; j<tsize; j++) {
-			fitness += abs(int(population[i].str[j] - target[j]));
-		}
-
-		population[i].fitness = fitness;
+	for (int i = 0; i < GA_POPSIZE; i++) {
+		population[i].fitness = heuristic2(population[i].str, target);
 	}
 }
 
@@ -146,8 +154,9 @@ double standardDeviation(ga_vector& vect) {
 	return sqrt(variance(vect));
 }
 
-void print_best(ga_vector &gav)
+void print_best(ga_vector &gav, unsigned int iteration)
 {
+	cout << "Gen " << iteration << endl;
 	cout << "Best: " << gav[0].str << " (" << gav[0].fitness << ")" << endl;
 	cout << "Average Fitness: " << average(gav) << endl;
 	cout << "Standard Deviation: " << standardDeviation(gav) << endl << endl;
@@ -167,7 +176,7 @@ int main()
 	for (int i = 0; i<GA_MAXITER; i++) {
 		calc_fitness(*population);		// calculate fitness
 		sort_by_fitness(*population);	// sort them
-		print_best(*population);		// print the best one
+		print_best(*population, i);		// print the best one
 
 		if ((*population)[0].fitness == 0) break;
 
