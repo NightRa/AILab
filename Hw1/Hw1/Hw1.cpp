@@ -81,7 +81,7 @@ void elitism(ga_vector &population,
 		buffer[i].str = population[i].str;
 		buffer[i].fitness = population[i].fitness;
 	}
-}
+}	
 
 void mutate(ga_struct &member)
 {
@@ -112,15 +112,45 @@ void mate(ga_vector &population, ga_vector &buffer)
 	}
 }
 
-inline void print_best(ga_vector &gav)
-{
-	cout << "Best: " << gav[0].str << " (" << gav[0].fitness << ")" << endl;
-}
 
 inline void swap(ga_vector *&population,
 	ga_vector *&buffer)
 {
 	ga_vector *temp = population; population = buffer; buffer = temp;
+}
+
+double average(ga_vector& vect) {
+	double sum = 0;
+	int size = vect.size();
+
+	for (int i = 0; i < vect.size(); i++)
+		sum += vect[i].fitness;
+
+	return sum / size;
+}
+
+double variance(ga_vector& vect) {
+	double sumOfDiffs = 0;
+	double avg = average(vect);
+	int size = vect.size();
+
+	for (int i = 0; i < vect.size(); i++) {
+		int diff = vect[i].fitness - avg;
+		sumOfDiffs += diff * diff;
+	}
+
+	return sumOfDiffs / size;
+}
+
+double standardDeviation(ga_vector& vect) {
+	return sqrt(variance(vect));
+}
+
+void print_best(ga_vector &gav)
+{
+	cout << "Best: " << gav[0].str << " (" << gav[0].fitness << ")" << endl;
+	cout << "Average Fitness: " << average(gav) << endl;
+	cout << "Standard Deviation: " << standardDeviation(gav) << endl << endl;
 }
 
 int main()
