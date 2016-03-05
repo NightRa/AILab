@@ -28,7 +28,7 @@ typedef vector<ga_struct> ga_vector;// for brevity
 
 void init_population(ga_vector &population,
                      ga_vector &buffer) {
-    int tsize = GA_TARGET.size();
+    int tsize = (int) GA_TARGET.size();
 
     for (int i = 0; i < GA_POPSIZE; i++) {
         ga_struct citizen;
@@ -45,7 +45,7 @@ void init_population(ga_vector &population,
     buffer.resize(GA_POPSIZE);
 }
 
-int heuristic1(string elem, string target) {
+unsigned int heuristic1(string elem, string target) {
     unsigned int fitness = 0;
     for (int j = 0; j < target.size(); j++) {
         fitness += abs(int(elem[j] - target[j]));
@@ -54,7 +54,7 @@ int heuristic1(string elem, string target) {
 }
 
 
-int heuristic2(string elem, string target) {
+unsigned int heuristic2(string elem, string target) {
     unsigned int fitness = 0;
     for (int j = 0; j < target.size(); j++) {
         fitness += elem[j] == target[j] ? 0 : 1;
@@ -69,7 +69,7 @@ bool strContains(string s, char c) {
     return false;
 }
 
-int generalHeuristic3(string elem, string target, unsigned int containsWeight, unsigned int eqWeight) {
+unsigned int generalHeuristic3(string elem, string target, unsigned int containsWeight, unsigned int eqWeight) {
     unsigned int fitness = 0;
     for (int j = 0; j < target.size(); j++) {
         bool contains = strContains(target, elem[j]);
@@ -80,7 +80,7 @@ int generalHeuristic3(string elem, string target, unsigned int containsWeight, u
     return fitness;
 }
 
-int heuristic3(string elem, string target) {
+unsigned int heuristic3(string elem, string target) {
     return generalHeuristic3(elem, target, 1, 2);
 }
 
@@ -108,24 +108,24 @@ void elitism(ga_vector &population,
 }
 
 void mutate(ga_struct &member) {
-    int tsize = GA_TARGET.size();
+    int tsize = (int) GA_TARGET.size();
     int ipos = rand() % tsize;
     int delta = (rand() % 90) + 32;
 
-    member.str[ipos] = ((member.str[ipos] + delta) % 122);
+    member.str[ipos] = (char) ((member.str[ipos] + delta) % 122);
 }
 
 void mate(ga_vector &population, ga_vector &buffer) {
-    int esize = GA_POPSIZE * GA_ELITRATE;
-    int tsize = GA_TARGET.size(), spos, i1, i2;
+    int esize = (int) (GA_POPSIZE * GA_ELITRATE);
+    size_t tsize = GA_TARGET.size();
 
     elitism(population, buffer, esize);
 
     // Mate the rest
     for (int i = esize; i < GA_POPSIZE; i++) {
-        i1 = rand() % (GA_POPSIZE / 2);
-        i2 = rand() % (GA_POPSIZE / 2);
-        spos = rand() % tsize;
+        int i1 = rand() % (GA_POPSIZE / 2);
+        int i2 = rand() % (GA_POPSIZE / 2);
+        size_t spos = rand() % tsize;
 
         buffer[i].str = population[i1].str.substr(0, spos) +
                         population[i2].str.substr(spos, tsize - spos);
@@ -144,7 +144,7 @@ inline void swap(ga_vector *&population,
 
 double average(ga_vector &vect) {
     double sum = 0;
-    int size = vect.size();
+    size_t size = vect.size();
 
     for (int i = 0; i < vect.size(); i++)
         sum += vect[i].fitness;
@@ -155,7 +155,7 @@ double average(ga_vector &vect) {
 double variance(ga_vector &vect) {
     double sumOfDiffs = 0;
     double avg = average(vect);
-    int size = vect.size();
+    size_t size = vect.size();
 
     for (int i = 0; i < vect.size(); i++) {
         double diff = (double) vect[i].fitness - avg;
@@ -186,7 +186,7 @@ int main() {
     population = &pop_alpha;
     buffer = &pop_beta;
 
-    for (int i = 0; i < GA_MAXITER; i++) {
+    for (unsigned int i = 0; i < GA_MAXITER; i++) {
         calc_fitness(*population);        // calculate fitness
         sort_by_fitness(*population);    // sort them
         print_best(*population, i);        // print the best one
