@@ -64,15 +64,33 @@ int heuristic2(string elem, string target) {
 	return fitness;
 }
 
-int heuristic3(string elem, string target) {
+bool strContains(string s, char c) {
+	for (int i = 0; i < s.length(); i++) {
+		if (s[i] == c) return true;
+	}
+	return false;
+}
 
+int generalHeuristic3(string elem, string target, unsigned int containsWeight, unsigned int eqWeight) {
+	unsigned int fitness = 0;
+	for (int j = 0; j < target.size(); j++) {
+		bool contains = strContains(target, elem[j]);
+		bool eq = elem[j] == target[j];
+
+		fitness += (containsWeight + eqWeight) - containsWeight * contains - eqWeight * eq;
+	}
+	return fitness;
+}
+
+int heuristic3(string elem, string target) {
+	return generalHeuristic3(elem, target, 1, 2);
 }
 
 void calc_fitness(ga_vector &population)
 {
 	string target = GA_TARGET;
 	for (int i = 0; i < GA_POPSIZE; i++) {
-		population[i].fitness = heuristic2(population[i].str, target);
+		population[i].fitness = heuristic3(population[i].str, target);
 	}
 }
 
@@ -147,7 +165,7 @@ double variance(ga_vector& vect) {
 	int size = vect.size();
 
 	for (int i = 0; i < vect.size(); i++) {
-		int diff = vect[i].fitness - avg;
+		double diff = (double) vect[i].fitness - avg;
 		sumOfDiffs += diff * diff;
 	}
 
