@@ -2,9 +2,9 @@ package genetic;
 
 public class Gene<A> {
     public A gene;
-    public int fitness;
+    public double fitness;
 
-    public Gene(A gene, int fitness) {
+    public Gene(A gene, double fitness) {
         this.gene = gene;
         this.fitness = fitness;
     }

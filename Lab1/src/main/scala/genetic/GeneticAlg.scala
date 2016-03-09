@@ -1,11 +1,13 @@
 package genetic
 
+import java.util.Random
+
 import util.JavaUtil
 import util.Util._
 
 import scala.annotation.tailrec
 
-class GeneticAlg[A](alg: Genetic[A], MaxIterations: Int, show: A => String) {
+class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, MaxIterations: Int, rand: Random, show: A => String) {
 
   def print_best(population: Population[A], i: Int): Unit = {
     val (avg, theStdDev) = stdDev(population.population)((x: Gene[A]) => x.fitness)
@@ -19,10 +21,12 @@ class GeneticAlg[A](alg: Genetic[A], MaxIterations: Int, show: A => String) {
       JavaUtil.sortGenes(population.population)
       print_best(population, i)
       if (population.population(0).fitness > 0) {
-        alg.mateStrategy(population, buffer)
+        mateStrategy.mateStrategy(alg, population, buffer)
         run(buffer, population, i + 1)
       }
     }
   }
+
+
 
 }
