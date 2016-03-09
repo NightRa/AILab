@@ -1,3 +1,5 @@
+package string;
+
 import java.util.Random;
 
 public class StringHeuristics {
@@ -19,14 +21,6 @@ public class StringHeuristics {
         return fitness;
     }
 
-    public static int invIndicator(boolean b) {
-        return b ? 0 : 1;
-    }
-
-    public static int indicator(boolean b) {
-        return b ? 1 : 0;
-    }
-
     public static int heuristic3(char[] elem, char[] target, int containsWeight, int eqWeight) {
         assert elem.length == target.length;
         int fitness = 0;
@@ -39,6 +33,16 @@ public class StringHeuristics {
         return fitness;
     }
 
+    public static char[] mate(char[] x, char[] y, Random rand) {
+        assert x.length == y.length;
+
+        int pos = rand.nextInt(x.length);
+        char[] str = new char[x.length];
+        System.arraycopy(x, 0, str, 0, pos);
+        System.arraycopy(y, pos, str, pos, y.length - pos);
+        return str;
+    }
+
     public static boolean strContains(char[] target, char c) {
         for (char targetChar : target) {
             if (targetChar == c)
@@ -47,17 +51,13 @@ public class StringHeuristics {
         return false;
     }
 
-    public static char[] mate(char[] x, char[] y, Random rand) {
-        assert x.length == y.length;
-
-        int pos = rand.nextInt(x.length);
-        char[] str = new char[x.length];
-        for (int i = 0; i < pos; i++) {
-            str[i] = x[i];
-        }
-        for (int i = pos; i < y.length; i++) {
-            str[i] = y[i];
-        }
-        return str;
+    public static int invIndicator(boolean b) {
+        return b ? 0 : 1;
     }
+
+    public static int indicator(boolean b) {
+        return b ? 1 : 0;
+    }
+
+
 }

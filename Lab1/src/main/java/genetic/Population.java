@@ -1,3 +1,5 @@
+package genetic;
+
 public class Population<A> {
     public Gene<A>[] population;
 

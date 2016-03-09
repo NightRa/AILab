@@ -1,3 +1,7 @@
+package util;
+
+import genetic.Gene;
+
 import java.util.Arrays;
 
 public class JavaUtil {

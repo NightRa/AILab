@@ -1,3 +1,5 @@
+package genetic;
+
 public class Gene<A> {
     public A gene;
     public int fitness;
