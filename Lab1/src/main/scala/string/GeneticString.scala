@@ -4,7 +4,7 @@ import java.util.Random
 
 import genetic.Genetic
 
-class GeneticString(heuristic: Array[Char] => Int, rand: Random) extends Genetic[Array[Char]] {
+class GeneticString(heuristic: Array[Char] => Double, rand: Random) extends Genetic[Array[Char]] {
   def fitness(gene: Array[Char]): Double = heuristic(gene)
 
   @inline

@@ -3,34 +3,34 @@ package string;
 import java.util.Random;
 
 public class StringHeuristics {
-    public static int heuristic1(char[] elem, char[] target) {
+    public static double heuristic1(char[] elem, char[] target) {
         assert elem.length == target.length;
         int fitness = 0;
         for (int i = 0; i < elem.length; i++) {
             fitness += Math.abs(elem[i] - target[i]);
         }
-        return fitness;
+        return (double) fitness / (91*target.length);
     }
 
-    public static int heuristic2(char[] elem, char[] target) {
+    public static double heuristic2(char[] elem, char[] target) {
         assert elem.length == target.length;
         int fitness = 0;
         for (int i = 0; i < elem.length; i++) {
             fitness += invIndicator(elem[i] == target[i]);
         }
-        return fitness;
+        return (double) fitness / target.length;
     }
 
-    public static int heuristic3(char[] elem, char[] target, int containsWeight, int eqWeight) {
+    public static double heuristic3(char[] elem, char[] target, int containsWeight, int eqWeight) {
         assert elem.length == target.length;
-        int fitness = 0;
+        double fitness = 0;
         for (int i = 0; i < elem.length; i++) {
-            int contains = indicator(strContains(target, elem[i]));
-            int eq = indicator(elem[i] == target[i]);
+            int contains = invIndicator(strContains(target, elem[i]));
+            int eq = invIndicator(elem[i] == target[i]);
 
-            fitness += (containsWeight + eqWeight) - containsWeight * contains - eqWeight * eq;
+            fitness += (double) (containsWeight * contains + eqWeight * eq) / (containsWeight + eqWeight);
         }
-        return fitness;
+        return fitness / target.length;
     }
 
     public static char[] mate(char[] x, char[] y, Random rand) {

@@ -2,6 +2,10 @@ package util
 
 import java.util.Random
 
+import func.Func
+
+import scala.reflect.ClassTag
+
 object Util {
   def randString(size: Int, rand: Random): Array[Char] = {
     Array.fill(size)((rand.nextInt(91) + 32).toChar)
@@ -25,5 +29,20 @@ object Util {
       (elem - avg) * (elem - avg)
     })
     (avg, stdDev)
+  }
+
+  def zipWith[A, B, C: ClassTag](as: Array[A], bs: Array[B])(f: (A, B) => C): Array[C] = {
+    val size = as.length min bs.length
+    val arr: Array[C] = Array.ofDim(size)
+
+    for (i <- 0 until size) {
+      arr(i) = f(as(i), bs(i))
+    }
+    arr
+  }
+
+  def randAvg(x: Double, y: Double, rand: Random): Double = {
+    val w = rand.nextDouble()
+    x * w + y * (1 - w)
   }
 }
