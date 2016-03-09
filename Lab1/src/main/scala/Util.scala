@@ -2,7 +2,7 @@ import java.util.Random
 
 object Util {
   def randString(size: Int, rand: Random): Array[Char] = {
-    Array.fill(size)((rand.nextInt(90) + 32).toChar)
+    Array.fill(size)((rand.nextInt(91) + 32).toChar)
   }
 
   def sortBy[A, B](arr: Array[A])(f: A => B)(implicit ordering: Ordering[B]): Unit = {
@@ -24,10 +24,10 @@ object Util {
   @inline
   def stdDev[A](arr: Array[A])(by: A => Double): (Double, Double) = {
     val avg = avgBy(arr)(by)
-    val stdDev = avgBy(arr) { x =>
+    val stdDev = Math.sqrt(avgBy(arr) { x =>
       val elem = by(x)
       (elem - avg) * (elem - avg)
-    }
+    })
     (avg, stdDev)
   }
 }
