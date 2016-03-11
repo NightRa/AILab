@@ -5,8 +5,8 @@ import java.util.Random
 import genetic.{Genetic, GeneticMain, Population}
 import util.Util._
 
-class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutationSize: Double, MutationRate: Double, TimeLimit: Double, rand: Random) extends Genetic[Params] {
-  def fitness(gene: Params): Double = {
+class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutationSize: Double, MutationRate: Double, TimeLimit: Double, Rounds: Int, rand: Random) extends Genetic[Params] {
+  def fitnessOnce(gene: Params): Double = {
     val before: Long = System.currentTimeMillis()
     val (population: Population[_], iterations: Int) = main.alg(gene, TimeLimit).run(print = false)
     val after: Long = System.currentTimeMillis()
@@ -14,6 +14,10 @@ class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutation
     println(s"$time ms" + (if(time > 990) gene.toString else ""))
     // Finished => [0,0.5], Not finished => [0.5,1]
     0.5 * time.toDouble / (TimeLimit * 1000) + 0.5 * population.population.minBy(_.fitness).fitness
+  }
+
+  def fitness(gene: Params): Double = {
+    avgBy(Array.fill(Rounds)(fitnessOnce(gene)))(identity)
   }
 
   def mate(a: Params, b: Params): Params = {
