@@ -5,7 +5,7 @@ import scala.util.Random;
 
 import java.util.Arrays;
 
-public class JavaUtil {
+public final class JavaUtil {
 
     public static <A> void sortGenes(Gene<A>[] arr) {
         Arrays.sort(arr, (x, y) -> comp(x.fitness, y.fitness));
@@ -28,4 +28,33 @@ public class JavaUtil {
         }
     }
 
+
+    public static void swapValues(int[] array, int a, int b) {
+        int i = indexOf(array, a);
+        int j = indexOf(array, a);
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
+    public static int indexOf(int[] array, int num){
+        for (int i = 0; i < array.length; i++)
+            if (array[i] == num)
+                return i;
+        throw new IllegalArgumentException("the array does not contain num: " + num);
+    }
+
+    public static boolean containsValue(int[] array, int value){
+        for (int i = 0; i < array.length; i++)
+            if (array[i] == value)
+                return true;
+        return false;
+    }
+
+    public static int firstIndexOf(int value, int[] array) {
+        for (int i = 0; i < array.length; i++)
+            if (array[i] == value)
+                return i;
+        return -1;
+    }
 }
