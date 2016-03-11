@@ -10,6 +10,7 @@ class GeneticParamsMain(main: GeneticMain[_]) extends GeneticMain[Params] {
   // Parameters
   val IntsMutationRatio: Int = 32 // 0
   val PopulationSize: Int = 20 // 1
+  val Rounds: Int = 3 // 2
   val DoublesMutationSize: Double = 0.1 // 0
   val MutationRate: Double = 0.4 // 1
   val ElitismRate: Double = 0.1 // 2
@@ -32,7 +33,7 @@ class GeneticParamsMain(main: GeneticMain[_]) extends GeneticMain[Params] {
     new OnePointCrossover(ElitismRate, MutationRate, rand)
   }
 
-  def genetic(params: Params) = new GeneticParams(main, params.ints(0), params.doubles(0), params.doubles(1), params.doubles(3), rand)
+  def genetic(params: Params) = new GeneticParams(main, params.ints(0), params.doubles(0), params.doubles(1), params.doubles(3), params.ints(2), rand)
 
   def randomParams(): Params = new Params(
     Array.fill(main.intsSize)(rand.nextInt(main.intsMax())),
@@ -51,7 +52,7 @@ class GeneticParamsMain(main: GeneticMain[_]) extends GeneticMain[Params] {
 
   def main(args: Array[String]) {
 
-    alg(new Params(Array(intsMutationSize, PopulationSize), intsMax(), Array(DoublesMutationSize, MutationRate, ElitismRate, TimeLimit)), MaxTime).run(print = true)
+    alg(new Params(Array(intsMutationSize, PopulationSize, Rounds), intsMax(), Array(DoublesMutationSize, MutationRate, ElitismRate, TimeLimit)), MaxTime).run(print = true)
 
   }
 }

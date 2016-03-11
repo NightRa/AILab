@@ -8,24 +8,10 @@ import params.{GeneticParamsMain, Params}
 object GeneticFuncMain extends GeneticMain[Func] {
   val MaxTime: Double = 5.0
 
-  // 40 ms - 55 ms
-  /*val PopulationSize: Int = 2048
-  val ElitismRate: Double = 0.10f
-  val MutationRate: Double = 0.2f
-  val MutationSize: Double = 0.01f*/
-
-  // 12 ms - 18 ms
-  /*val PopulationSize: Int = 200
-  val ElitismRate: Double = 0.83
-  val MutationRate: Double = 0.70
-  val MutationSize: Double = 0.86*/
-
-  // Params: [168] [0.07826891264575286,0.309110118057211,0.11850811360304636]; fitness: 3.0409567777956366E-13; avg: 0.002; stdDev: 0.001
-  // 7 ms - 8 ms
-  val PopulationSize: Int = 168
-  val ElitismRate: Double = 0.078
-  val MutationRate: Double = 0.309
-  val MutationSize: Double = 0.118
+  val PopulationSize: Int = 190
+  val ElitismRate: Double = 0.441
+  val MutationRate: Double = 0.46
+  val MutationSize: Double = 0.254
 
   val seed = 8682522807148012L ^ System.nanoTime
   val rand = new Random(seed)
