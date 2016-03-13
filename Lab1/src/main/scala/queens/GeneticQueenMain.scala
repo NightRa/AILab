@@ -11,7 +11,7 @@ import java.util.Random
 object GeneticQueenMain extends GeneticMain[QueenPermutation] {
   val MaxTime: Double = 5.0
 
-  val Size: Int = 15
+  val Size: Int = 10
 
   // 8 ms - 10 ms
   // Params
@@ -21,19 +21,19 @@ object GeneticQueenMain extends GeneticMain[QueenPermutation] {
   // Doubles
   val ElitismRate: Double = 0.1
   // 0
-  val MutationRate: Double = 0.5
+  val MutationRate: Double = 0.4
   // 1
-  val MutationSize: Double = 1
+  val MutationSize: Double = 0.8
   // 2
-  val TopRatio: Double = 0.5 // 3
+  val TopRatio: Double = 0.62 // 3
 
   val seed = 8682522807148012L ^ System.nanoTime
   val rand = new Random(seed)
 
   def genetic(params: Params): Genetic[QueenPermutation] = new GeneticQueen(params.doubles(2),
     rand,
-    (as, bs, rnd) => QueenMating.pmx(as, bs, rnd),
-    (as, rnd) => QueenMutation.scramble(as, rnd))
+    (as, bs, rnd) => QueenMating.cx(as, bs, rnd),
+    (as, rnd) => QueenMutation.complexInversion(as, rnd))
 
   def mateStrategy(params: Params) = new OnePointCrossover(params.doubles(0), params.doubles(1), rand)
 

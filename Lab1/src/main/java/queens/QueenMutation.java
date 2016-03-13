@@ -61,12 +61,25 @@ public final class QueenMutation {
             swap(array, minIndex++, maxIndex--);
     }
 
+    // !
+    // error code
+    // %
+    // not tale recursive due to a maximum of 2 rec calls
+    private static int getCyclicIndex(int[] array, int index){
+        int size = array.length;
+        if (index < 0)
+            return getCyclicIndex(array, index + size);
+        if (index >= size)
+            return getCyclicIndex(array, index - size);
+        return index;
+    }
+
     private static void insert(int[] array, int blockMinIndex, int blockMaxIndex, int shift){
         while (shift > 0){
-            for (int i = (blockMaxIndex + 1) % array.length;
+            for (int i = getCyclicIndex(array, blockMaxIndex + 1);
                  i != blockMinIndex;
-                 i = (i - 1) % array.length)
-                swap(array, i, (i - 1)% array.length);
+                 i = getCyclicIndex(array, i - 1))
+                swap(array, i, getCyclicIndex(array, i - 1));
             shift--;
         }
     }

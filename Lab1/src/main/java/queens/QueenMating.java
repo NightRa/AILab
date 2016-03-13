@@ -37,7 +37,7 @@ public final class QueenMating {
                 newArray[i] = -1;
 
         for (int i = 0 ; i < a1.length; i++)
-            if (JavaUtil.containsValue(newArray, a2[i])){
+            if (!JavaUtil.containsValue(newArray, a2[i])){
                 int index = JavaUtil.firstIndexOf(-1, newArray);
                 newArray[index] = a2[i];
             }
@@ -52,8 +52,9 @@ public final class QueenMating {
         int newIndex = index;
 
         do {
-            newArray[newIndex] = a1[newIndex];
-            newIndex = a2[newIndex] - 1;
+            int value = a1[newIndex];
+            newArray[newIndex] = a2[newIndex];
+            newIndex = JavaUtil.indexOf(a1, value);
         } while (newIndex != index);
 
         return newArray;
