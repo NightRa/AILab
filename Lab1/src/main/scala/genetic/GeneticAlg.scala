@@ -2,7 +2,7 @@ package genetic
 
 import java.util.Random
 
-import MateStrategy
+import genetic.mating.MateStrategy
 import genetic.selection.SelectionStrategy
 import genetic.types.{Gene, Population}
 import util.JavaUtil

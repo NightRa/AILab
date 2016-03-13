@@ -1,7 +1,6 @@
 package genetic.mating;
 
 import genetic.Genetic;
-import genetic.MateStrategy;
 import genetic.types.Population;
 import genetic.selection.SelectionStrategy;
 import scala.Tuple2;
