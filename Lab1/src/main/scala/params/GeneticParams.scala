@@ -6,15 +6,18 @@ import genetic.types.Population
 import genetic.{Genetic, GeneticMain}
 import util.Util._
 
-class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutationSize: Double, MutationRate: Double, TimeLimit: Double, Rounds: Int, rand: Random) extends Genetic[Params] {
+class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutationSize: Double, MutationRate: Double, InitialTimeLimit: Double, Rounds: Int, rand: Random) extends Genetic[Params] {
+  var lastAvgTime: Double = InitialTimeLimit
+
   def fitnessOnce(gene: Params): Double = {
+    val TimeLimit = 4 * lastAvgTime
     val before: Long = System.nanoTime()
     val (population: Population[_], iterations: Int) = main.alg(gene, TimeLimit).run(print = false)
     val after: Long = System.nanoTime()
     val time = after - before
     val timeFraction: Double = time.toDouble / (TimeLimit * 1e9)
 
-    println(s"$time ns" + (if(timeFraction > 0.99) gene.toString else ""))
+    println(s"${time/1000} micro sec; " + (if(timeFraction > 0.99) gene.toString else ""))
     if(timeFraction > 0.99) 1
     // Finished => [0,0.5], Not finished => [0.5,1]
     else 0.5 * timeFraction + 0.5 * population.population.minBy(_.fitness).fitness
@@ -27,7 +30,9 @@ class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutation
       if(result == 1) return 1
       else sum += result
     }
-    sum / Rounds
+    val avgTime = sum / Rounds
+    lastAvgTime = lastAvgTime min avgTime
+    avgTime
   }
 
   def mate(a: Params, b: Params): Params = {

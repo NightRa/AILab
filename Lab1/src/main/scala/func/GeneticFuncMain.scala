@@ -10,15 +10,16 @@ import params.{GeneticParamsMain, Params}
 
 object GeneticFuncMain extends GeneticMain[Func] {
   val MaxTime: Double = 5.0
-
+  
+  // 8 ms - 10 ms
   // Params
   // Ints
-  val PopulationSize: Int = 190 // 0
+  val PopulationSize: Int = 267 // 0
   // Doubles
-  val ElitismRate: Double = 0.441 // 0
-  val MutationRate: Double = 0.46 // 1
-  val MutationSize: Double = 0.254 // 2
-  val TopRatio: Double = 0.5 // 3
+  val ElitismRate: Double = 0.269 // 0
+  val MutationRate: Double = 0.2 // 1
+  val MutationSize: Double = 0.21 // 2
+  val TopRatio: Double = 0.096 // 3
 
   val seed = 8682522807148012L ^ System.nanoTime
   val rand = new Random(seed)
@@ -41,7 +42,7 @@ object GeneticFuncMain extends GeneticMain[Func] {
 
   def main(args: Array[String]) {
     val start = System.currentTimeMillis()
-    alg(new Params(Array(PopulationSize), intsMax(), Array(ElitismRate, MutationRate, MutationSize, TopRatio)), MaxTime).run(print = true)
+    alg(new Params(Array(PopulationSize), intsMax(), Array(ElitismRate, MutationRate, MutationSize, TopRatio)), MaxTime).run(print = false)
     val end = System.currentTimeMillis()
     val time = end - start
 
