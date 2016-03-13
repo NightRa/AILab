@@ -9,7 +9,7 @@ import java.util.Arrays;
 public final class JavaUtil {
 
     public static <A> void sortGenes(Gene<A>[] arr) {
-        Arrays.sort(arr, (x, y) -> comp(x.fitness, y.fitness));
+        Arrays.parallelSort(arr, (x, y) -> comp(x.fitness, y.fitness));
     }
 
     private static int comp(double x, double y) {
