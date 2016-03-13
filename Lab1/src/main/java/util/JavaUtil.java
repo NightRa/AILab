@@ -3,6 +3,7 @@ package util;
 import genetic.types.Gene;
 import scala.util.Random;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public final class JavaUtil {
@@ -56,5 +57,17 @@ public final class JavaUtil {
             if (array[i] == value)
                 return i;
         return -1;
+    }
+
+    public static int firstDifIndex(int[] array1, ArrayList<Integer> array2) {
+        int[] a1Cop = array1.clone();
+        Arrays.sort(a1Cop);
+        Integer[] a2Cop = (Integer[]) array2.toArray();
+        Arrays.sort(a2Cop);
+        for (int i = 0; i < a1Cop.length; i++)
+            if (a1Cop[i] != a2Cop[i])
+                return i;
+
+        throw new IllegalArgumentException("I have no power for this.. maybe implementation error");
     }
 }

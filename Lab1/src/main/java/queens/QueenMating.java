@@ -3,7 +3,11 @@ package queens;
 import scala.util.Random;
 import util.JavaUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.zip.Inflater;
 
 /**
  * Created by yuval on 3/11/2016.
@@ -43,4 +47,17 @@ public final class QueenMating {
         return newArray;
     }
 
+    // cycle crossover
+    public static int[] cx(int[] a1, int[] a2, Random rand){
+        int[] newArray = a2.clone();
+        int index = rand.nextInt(a1.length);
+        int newIndex = index;
+
+        do {
+            newArray[newIndex] = a1[newIndex];
+            newIndex = a2[newIndex];
+        } while (newIndex != index);
+
+        return newArray;
+    }
 }
