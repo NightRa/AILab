@@ -25,6 +25,7 @@ public final class QueenMating {
         return newArray;
     }
 
+    // TODO: improve to O(n)
     // it is slightly different from what described... but well enough
     // complexity: O(n^2), O(1) space
     // ordered crossover
@@ -52,7 +53,7 @@ public final class QueenMating {
 
         do {
             newArray[newIndex] = a1[newIndex];
-            newIndex = a2[newIndex];
+            newIndex = a2[newIndex] - 1;
         } while (newIndex != index);
 
         return newArray;

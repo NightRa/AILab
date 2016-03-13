@@ -1,5 +1,7 @@
 package queens;
 
+import java.util.Arrays;
+
 import static java.lang.Math.abs;
 
 public class QueensHeuristic {
@@ -23,4 +25,5 @@ public class QueensHeuristic {
         }
         return (sum / (double) count);
     }
+
 }
