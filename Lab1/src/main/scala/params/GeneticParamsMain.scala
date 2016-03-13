@@ -7,24 +7,22 @@ import genetic.mating.OnePointCrossover
 import genetic.selection.TopSelection
 import genetic.types.{Gene, Population}
 
-class GeneticParamsMain(main: GeneticMain[_]) extends GeneticMain[Params] {
-  // Time
-  val MaxTime: Double = 100
+class GeneticParamsMain(main: GeneticMain[_], MaxTime: Double) extends GeneticMain[Params] {
   // Parameters
   val IntsMutationRatio: Int = 32 // 0
   val PopulationSize: Int = 20 // 1
-  val Rounds: Int = 10 // 2
+  val Rounds: Int = 3 // 2
   val DoublesMutationSize: Double = 0.1 // 0
-  val MutationRate: Double = 0.4 // 1
-  val ElitismRate: Double = 0.1 // 2
+  val MutationRate: Double = 0.5 // 1
+  val ElitismRate: Double = 0.3 // 2
   val TimeLimit: Double = 0.3 // 3
   val TopRatio: Double = 0.5 // 4
   // Derived values
   val intsMutationSize: Int = main.intsMax() / IntsMutationRatio
 
-  def intsSize(): Int = 2
+  def intsSize(): Int = 3
 
-  def intsMax(): Int = 128
+  def intsMax(): Int = 50
 
   def doublesSize(): Int = 5
 
