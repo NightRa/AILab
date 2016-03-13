@@ -1,4 +1,4 @@
-package genetic;
+package genetic.types;
 
 public class Gene<A> {
     public A gene;

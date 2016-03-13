@@ -2,22 +2,32 @@ package params
 
 import java.util.Random
 
-import genetic.{Genetic, GeneticMain, Population}
+import genetic.types.Population
+import genetic.{Genetic, GeneticMain}
 import util.Util._
 
 class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutationSize: Double, MutationRate: Double, TimeLimit: Double, Rounds: Int, rand: Random) extends Genetic[Params] {
   def fitnessOnce(gene: Params): Double = {
-    val before: Long = System.currentTimeMillis()
+    val before: Long = System.nanoTime()
     val (population: Population[_], iterations: Int) = main.alg(gene, TimeLimit).run(print = false)
-    val after: Long = System.currentTimeMillis()
+    val after: Long = System.nanoTime()
     val time = after - before
-    println(s"$time ms" + (if(time > 990) gene.toString else ""))
+    val timeFraction: Double = time.toDouble / (TimeLimit * 1e9)
+
+    println(s"$time ns" + (if(timeFraction > 0.99) gene.toString else ""))
+    if(timeFraction > 0.99) 1
     // Finished => [0,0.5], Not finished => [0.5,1]
-    0.5 * time.toDouble / (TimeLimit * 1000) + 0.5 * population.population.minBy(_.fitness).fitness
+    else 0.5 * timeFraction + 0.5 * population.population.minBy(_.fitness).fitness
   }
 
   def fitness(gene: Params): Double = {
-    avgBy(Array.fill(Rounds)(fitnessOnce(gene)))(identity)
+    var sum = 0.0
+    for(i <- 0 until Rounds) {
+      val result = fitnessOnce(gene)
+      if(result == 1) return 1
+      else sum += result
+    }
+    sum / Rounds
   }
 
   def mate(a: Params, b: Params): Params = {

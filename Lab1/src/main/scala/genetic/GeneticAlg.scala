@@ -2,12 +2,15 @@ package genetic
 
 import java.util.Random
 
+import MateStrategy
+import genetic.selection.SelectionStrategy
+import genetic.types.{Gene, Population}
 import util.JavaUtil
 import util.Util._
 
 import scala.annotation.tailrec
 
-class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, MaxTimeSecs: Double, rand: Random,
+class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: SelectionStrategy, MaxTimeSecs: Double, rand: Random,
                     initPopulation: => Population[A], initBuffer: => Population[A], show: A => String) {
 
   def print_best(population: Population[A], i: Int): Unit = {
@@ -33,7 +36,7 @@ class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, MaxTimeSecs: Do
       JavaUtil.sortGenes(population.population)
       if (print) print_best(population, i)
       if (population.population(0).fitness > epsilon) {
-        mateStrategy.mateStrategy(alg, population, buffer)
+        mateStrategy.mateStrategy(alg, selection, population, buffer)
         goRun(buffer, population, i + 1, endTime, print)
       } else i
     } else i

@@ -1,4 +1,6 @@
-package genetic;
+package genetic.types;
+
+import genetic.Genetic;
 
 public class Population<A> {
     public Gene<A>[] population;

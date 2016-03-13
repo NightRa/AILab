@@ -1,4 +1,10 @@
-package genetic;
+package genetic.mating;
+
+import genetic.Genetic;
+import genetic.MateStrategy;
+import genetic.types.Population;
+import genetic.selection.SelectionStrategy;
+import scala.Tuple2;
 
 import java.util.Random;
 
@@ -13,16 +19,14 @@ public class OnePointCrossover implements MateStrategy {
         this.rand = rand;
     }
 
-
     @Override
-    public <A> void mateStrategy(Genetic<A> alg, Population<A> population, Population<A> buffer) {
+    public <A> void mateStrategy(Genetic<A> alg, SelectionStrategy selection, Population<A> population, Population<A> buffer) {
         int popSize = population.population.length;
         int elites = (int) (popSize * ElitismRate);
         elitism(population, buffer, elites);
         for (int i = elites; i < popSize; i++) {
-            int i1 = rand.nextInt(popSize / 2);
-            int i2 = rand.nextInt(popSize / 2);
-            buffer.population[i].gene = alg.mate(population.population[i1].gene, population.population[i2].gene);
+            Tuple2<A,A> parents = selection.selectParents(population, rand);
+            buffer.population[i].gene = alg.mate(parents._1, parents._2);
             if(rand.nextFloat() < MutationRate)
                 buffer.population[i].gene = alg.mutate(buffer.population[i].gene);
         }
