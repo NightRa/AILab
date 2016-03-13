@@ -20,13 +20,7 @@ public final class JavaUtil {
     }
 
     public static void shuffleArray(int[] ar, Random rnd) {
-        for (int i = ar.length - 1; i > 0; i--) {
-            int index = rnd.nextInt(i + 1);
-            // Simple swap
-            int a = ar[index];
-            ar[index] = ar[i];
-            ar[i] = a;
-        }
+        shuffleArray(ar, rnd, 0, ar.length - 1);
     }
 
 
@@ -69,5 +63,15 @@ public final class JavaUtil {
                 return i;
 
         throw new IllegalArgumentException("I have no power for this.. maybe implementation error");
+    }
+
+    public static void shuffleArray(int[] ar, Random rnd, int min, int max) {
+        for (int i = max; i >= min; i--) {
+            int index = rnd.nextInt(max + 1 - min) + min;
+            // Simple swap
+            int a = ar[index];
+            ar[index] = ar[i];
+            ar[i] = a;
+        }
     }
 }

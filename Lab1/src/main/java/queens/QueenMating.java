@@ -9,9 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.zip.Inflater;
 
-/**
- * Created by yuval on 3/11/2016.
- */
 public final class QueenMating {
 
     // partially matched crossover
