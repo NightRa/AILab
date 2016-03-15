@@ -9,7 +9,7 @@ class GeneticString(heuristic: Array[Char] => Double, rand: Random) extends Gene
 
   @inline
   def mate(x: Array[Char], y: Array[Char]): Array[Char] = {
-    StringHeuristics.mate(x, y, rand)
+    StringHeuristics.onePointCrossover(x, y, rand)
   }
 
   def mutate(s: Array[Char]): Array[Char] = {
