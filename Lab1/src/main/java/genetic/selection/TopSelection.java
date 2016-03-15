@@ -1,7 +1,7 @@
 package genetic.selection;
 
+import genetic.types.Gene;
 import genetic.types.Population;
-import scala.Tuple2;
 
 import java.util.Random;
 
@@ -13,13 +13,21 @@ public class TopSelection implements SelectionStrategy {
     }
 
     @Override
-    public <A> Tuple2<A, A> selectParents(Population<A> population, Random rand) {
-        int popSize = population.population.length;
-        int selectionRange = Math.max(Math.min((int) (popSize * topRatio), popSize), 1);
-        int i1 = rand.nextInt(selectionRange);
-        int i2 = rand.nextInt(selectionRange);
-        return new Tuple2<>(population.population[i1].gene, population.population[i2].gene);
+    public <A> A chooseParent(Population<A> parentsPool, Random rand) {
+        int poolSize = parentsPool.population.length;
+        int i = rand.nextInt(poolSize);
+        return parentsPool.population[i].gene;
     }
 
+    @Override
+    public <A> void populateParentsPool(Population<A> population, Population<A> parentsPool, Random rand) {
+        System.arraycopy(population.population, 0, parentsPool.population, 0, parentsPool.population.length);
+    }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <A> Population<A> initParentsPool(int popSize) {
+        int poolSize = Math.max(Math.min((int) (popSize * topRatio), popSize), 1);
+        return new Population<>(new Gene[poolSize]);
+    }
 }

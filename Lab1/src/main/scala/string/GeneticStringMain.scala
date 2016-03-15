@@ -3,7 +3,7 @@ package string
 import java.util.Random
 
 import genetic._
-import genetic.mating.OnePointCrossover
+import genetic.mating.ElitismMutationMateStrategy
 import genetic.selection.TopSelection
 import genetic.types.{Gene, Population}
 import params.{GeneticParamsMain, Params}
@@ -30,7 +30,7 @@ object GeneticStringMain extends GeneticMain[Array[Char]] {
   def mateStrategy(params: Params) = {
     val ElitismRate = params.doubles(0)
     val MutationRate = params.doubles(1)
-    new OnePointCrossover(ElitismRate, MutationRate, rand)
+    new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
   }
 
   def selectionStrategy(params: Params) = new TopSelection(params.doubles(2))

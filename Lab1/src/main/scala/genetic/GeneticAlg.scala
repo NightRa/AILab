@@ -23,21 +23,22 @@ class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: Sele
     val startTime = System.currentTimeMillis()
     val endTime = startTime + timeMili
     val population: Population[A] = initPopulation
-    val iterations: Int = goRun(population, initBuffer, 0, endTime, print)
+    val parentsPool: Population[A] = selection.initParentsPool(population.population.length)
+    val iterations: Int = goRun(population, initBuffer, parentsPool, 0, endTime, print)
     (population, iterations)
   }
 
   val epsilon: Double = 1e-12
 
   @tailrec
-  final def goRun(population: Population[A], buffer: Population[A], i: Int, endTime: Long, print: Boolean): Int = {
+  final def goRun(population: Population[A], buffer: Population[A], parentsPool: Population[A], i: Int, endTime: Long, print: Boolean): Int = {
     if (System.currentTimeMillis() < endTime) {
       population.calc_fitness(alg)
       JavaUtil.sortGenes(population.population)
       if (print) print_best(population, i)
       if (population.population(0).fitness > epsilon) {
-        mateStrategy.mateStrategy(alg, selection, population, buffer)
-        goRun(buffer, population, i + 1, endTime, print)
+        mateStrategy.mateStrategy(alg, selection, population, buffer, parentsPool)
+        goRun(buffer, population, parentsPool, i + 1, endTime, print)
       } else i
     } else i
   }
