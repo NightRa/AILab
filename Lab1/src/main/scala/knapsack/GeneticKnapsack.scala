@@ -4,12 +4,12 @@ import genetic.Genetic
 
 import scala.util.Random
 
-class GeneticKnapsack(rand : Random,
-                      mateFunc : (KnapsackInstance, KnapsackInstance) => KnapsackInstance,
-                      mutateFunc : KnapsackInstance => Unit) extends Genetic[KnapsackInstance]{
-  override def fitness(gene: KnapsackInstance): Double = gene.percentLeft()
+class GeneticKnapsack(rand: Random,
+                      mateFunc: (KnapsackInstance, KnapsackInstance) => KnapsackInstance,
+                      mutateFunc: KnapsackInstance => Unit) extends Genetic[KnapsackInstance] {
+  override def fitness(gene: KnapsackInstance): Double = gene.percentLeft
 
-  override def mate(x: KnapsackInstance, y: KnapsackInstance): KnapsackInstance = mateFunc (x, y)
+  override def mate(x: KnapsackInstance, y: KnapsackInstance): KnapsackInstance = mateFunc(x, y)
 
   override def mutate(a: KnapsackInstance): KnapsackInstance = {
     mutateFunc(a)
