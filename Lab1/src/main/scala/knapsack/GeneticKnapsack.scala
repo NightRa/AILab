@@ -4,9 +4,6 @@ import genetic.Genetic
 
 import scala.util.Random
 
-/**
-  * Created by yuval on 3/15/2016.
-  */
 class GeneticKnapsack(rand : Random,
                       mateFunc : (KnapsackInstance, KnapsackInstance) => KnapsackInstance,
                       mutateFunc : KnapsackInstance => Unit) extends Genetic[KnapsackInstance]{
