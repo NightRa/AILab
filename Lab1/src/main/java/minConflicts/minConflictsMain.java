@@ -7,10 +7,10 @@ import java.util.Optional;
 
 public final class minConflictsMain {
     public static void main(String[] args){
-        int size = 25;
+        int size = 20;
         Random rand = new Random();
         QueenBoard board = QueenBoard.genRandom(size, rand);
-        long miliSecs = 100;
+        long miliSecs = 500;
         long maxDurationMili = System.nanoTime() + miliSecs * 1000000;
         long start = System.currentTimeMillis();
         Optional<QueenBoard> maybeBoard = MinimalConflicts.minimalConflictsAlg(board, maxDurationMili, rand);
@@ -20,7 +20,7 @@ public final class minConflictsMain {
         else
             System.out.println("didn't find solution");
         System.out.println();
-        System.out.println("Took " + (end - start) + " miloSecs");
+        System.out.println("Took " + (end - start) + " miliSecs");
 
 
     }
