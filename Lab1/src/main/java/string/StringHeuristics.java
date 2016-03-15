@@ -4,27 +4,27 @@ import java.util.Random;
 
 public class StringHeuristics {
     public static double heuristic1(char[] elem, char[] target) {
-        assert elem.length == target.length;
+        int len = Math.min(elem.length, target.length);
         int fitness = 0;
-        for (int i = 0; i < elem.length; i++) {
+        for (int i = 0; i < len; i++) {
             fitness += Math.abs(elem[i] - target[i]);
         }
         return (double) fitness / (91*target.length);
     }
 
     public static double heuristic2(char[] elem, char[] target) {
-        assert elem.length == target.length;
+        int len = Math.min(elem.length, target.length);
         int fitness = 0;
-        for (int i = 0; i < elem.length; i++) {
+        for (int i = 0; i < len; i++) {
             fitness += invIndicator(elem[i] == target[i]);
         }
         return (double) fitness / target.length;
     }
 
     public static double heuristic3(char[] elem, char[] target, int containsWeight, int eqWeight) {
-        assert elem.length == target.length;
+        int len = Math.min(elem.length, target.length);
         double fitness = 0;
-        for (int i = 0; i < elem.length; i++) {
+        for (int i = 0; i < len; i++) {
             int contains = invIndicator(strContains(target, elem[i]));
             int eq = invIndicator(elem[i] == target[i]);
 
