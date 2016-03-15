@@ -8,4 +8,9 @@ public class Gene<A> {
         this.gene = gene;
         this.fitness = fitness;
     }
+
+    @Override
+    public String toString() {
+        return "" + fitness;
+    }
 }
