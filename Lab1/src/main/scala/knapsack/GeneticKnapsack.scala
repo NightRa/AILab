@@ -5,13 +5,13 @@ import genetic.Genetic
 import scala.util.Random
 
 class GeneticKnapsack(rand: Random,
-                      mateFunc: (KnapsackInstance, KnapsackInstance) => KnapsackInstance,
-                      mutateFunc: KnapsackInstance => Unit) extends Genetic[KnapsackInstance] {
-  override def fitness(gene: KnapsackInstance): Double = gene.percentLeft
+                      mateFunc: (KnapsackElement, KnapsackElement) => KnapsackElement,
+                      mutateFunc: KnapsackElement => Unit) extends Genetic[KnapsackElement] {
+  override def fitness(gene: KnapsackElement): Double = gene.percentLeft()
 
-  override def mate(x: KnapsackInstance, y: KnapsackInstance): KnapsackInstance = mateFunc(x, y)
+  override def mate(x: KnapsackElement, y: KnapsackElement): KnapsackElement = mateFunc(x, y)
 
-  override def mutate(a: KnapsackInstance): KnapsackInstance = {
+  override def mutate(a: KnapsackElement): KnapsackElement = {
     mutateFunc(a)
     a
   }
