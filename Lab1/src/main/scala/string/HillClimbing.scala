@@ -5,7 +5,7 @@ import java.util.Random
 import util.Util
 
 class HillClimbing(heuristic: Array[Char] => Double, rand: Random) {
-  val chars: Array[Char] = (32 to 91).map(_.toChar).toArray
+  val chars: Array[Char] = (32 to 126).map(_.toChar).toArray
 
   def hillClimbing(state: Array[Char]): String = {
     var index = 0
@@ -16,7 +16,7 @@ class HillClimbing(heuristic: Array[Char] => Double, rand: Random) {
         value
       })
       state(index) = bestChar
-      println(s"Index $index, best char = $bestChar: " + state.take(index + 1).mkString)
+      // println(s"Index $index, best char = $bestChar: " + state.take(index + 1).mkString)
       index += 1
     }
     state.mkString
@@ -28,5 +28,10 @@ object HillClimbing extends App {
   val TargetString: Array[Char] = "Hello world! How are you doing today? My name is Ilan.".toCharArray
 
   private val rand = new Random()
+  val before = System.nanoTime()
   new HillClimbing(StringHeuristics.heuristic2(_, TargetString), rand).hillClimbing(Util.randString(TargetString.length, rand))
+  val after = System.nanoTime()
+  val time = after - before
+  val milis = (time / 1000).toDouble / 1000
+  println(s"Time: $milis ms")
 }
