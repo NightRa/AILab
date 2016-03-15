@@ -1,12 +1,12 @@
 package queens
 
-import genetic.mating.OnePointCrossover
 import genetic.selection.TopSelection
 import genetic.types.{Gene, Population}
 import genetic.{Genetic, GeneticAlg, GeneticMain}
 import params.Params
-
 import java.util.Random
+
+import genetic.mating.ElitismMutationMateStrategy
 
 object GeneticQueenMain extends GeneticMain[QueenPermutation] {
   val MaxTime: Double = 5.0
@@ -35,7 +35,7 @@ object GeneticQueenMain extends GeneticMain[QueenPermutation] {
     (as, bs, rnd) => QueenMating.cx(as, bs, rnd),
     (as, rnd) => QueenMutation.complexInversion(as, rnd))
 
-  def mateStrategy(params: Params) = new OnePointCrossover(params.doubles(0), params.doubles(1), rand)
+  def mateStrategy(params: Params) = new ElitismMutationMateStrategy(params.doubles(0), params.doubles(1), rand)
 
   def selectionStrategy(params: Params) = new TopSelection(params.doubles(3))
 
