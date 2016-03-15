@@ -1,0 +1,11 @@
+OnePointCrossover:
+- Converges to 20ms
+TwoPointCrossover:
+- Converges to 40ms
+UniformCrossover:
+- Converges to 100ms
+
+Hill Climbing & Genetic:
+- In hill climbing, we have a neighbourhood
+=> Instead of choosing the best in the neighbourhood, run short genetic on that population, and choose the output of the genetic.
+- Proceed by hill climbing.

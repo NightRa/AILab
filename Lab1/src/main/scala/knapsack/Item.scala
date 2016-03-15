@@ -1,5 +1,5 @@
 package knapsack
 
-class Item(val price : Double, val weight : Double){
-
+case class Item(weight: Double, value: Double) {
+  def valueRatio = value / weight
 }

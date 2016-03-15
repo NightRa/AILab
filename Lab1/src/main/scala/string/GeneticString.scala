@@ -3,13 +3,15 @@ package string
 import java.util.Random
 
 import genetic.Genetic
+import genetic.mating.Crossover
+import genetic.mating.Crossover.onePointCrossover
 
 class GeneticString(heuristic: Array[Char] => Double, rand: Random) extends Genetic[Array[Char]] {
   def fitness(gene: Array[Char]): Double = heuristic(gene)
 
   @inline
   def mate(x: Array[Char], y: Array[Char]): Array[Char] = {
-    StringHeuristics.onePointCrossover(x, y, rand)
+    Crossover.onePointCrossover(x, y, rand)
   }
 
   def mutate(s: Array[Char]): Array[Char] = {

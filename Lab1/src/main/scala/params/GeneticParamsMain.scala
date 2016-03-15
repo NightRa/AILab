@@ -11,7 +11,7 @@ class GeneticParamsMain(main: GeneticMain[_], MaxTime: Double) extends GeneticMa
   // Parameters
   val IntsMutationRatio: Int = 32 // 0
   val PopulationSize: Int = 20 // 1
-  val Rounds: Int = 3 // 2
+  val Rounds: Int = 10 // 2
   val DoublesMutationSize: Double = 0.1 // 0
   val MutationRate: Double = 0.5 // 1
   val ElitismRate: Double = 0.3 // 2
