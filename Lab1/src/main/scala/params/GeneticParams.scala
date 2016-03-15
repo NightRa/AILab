@@ -17,7 +17,7 @@ class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutation
     val time = after - before
     val timeFraction: Double = time.toDouble / (TimeLimit * 1e9)
 
-    println(s"${time/1000} micro sec; " + (if(timeFraction > 0.99) gene.toString else ""))
+    println(s"${(time/1000).toDouble / 1000} ms; " + (if(timeFraction > 0.99) gene.toString else ""))
     if(timeFraction > 0.99) 1
     // Finished => [0,0.5], Not finished => [0.5,1]
     else 0.5 * timeFraction + 0.5 * population.population.minBy(_.fitness).fitness
