@@ -16,28 +16,23 @@ object GeneticQueenMain extends GeneticMain[QueenPermutation] {
   // 8 ms - 10 ms
   // Params
   // Ints
-  val PopulationSize: Int = 100
-  // 0
+  val PopulationSize: Int = 100 // 0
   // Doubles
-  val ElitismRate: Double = 0.1
-  // 0
-  val MutationRate: Double = 0.4
-  // 1
-  val MutationSize: Double = 0.8
-  // 2
-  val TopRatio: Double = 0.62 // 3
+  val ElitismRate: Double = 0.1 // 0
+  val MutationRate: Double = 0.4 // 1
+  val TopRatio: Double = 0.62 // 2
 
   val seed = 8682522807148012L ^ System.nanoTime
   val rand = new Random(seed)
 
-  def genetic(params: Params): Genetic[QueenPermutation] = new GeneticQueen(params.doubles(2),
+  def genetic(params: Params): Genetic[QueenPermutation] = new GeneticQueen(
     rand,
     (as, bs, rnd) => QueenMating.cx(as, bs, rnd),
     (as, rnd) => QueenMutation.complexInversion(as, rnd))
 
   def mateStrategy(params: Params) = new ElitismMutationMateStrategy(params.doubles(0), params.doubles(1), rand)
 
-  def selectionStrategy(params: Params) = new TopSelection(params.doubles(3))
+  def selectionStrategy(params: Params) = new TopSelection(params.doubles(2))
 
   def initPopulation(params: Params) = new Population[QueenPermutation](Array.fill(params.ints(0))(
     new Gene(QueenPermutation.getPermutationRandomly(Size, rand), 0)))
@@ -63,7 +58,7 @@ object GeneticQueenMain extends GeneticMain[QueenPermutation] {
 
   def main(args: Array[String]) {
     val start = System.currentTimeMillis()
-    alg(new Params(Array(PopulationSize), intsMax(), Array(ElitismRate, MutationRate, MutationSize, TopRatio)), MaxTime).run(print = true)
+    alg(new Params(Array(PopulationSize), intsMax(), Array(ElitismRate, MutationRate, TopRatio)), MaxTime).run(print = true)
     val end = System.currentTimeMillis()
     val time = end - start
 

@@ -4,12 +4,11 @@ import java.util.Random
 
 import genetic.Genetic
 
-class GeneticQueen(MutationSize: Double,
-                   rand: Random,
-                   mateFunc : (Array[Int], Array[Int], Random) => Array[Int],
-                   mutateFunc : (Array[Int], Random) => Unit) extends Genetic[QueenPermutation] {
+class GeneticQueen(rand: Random,
+                   mateFunc: (Array[Int], Array[Int], Random) => Array[Int],
+                   mutateFunc: (Array[Int], Random) => Unit) extends Genetic[QueenPermutation] {
   override def fitness(gene: QueenPermutation): Double = {
-      QueensHeuristic.queensHeuristic(gene)
+    QueensHeuristic.queensHeuristic(gene)
   }
 
   override def mate(x: QueenPermutation, y: QueenPermutation): QueenPermutation = {
