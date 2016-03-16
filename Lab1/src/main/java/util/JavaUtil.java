@@ -6,17 +6,12 @@ import scala.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static java.util.Comparator.comparing;
+
 public final class JavaUtil {
 
     public static <A> void sortGenes(Gene<A>[] arr) {
-        Arrays.parallelSort(arr, (x, y) -> comp(x.fitness, y.fitness));
-    }
-
-    private static int comp(double x, double y) {
-        double diff = x - y;
-        if (diff < 0) return -1;
-        else if (diff == 0) return 0;
-        else return 1;
+        Arrays.parallelSort(arr, comparing(x -> x.fitness));
     }
 
     public static void shuffleArray(int[] ar, Random rnd) {
