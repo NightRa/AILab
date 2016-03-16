@@ -38,7 +38,7 @@ class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutation
   def mate(a: Params, b: Params): Params = {
     val ints = zipWith(a.ints, b.ints)((x, y) => randAvg(x, y, rand).toInt)
     val doubles = zipWith(a.doubles, b.doubles)((x, y) => randAvg(x, y, rand))
-    new Params(ints, a.intsMax, doubles)
+    new Params(ints, doubles)
   }
 
   def mutate(params: Params): Params = {
@@ -46,7 +46,7 @@ class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutation
       if (rand.nextDouble() < MutationRate) {
         val delta = (rand.nextInt(IntsMutationSize) - (IntsMutationSize / 2)) * 2
         // max 2 so that population size / 2 isn't 0.
-        params.ints(i) = (params.ints(i) + delta) max 3 min params.intsMax
+        params.ints(i) = (params.ints(i) + delta) max 3 min main.intsMax
       }
     }
 

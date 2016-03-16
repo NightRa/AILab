@@ -64,7 +64,7 @@ object GeneticKnapsackMain extends GeneticMain[KnapsackElement] {
 
   def main(args: Array[String]) {
     val start = System.currentTimeMillis()
-    val (pop, iterations) = alg(new Params(Array(DefaultPopulationSize), intsMax(), Array(DefaultElitismRate, DefaultMutationRate, DefaultMutationProb, DefaultTopRatio)), MaxTime)
+    val (pop, iterations) = alg(new Params(Array(DefaultPopulationSize), Array(DefaultElitismRate, DefaultMutationRate, DefaultMutationProb, DefaultTopRatio)), MaxTime)
       .run(print = false)
     val end = System.currentTimeMillis()
     val time = end - start

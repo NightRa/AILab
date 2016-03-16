@@ -41,10 +41,9 @@ class GeneticParamsMain(main: GeneticMain[_], MaxTime: Double) extends GeneticMa
 
   def randomParams(): Params = new Params(
     Array.fill(main.intsSize)(rand.nextInt(main.intsMax())),
-    main.intsMax(),
     Array.fill(main.doublesSize())(rand.nextDouble()))
 
-  val emptyParams: Params = new Params(Array.emptyIntArray, main.intsMax(), Array.emptyDoubleArray)
+  val emptyParams: Params = new Params(Array.emptyIntArray, Array.emptyDoubleArray)
   val emptyParamsGene: Gene[Params] = new Gene(emptyParams, 0)
 
   def initPopulation(params: Params) = new Population[Params](Array.fill(params.ints(1))(new Gene(randomParams(), 0)))
@@ -56,7 +55,7 @@ class GeneticParamsMain(main: GeneticMain[_], MaxTime: Double) extends GeneticMa
 
   def main(args: Array[String]) {
 
-    alg(new Params(Array(intsMutationSize, PopulationSize, Rounds), intsMax(), Array(DoublesMutationSize, MutationRate, ElitismRate, TimeLimit, TopRatio)), MaxTime).run(print = true)
+    alg(new Params(Array(intsMutationSize, PopulationSize, Rounds), Array(DoublesMutationSize, MutationRate, ElitismRate, TimeLimit, TopRatio)), MaxTime).run(print = true)
 
   }
 }

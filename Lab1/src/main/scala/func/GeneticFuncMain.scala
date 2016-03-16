@@ -41,7 +41,7 @@ object GeneticFuncMain extends GeneticMain[Func] {
 
   def main(args: Array[String]) {
     val start = System.currentTimeMillis()
-    alg(new Params(Array(PopulationSize), intsMax(), Array(ElitismRate, MutationRate, MutationSize, TopRatio)), MaxTime).run(print = true)
+    alg(new Params(Array(PopulationSize), Array(ElitismRate, MutationRate, MutationSize, TopRatio)), MaxTime).run(print = true)
     val end = System.currentTimeMillis()
     val time = end - start
 

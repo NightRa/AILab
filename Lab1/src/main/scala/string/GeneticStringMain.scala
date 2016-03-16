@@ -53,7 +53,7 @@ object GeneticStringMain extends GeneticMain[Array[Char]] {
 
   def main(args: Array[String]) {
     val start = System.currentTimeMillis()
-    val (pop, iterations) = alg(new Params(Array(PopulationSize), intsMax(), Array(ElitismRate, MutationRate, TopRatio)), MaxTime).run(print = false)
+    val (pop, iterations) = alg(new Params(Array(PopulationSize), Array(ElitismRate, MutationRate, TopRatio)), MaxTime).run(print = false)
     val end = System.currentTimeMillis()
     val time = end - start
     println(s"$time ms, $iterations iterations")

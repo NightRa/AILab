@@ -149,7 +149,7 @@ public class MCTS {
         int[] ints = {60};
 
         long before = System.nanoTime();
-        GeneticStringMain$.MODULE$.alg(new Params(ints, 4000, leaf.values), 0.3).run(false);
+        GeneticStringMain$.MODULE$.alg(new Params(ints, leaf.values), 0.3).run(false);
         long after = System.nanoTime();
         double realTime = after - before;
         System.out.println("Time = " + String.format("%03.2f", realTime / 1000000)+ ",\t\t Params = " + Arrays.toString(leaf.values));
