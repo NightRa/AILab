@@ -10,8 +10,9 @@ import util.Util._
 
 import scala.annotation.tailrec
 
-class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: SelectionStrategy, MaxTimeSecs: Double, rand: Random,
-                    initPopulation: => Population[A], initBuffer: => Population[A], show: A => String) {
+class GeneticAlg[A <: AnyRef](alg: Genetic[A], mateStrategy: MateStrategy, selection: SelectionStrategy, PopulationSize: Int,
+                    MaxTimeSecs: Double, rand: Random,
+                    randomElement: Random => A, show: A => String) {
 
   def print_best(population: Population[A], i: Int): Unit = {
     val (avg, theStdDev) = stdDev(population.population)((x: Gene[A]) => x.fitness)
@@ -22,9 +23,10 @@ class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: Sele
     val timeMili = (1000 * MaxTimeSecs).toLong
     val startTime = System.currentTimeMillis()
     val endTime = startTime + timeMili
-    val population: Population[A] = initPopulation
+    val population: Population[A] = new Population[A](Array.fill(PopulationSize)(new Gene(randomElement(rand), 0)))
+    val initialBuffer = new Population[A](Array.fill(PopulationSize)(new Gene[A](null.asInstanceOf[A], 0)))
     val parentsPool: Population[A] = selection.initParentsPool(population.population.length)
-    val iterations: Int = goRun(population, initBuffer, parentsPool, 0, endTime, print)
+    val iterations: Int = goRun(population, initialBuffer, parentsPool, 0, endTime, print)
     (population, iterations)
   }
 

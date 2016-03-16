@@ -1,67 +1,52 @@
 package queens
 
-import genetic.selection.TopSelection
-import genetic.types.{Gene, Population}
-import genetic.{Genetic, GeneticAlg, GeneticMain}
-import params.Params
-import java.util.Random
-
 import genetic.mating.ElitismMutationMateStrategy
+import genetic.selection.TopSelection
+import genetic.{GeneticAlg, GeneticMain}
+import params.Params
 
 object GeneticQueenMain extends GeneticMain[QueenPermutation] {
-  val MaxTime: Double = 5.0
-
-  val Size: Int = 10
+  override val MaxTime: Double = 5.0
+  override def fullOutput = true
 
   // 8 ms - 10 ms
   // Params
   // Ints
-  val PopulationSize: Int = 100 // 0
+  val DefaultPopulationSize: Int = 100 // 0
   // Doubles
-  val ElitismRate: Double = 0.1 // 0
-  val MutationRate: Double = 0.4 // 1
-  val TopRatio: Double = 0.62 // 2
+  val DefaultElitismRate: Double = 0.1 // 0
+  val DefaultMutationRate: Double = 0.4 // 1
+  val DefaultTopRatio: Double = 0.62 // 2
+  override val intsMax = 1024 * 16
+  override val defaultParams = Params(DefaultPopulationSize)(
+    DefaultElitismRate, DefaultMutationRate, DefaultTopRatio)
 
-  val seed = 8682522807148012L ^ System.nanoTime
-  val rand = new Random(seed)
-
-  def genetic(params: Params): Genetic[QueenPermutation] = new GeneticQueen(
-    rand,
-    (as, bs, rnd) => QueenMating.cx(as, bs, rnd),
-    (as, rnd) => QueenMutation.complexInversion(as, rnd))
-
-  def mateStrategy(params: Params) = new ElitismMutationMateStrategy(params.doubles(0), params.doubles(1), rand)
-
-  def selectionStrategy(params: Params) = new TopSelection(params.doubles(2))
-
-  def initPopulation(params: Params) = new Population[QueenPermutation](Array.fill(params.ints(0))(
-    new Gene(QueenPermutation.getPermutationRandomly(Size, rand), 0)))
-
-  def initBuffer(params: Params) = new Population[QueenPermutation](Array.fill(params.ints(0))(
-    new Gene(new QueenPermutation(Array.emptyIntArray), 0)))
-
-  def intsSize(): Int = 1
-
-  def intsMax(): Int = 1024 * 16
-
-  def doublesSize(): Int = 4
-
-  def alg(params: Params, maxTime: Double): GeneticAlg[QueenPermutation] =
-    new GeneticAlg[QueenPermutation](
-      genetic(params), mateStrategy(params), selectionStrategy(params), maxTime,
-      rand, initPopulation(params), initBuffer(params), _.permutation.mkString("[", ",", "]"))
+  val BoardSize: Int = 10
 
   def showBoard(permutation: Array[Int]): String = {
     val size = permutation.length
     permutation.map(i => "- " * (i - 1) + "x " + "- " * (size - i)).mkString("\n", "\n", "\n")
   }
 
-  def main(args: Array[String]) {
-    val start = System.currentTimeMillis()
-    alg(new Params(Array(PopulationSize), Array(ElitismRate, MutationRate, TopRatio)), MaxTime).run(print = true)
-    val end = System.currentTimeMillis()
-    val time = end - start
+  def alg(params: Params, maxTime: Double): GeneticAlg[QueenPermutation] = {
+    val PopulationSize = params.ints(0)
+    val ElitismRate = params.doubles(0)
+    val MutationRate = params.doubles(1)
+    val TopRatio = params.doubles(2)
 
-    println(s"$time ms")
+    val genetic = new GeneticQueen(
+      rand,
+      (as, bs, rnd) => QueenMating.cx(as, bs, rnd),
+      (as, rnd) => QueenMutation.complexInversion(as, rnd))
+
+    val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
+    val selectionStrategy = new TopSelection(TopRatio)
+
+    new GeneticAlg[QueenPermutation](
+      genetic, mateStrategy, selectionStrategy, PopulationSize,
+      maxTime, rand,
+      QueenPermutation.getPermutationRandomly(BoardSize, _),
+      _.permutation.mkString("[", ",", "]"))
   }
 }
+

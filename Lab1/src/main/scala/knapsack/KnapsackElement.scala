@@ -1,7 +1,9 @@
 package knapsack
 
-import java.util
 import java.util.Random
+
+import util.JavaUtil
+import util.JavaUtil.formatDouble
 
 class KnapsackElement(val amounts: Array[Int], val instance: KnapsackInstance) {
   def isValid(): Boolean = totalWeight() < instance.capacity
@@ -27,9 +29,11 @@ class KnapsackElement(val amounts: Array[Int], val instance: KnapsackInstance) {
   }
 
   override def toString: String = {
-    "Weight:" + totalWeight() + ", Value: " + totalValue() + ", " + amounts.iterator.zipWithIndex.map {
-      case (amount, i) => instance.items(i) + "=" + amount
-    }.mkString("[", ",", "]")
+    "Weight:" + formatDouble(totalWeight(), 2) + ",\tValue: " + formatDouble(totalValue(), 2) + ", " + amounts.iterator.zipWithIndex.map {
+      case (amount, i) =>
+        val item = instance.items(i)
+        "(" + item.weight + "," + item.value + ")" + "->" + amount
+    }.mkString("[", ", ", "]")
   }
 }
 
