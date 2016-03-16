@@ -6,8 +6,9 @@ import genetic._
 import genetic.mating.ElitismMutationMateStrategy
 import genetic.selection.TopSelection
 import genetic.types.{Gene, Population}
+import util.JavaUtil
 
-class GeneticParamsMain(main: GeneticMain[_], MaxTime: Double) extends GeneticMain[Params] {
+class GeneticParamsMain(main: GeneticMain[_], MaxTime: Double, csv: Boolean) extends GeneticMain[Params] {
   // Parameters
   val IntsMutationRatio: Int = 32 // 0
   val PopulationSize: Int = 20 // 1
@@ -37,7 +38,17 @@ class GeneticParamsMain(main: GeneticMain[_], MaxTime: Double) extends GeneticMa
 
   def selectionStrategy(params: Params) = new TopSelection(params.doubles(4))
 
-  def genetic(params: Params) = new GeneticParams(main, params.ints(0), params.doubles(0), params.doubles(1), params.doubles(3), params.ints(2), rand)
+  val printer = {
+    (timeSec: Double, timeFraction: Double, params: Params) =>
+      val timeMs = JavaUtil.formatDouble(timeSec * 1000)
+      if (csv) print(s"$timeMs, ")
+      else {
+        println(s"$timeMs ms; " + (if (timeFraction > 0.99) params else ""))
+      }
+  }
+
+
+  def genetic(params: Params) = new GeneticParams(main, params.ints(0), params.doubles(0), params.doubles(1), params.doubles(3), params.ints(2), printer, rand)
 
   def randomParams(): Params = new Params(
     Array.fill(main.intsSize)(rand.nextInt(main.intsMax())),

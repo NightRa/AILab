@@ -1,33 +1,43 @@
 package params
 
+import java.io.PrintWriter
 import java.util.Random
 
 import genetic.types.Population
 import genetic.{Genetic, GeneticMain}
 import util.Util._
 
-class GeneticParams(main: GeneticMain[_], IntsMutationSize: Int, DoublesMutationSize: Double, MutationRate: Double, InitialTimeLimit: Double, Rounds: Int, rand: Random) extends Genetic[Params] {
+class GeneticParams(main: GeneticMain[_],
+                    IntsMutationSize: Int, DoublesMutationSize: Double, MutationRate: Double, InitialTimeLimit: Double, Rounds: Int,
+                    logTimeSec: (Double, Double, Params) => Unit, rand: Random) extends Genetic[Params] {
+
   var lastAvgTime: Double = InitialTimeLimit
 
-  def fitnessOnce(gene: Params): Double = {
-    val TimeLimit = 4 * lastAvgTime
-    val before: Long = System.nanoTime()
-    val (population: Population[_], iterations: Int) = main.alg(gene, TimeLimit).run(print = false)
-    val after: Long = System.nanoTime()
-    val time = after - before
-    val timeFraction: Double = time.toDouble / (TimeLimit * 1e9)
+  def currentTimeLimit: Double = 4 * lastAvgTime
 
-    println(s"${(time/1000).toDouble / 1000} ms; " + (if(timeFraction > 0.99) gene.toString else ""))
-    if(timeFraction > 0.99) 1
+  def currentTimeFraction(timeS: Double) = timeS / currentTimeLimit
+
+  def fitnessOnce(gene: Params): Double = {
+    val before: Long = System.nanoTime()
+    val (population: Population[_], iterations: Int) = main.alg(gene, currentTimeLimit).run(print = false)
+    val after: Long = System.nanoTime()
+    val time: Long = after - before
+
+    val timeS = time.toDouble / 1e9
+    val timeFraction = currentTimeFraction(timeS)
+
+    logTimeSec(timeS, timeFraction, gene)
+
+    if (timeFraction > 0.99) 1
     // Finished => [0,0.5], Not finished => [0.5,1]
     else 0.5 * timeFraction + 0.5 * population.population.minBy(_.fitness).fitness
   }
 
   def fitness(gene: Params): Double = {
     var sum = 0.0
-    for(i <- 0 until Rounds) {
+    for (i <- 0 until Rounds) {
       val result = fitnessOnce(gene)
-      if(result == 1) return 1
+      if (result == 1) return 1
       else sum += result
     }
     val avgTime = sum / Rounds

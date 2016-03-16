@@ -61,4 +61,4 @@ object GeneticStringMain extends GeneticMain[Array[Char]] {
 
 }
 
-object GeneticStringOptimization extends GeneticParamsMain(GeneticStringMain, 100)
+object GeneticStringOptimization extends GeneticParamsMain(GeneticStringMain, 100, csv = false)

@@ -10,6 +10,10 @@ import static java.util.Comparator.comparing;
 
 public final class JavaUtil {
 
+    public static String formatDouble(double d) {
+        return String.format("%.3f", d);
+    }
+
     public static <A> void sortGenes(Gene<A>[] arr) {
         Arrays.parallelSort(arr, comparing(x -> x.fitness));
     }

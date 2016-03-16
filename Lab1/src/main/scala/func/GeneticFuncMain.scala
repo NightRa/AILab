@@ -50,4 +50,4 @@ object GeneticFuncMain extends GeneticMain[Func] {
 
 }
 
-object GeneticFuncOptimization extends GeneticParamsMain(GeneticFuncMain, 100)
+object GeneticFuncOptimization extends GeneticParamsMain(GeneticFuncMain, 100, csv = false)

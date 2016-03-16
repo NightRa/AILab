@@ -72,4 +72,4 @@ object GeneticKnapsackMain extends GeneticMain[KnapsackElement] {
   }
 }
 
-object KnapsackOptimization extends GeneticParamsMain(GeneticKnapsackMain, 100)
+object KnapsackOptimization extends GeneticParamsMain(GeneticKnapsackMain, 100, csv = false)
