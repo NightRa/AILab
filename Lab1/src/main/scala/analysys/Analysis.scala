@@ -10,9 +10,9 @@ import util.Util.avgExecutionTime
 
 class Analysis(name: String, main: GeneticMain[_], optimalParams: Params) {
   val intsStepSize = 100
-  val doublesStep = 0.01
+  val doublesStep = 0.005
   val maxTime = 1.0
-  val rounds = 10
+  val rounds = 100
 
   // modify each param at a time away from the optimum.
   def main(args: Array[String]) {
@@ -55,4 +55,4 @@ class Analysis(name: String, main: GeneticMain[_], optimalParams: Params) {
   }
 }
 
-object AnalysisFunc extends Analysis("Func", GeneticFuncMain, GeneticFuncMain.defaultParams)
+object AnalysisFunc extends Analysis("Func2", GeneticFuncMain, GeneticFuncMain.defaultParams)
