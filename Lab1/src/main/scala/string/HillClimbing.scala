@@ -16,7 +16,6 @@ class HillClimbing(heuristic: Array[Char] => Double, rand: Random) {
         value
       })
       state(index) = bestChar
-      // println(s"Index $index, best char = $bestChar: " + state.take(index + 1).mkString)
       index += 1
     }
     state.mkString

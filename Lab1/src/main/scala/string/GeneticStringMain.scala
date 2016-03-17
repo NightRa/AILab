@@ -11,7 +11,7 @@ object GeneticStringMain extends GeneticMain[Array[Char]] {
   override def fullOutput = true
   // Parameters
   // Ints
-  val DefaultPopulationSize: Int = 3 // 0
+  val DefaultPopulationSize: Int = 100000 // 0
   // Doubles
   val DefaultElitismRate: Double = 0.447 // 0
   val DefaultMutationRate: Double = 0.939 // 1
@@ -20,9 +20,9 @@ object GeneticStringMain extends GeneticMain[Array[Char]] {
   override val defaultParams = Params(DefaultPopulationSize)(
     DefaultElitismRate, DefaultMutationRate, DefaultTopRatio)
 
-  val targetString: Array[Char] = "Hello world! How are you doing today? My name is Ilan. Hello world! How are you doing today? My name is Ilan.".toCharArray
+  val targetString: Array[Char] = "How are you?".toCharArray
 
-  def heuristic(state: Array[Char]) = StringHeuristics.heuristic2(state, targetString)
+  def heuristic(state: Array[Char]) = StringHeuristics.heuristic3(state, targetString, 1, 1)
 
   def alg(params: Params, maxTime: Double): GeneticAlg[Array[Char]] = {
     val PopulationSize = params.ints(0)
