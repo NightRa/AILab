@@ -26,7 +26,7 @@ public abstract class GeneticMain<A> {
         return defaultParams().ints().length;
     }
     public final int doublesSize() {
-        return defaultParams().ints().length;
+        return defaultParams().doubles().length;
     }
 
     public void main(String[] args) {

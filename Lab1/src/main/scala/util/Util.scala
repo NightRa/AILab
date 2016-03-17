@@ -7,6 +7,23 @@ import func.Func
 import scala.reflect.ClassTag
 
 object Util {
+  def avgExecutionTime[A](value: => A, rounds: Int): Double = {
+    var sum = 0.0
+    for (i <- 0 until rounds) {
+      val result = timeExecution(value)
+      sum += result
+    }
+    sum / rounds
+  }
+
+  // Returns time in seconds.
+  def timeExecution[A](value: => A): Double = {
+    val before = System.nanoTime()
+    value
+    val after = System.nanoTime()
+    (after - before).toDouble / 1e9
+  }
+
   def randString(size: Int, rand: Random): Array[Char] = {
     Array.fill(size)((rand.nextInt(91) + 32).toChar)
   }
