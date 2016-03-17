@@ -2,6 +2,8 @@ package genetic.mating;
 
 import java.util.Random;
 
+import static java.lang.System.*;
+
 public class Crossover {
     // For Strings
     public static char[] onePointCrossover(char[] x, char[] y, Random rand) {
@@ -9,8 +11,8 @@ public class Crossover {
 
         int pos = rand.nextInt(x.length);
         char[] str = new char[x.length];
-        System.arraycopy(x, 0, str, 0, pos);
-        System.arraycopy(y, pos, str, pos, y.length - pos);
+        arraycopy(x, 0, str, 0, pos);
+        arraycopy(y, pos, str, pos, y.length - pos);
         return str;
     }
 
@@ -20,9 +22,9 @@ public class Crossover {
         int len1 = rand.nextInt(x.length);
         int len2 = rand.nextInt(x.length - len1);
         char[] str = new char[x.length];
-        System.arraycopy(x, 0, str, 0, len1);
-        System.arraycopy(y, len1, str, len1, len2);
-        System.arraycopy(x, len1 + len2, str, len1 + len2, x.length - len1 - len2);
+        arraycopy(x, 0, str, 0, len1);
+        arraycopy(y, len1, str, len1, len2);
+        arraycopy(x, len1 + len2, str, len1 + len2, x.length - len1 - len2);
         return str;
     }
 
@@ -43,8 +45,8 @@ public class Crossover {
 
         int pos = rand.nextInt(x.length);
         int[] str = new int[x.length];
-        System.arraycopy(x, 0, str, 0, pos);
-        System.arraycopy(y, pos, str, pos, y.length - pos);
+        arraycopy(x, 0, str, 0, pos);
+        arraycopy(y, pos, str, pos, y.length - pos);
         return str;
     }
 
@@ -54,9 +56,9 @@ public class Crossover {
         int len1 = rand.nextInt(x.length);
         int len2 = rand.nextInt(x.length - len1);
         int[] str = new int[x.length];
-        System.arraycopy(x, 0, str, 0, len1);
-        System.arraycopy(y, len1, str, len1, len2);
-        System.arraycopy(x, len1 + len2, str, len1 + len2, x.length - len1 - len2);
+        arraycopy(x, 0, str, 0, len1);
+        arraycopy(y, len1, str, len1, len2);
+        arraycopy(x, len1 + len2, str, len1 + len2, x.length - len1 - len2);
         return str;
     }
 
