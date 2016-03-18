@@ -2,7 +2,7 @@ package util
 
 import java.util.Random
 
-import func.Func
+import func.FuncSolution$
 
 import scala.reflect.ClassTag
 

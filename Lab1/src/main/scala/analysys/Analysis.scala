@@ -5,17 +5,21 @@ import java.io.{File, FileOutputStream, PrintStream}
 import func.GeneticFuncMain
 import genetic.GeneticMain
 import knapsack.GeneticKnapsackMain
-import params.Params
+import params.{NamedParams, Params}
 import queens.GeneticQueenMain
 import string.GeneticStringMain
 import util.JavaUtil._
 import util.Util.avgExecutionTime
 
-class Analysis(name: String, main: GeneticMain[_], optimalParams: Params) {
-  val intsStepSize = 10
-  val doublesStep = 0.005
-  val maxTime = 1.0
-  val rounds = 100
+class Analysis(name: String,
+               main: GeneticMain[_],
+               optimalParams: Params,
+               analysisParams: Params) {
+
+  val rounds = analysisParams.ints(0)
+  val intsStepSize = analysisParams.ints(1)
+  val doublesStep = analysisParams.doubles(0)
+  val maxTime = analysisParams.doubles(1)
 
   // modify each param at a time away from the optimum.
   def main(args: Array[String]) {
@@ -57,4 +61,12 @@ class Analysis(name: String, main: GeneticMain[_], optimalParams: Params) {
   }
 }
 
-object AnalysisQueens extends Analysis("Queens-pmx-complexInversion", GeneticQueenMain, GeneticQueenMain.defaultParams)
+object Analysis {
+  val defaultParams = NamedParams(
+    "Rounds" -> 100,
+    "Ints Step Size" -> 10
+  ) (
+    "Doubles Step" -> 0.005,
+    "Max Time (seconds)" -> 0.2
+  )
+}

@@ -3,29 +3,30 @@ package knapsack
 import genetic.mating.{Crossover, ElitismMutationMateStrategy}
 import genetic.selection.TopSelection
 import genetic.{GeneticAlg, GeneticMain}
-import params.{GeneticParamsMain, Params}
+import params.{GeneticParamsMain, NamedParams, Params}
 
-object GeneticKnapsackMain extends GeneticMain[KnapsackElement] {
-  override val MaxTime: Double = 1
-  override def fullOutput = true
+class GeneticKnapsackMain(items: Array[Item], maxWeight: Double, bestSolution: Option[Double]) extends GeneticMain[KnapsackElement] {
+  val name = "Knapsack"
+  val MaxTime: Double = 1
+  val fullOutput = true
 
   // Parameters (9 ms - 20 ms)
-  // Ints
-  val DefaultPopulationSize: Int = 7 // 0
-  // Doubles
-  val DefaultElitismRate: Double = 0.1685 // 0
-  val DefaultMutationRate: Double = 0.8595 // 1
-  // For each value, change (+1) with bernuli(mutationProb)
-  val DefaultMutationProb: Double = 0.5382 // 2
-  val DefaultTopRatio: Double = 0.7917 // 3
   override val intsMax = 4096
-  override val defaultParams = Params(DefaultPopulationSize)(
-    DefaultElitismRate, DefaultMutationRate, DefaultMutationProb, DefaultTopRatio)
+  override val defaultParams = NamedParams(
+    "Population Size" -> 7
+  )(
+    "Elitism Rate" -> 0.1685,
+    "Mutation Rate" -> 0.8595,
+    "Mutation Probability (For each item when mutating)" -> 0.5382, // For each value, change (+1) with bernuli(mutationProb)
+    "Top Ratio" -> 0.7917
+  )
 
-  val items = Array(Item(0.22, 0.53), Item(0.33, 0.77), Item(0.1, 0.1), Item(1.2, 3), Item(1.5, 4)).sortBy(_.weight)
-  val knapsackInstance = new KnapsackInstance(items, 10.0001) {
+  val knapsackInstance = new KnapsackInstance(items.sortBy(_.weight), maxWeight) {
     // May override to optimal for testing.
-    override def valueUpperBound: Double = 26.36
+    override def valueUpperBound: Double = bestSolution match {
+      case None => super.valueUpperBound
+      case Some(max) => max
+    }
   }
 
   def alg(params: Params, maxTime: Double): GeneticAlg[KnapsackElement] = {
@@ -35,7 +36,7 @@ object GeneticKnapsackMain extends GeneticMain[KnapsackElement] {
     val MutationProb = params.doubles(2)
     val TopRatio = params.doubles(3)
 
-    val genetic = new GeneticKnapsack(Crossover.onePointCrossover, KnapsackMutate.binomialMutate(MutationProb, _, _), rand)
+    val genetic = new GeneticKnapsack(Crossover.onePointCrossoverInt, KnapsackMutate.binomialMutate(MutationProb, _, _), rand)
 
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
@@ -48,4 +49,10 @@ object GeneticKnapsackMain extends GeneticMain[KnapsackElement] {
   }
 }
 
-object KnapsackOptimization extends GeneticParamsMain(GeneticKnapsackMain, 100, csv = false)
+object GeneticKnapsackMain extends GeneticKnapsackMain(
+  Array(Item(0.22, 0.53), Item(0.33, 0.77), Item(0.1, 0.1), Item(1.2, 3), Item(1.5, 4)),
+  10.0001,
+  Some(26.36)
+)
+
+object KnapsackOptimization extends GeneticParamsMain(GeneticKnapsackMain, 100)

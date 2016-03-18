@@ -1,16 +1,16 @@
 package queens
 
-import java.util
+import util.JavaUtil
 
-import _root_.util.JavaUtil
-
-import scala.util.Random
+import java.util.Random
 
 /**
   * Created by yuval on 3/11/2016.
   */
 class QueenPermutation(val permutation : Array[Int]) {
   val size = permutation.length
+
+  override def toString: String = permutation.mkString("[", ",", "]")
 }
 
 object QueenPermutation{

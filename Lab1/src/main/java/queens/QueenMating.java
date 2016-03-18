@@ -1,13 +1,8 @@
 package queens;
 
-import scala.util.Random;
 import util.JavaUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.zip.Inflater;
+import java.util.Random;
 
 public final class QueenMating {
 

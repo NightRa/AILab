@@ -4,14 +4,16 @@ import java.util.Random
 
 import genetic.Genetic
 import genetic.mating.Crossover
-import genetic.mating.Crossover.onePointCrossover
+import genetic.mating.Crossover.onePointCrossoverInt
 
-class GeneticString(heuristic: Array[Char] => Double, rand: Random) extends Genetic[Array[Char]] {
+class GeneticString(heuristic: Array[Char] => Double,
+                    crossover: (Array[Char], Array[Char], Random) => Array[Char],
+                    rand: Random) extends Genetic[Array[Char]] {
   def fitness(gene: Array[Char]): Double = heuristic(gene)
 
   @inline
   def mate(x: Array[Char], y: Array[Char]): Array[Char] = {
-    Crossover.onePointCrossover(x, y, rand)
+    crossover(x, y, rand)
   }
 
   def mutate(s: Array[Char]): Array[Char] = {

@@ -1,7 +1,7 @@
 package util;
 
 import genetic.types.Gene;
-import scala.util.Random;
+import java.util.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;

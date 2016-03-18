@@ -1,7 +1,6 @@
 package queens;
 
-
-import scala.util.Random;
+import java.util.Random;
 import util.JavaUtil;
 
 import static java.lang.Math.*;
@@ -38,6 +37,7 @@ public final class QueenMutation {
         int max = max(index1, index2);
         inverse(array, min, max);
     }
+
     public static void complexInversion(int[] array, Random rand){
         int index1 = rand.nextInt(array.length);
         int index2 = rand.nextInt(array.length);
@@ -56,21 +56,20 @@ public final class QueenMutation {
         JavaUtil.shuffleArray(array, rand, min, max);
     }
 
+    // Helper functions
+
     private static void inverse(int[] array, int minIndex, int maxIndex){
         while (minIndex < maxIndex)
             swap(array, minIndex++, maxIndex--);
     }
 
-    public static int mod(int num, int base){
+    private static int mod(int num, int base){
         if (num >= 0)
             return num % base;
         else
             return (num % base) + base;
     }
-    // !
-    // error code
-    // %
-    // not tale recursive due to a maximum of 2 rec calls
+
     private static int getCyclicIndex(int[] array, int index){
         return mod(index, array.length);
     }

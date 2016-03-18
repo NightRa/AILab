@@ -6,7 +6,7 @@ import static java.lang.System.*;
 
 public class Crossover {
     // For Strings
-    public static char[] onePointCrossover(char[] x, char[] y, Random rand) {
+    public static char[] onePointCrossoverString(char[] x, char[] y, Random rand) {
         assert x.length == y.length;
 
         int pos = rand.nextInt(x.length);
@@ -16,7 +16,7 @@ public class Crossover {
         return str;
     }
 
-    public static char[] twoPointCrossover(char[] x, char[] y, Random rand) {
+    public static char[] twoPointCrossoverString(char[] x, char[] y, Random rand) {
         assert x.length == y.length;
 
         int len1 = rand.nextInt(x.length);
@@ -28,7 +28,7 @@ public class Crossover {
         return str;
     }
 
-    public static char[] uniformCrossover(char[] x, char[] y, Random rand) {
+    public static char[] uniformCrossoverString(char[] x, char[] y, Random rand) {
         assert x.length == y.length;
 
         char[][] inputs = {x, y};
@@ -40,7 +40,7 @@ public class Crossover {
     }
 
     // For ints. Damn java generics performance
-    public static int[] onePointCrossover(int[] x, int[] y, Random rand) {
+    public static int[] onePointCrossoverInt(int[] x, int[] y, Random rand) {
         assert x.length == y.length;
 
         int pos = rand.nextInt(x.length);
@@ -50,7 +50,7 @@ public class Crossover {
         return str;
     }
 
-    public static int[] twoPointCrossover(int[] x, int[] y, Random rand) {
+    public static int[] twoPointCrossoverInt(int[] x, int[] y, Random rand) {
         assert x.length == y.length;
 
         int len1 = rand.nextInt(x.length);
@@ -62,7 +62,7 @@ public class Crossover {
         return str;
     }
 
-    public static int[] uniformCrossover(int[] x, int[] y, Random rand) {
+    public static int[] uniformCrossoverInt(int[] x, int[] y, Random rand) {
         assert x.length == y.length;
 
         int[][] inputs = {x, y};

@@ -9,34 +9,29 @@ import genetic.types.Gene
 import params.GeneticParamsMain._
 import util.JavaUtil
 
-class GeneticParamsMain(main: GeneticMain[_], override val MaxTime: Double, csv: Boolean) extends GeneticMain[Params] {
+class GeneticParamsMain(main: GeneticMain[_], override val MaxTime: Double) extends GeneticMain[Params] {
   override def fullOutput = false
-  // Parameters
-  val DefaultIntsMutationRatio: Int = 32 // 0
-  val DefaultPopulationSize: Int = 20 // 1
-  val DefaultRounds: Int = 10 // 2
-  val DefaultDoublesMutationSize: Double = 0.1 // 0
-  val DefaultMutationRate: Double = 0.5 // 1
-  val DefaultElitismRate: Double = 0.3 // 2
-  val DefaultTimeLimit: Double = 0.3 // 3
-  val DefaultTopRatio: Double = 0.5 // 4
-  override val intsMax: Int = 50
-  override val defaultParams = Params(DefaultIntsMutationRatio, DefaultPopulationSize, DefaultRounds)(
-    DefaultDoublesMutationSize, DefaultMutationRate, DefaultElitismRate, DefaultTimeLimit, DefaultTopRatio)
-
-  // Derived values
-  val intsMutationSize: Int = main.intsMax() / DefaultIntsMutationRatio
+  val name = "Genetic Parameter Search"
+  override val intsMax: Int = 48
+  override val defaultParams = NamedParams(
+    "Ints Mutation Size" -> 32,
+    "Population Size" -> 20,
+    "Rounds" -> 10
+  )(
+    "Doubles Mutation Size" -> 0.1,
+    "Mutation Rate" -> 0.5,
+    "Elitism Rate" -> 0.16,
+    "Time Limit (Seconds)" -> 0.3,
+    "Top Ratio" -> 0.8
+  )
 
   def printer(timeSec: Double, timeFraction: Double, params: Params) = {
     val timeMs = JavaUtil.formatDouble(timeSec * 1000, 3)
-    if (csv) print(s"$timeMs, ")
-    else {
-      println(s"$timeMs ms; " + (if (timeFraction > 0.99) params else ""))
-    }
+    s"$timeMs ms; " + (if (timeFraction > 0.99) params else "")
   }
 
   def alg(params: Params, maxTime: Double): GeneticAlg[Params] = {
-    val IntsMutationRatio = params.ints(0)
+    val IntsMutationSize = params.ints(0)
     val PopulationSize = params.ints(1)
     val Rounds = params.ints(2)
     val DoublesMutationSize = params.doubles(0)
@@ -47,7 +42,7 @@ class GeneticParamsMain(main: GeneticMain[_], override val MaxTime: Double, csv:
 
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
-    val genetic = new GeneticParams(main, IntsMutationRatio, DoublesMutationSize, MutationRate, TimeLimit, Rounds, printer, rand)
+    val genetic = new GeneticParams(main, IntsMutationSize, DoublesMutationSize, MutationRate, TimeLimit, Rounds, printer, rand)
 
     new GeneticAlg[Params](
       genetic, mateStrategy, selectionStrategy, PopulationSize,

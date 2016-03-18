@@ -1,19 +1,18 @@
 package genetic;
 
 import genetic.types.Population;
+import params.NamedParams;
 import params.Params;
 import scala.Tuple2;
 
-import java.util.Comparator;
 import java.util.Random;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 
 public abstract class GeneticMain<A> {
-    protected long seed;
+    public final long seed;
     protected Random rand;
 
     public GeneticMain() {
@@ -24,9 +23,11 @@ public abstract class GeneticMain<A> {
     public abstract double MaxTime();
     public abstract boolean fullOutput();
 
-    public abstract Params defaultParams();
+    public abstract NamedParams defaultParams();
     public abstract int intsMax();
     public abstract GeneticAlg<A> alg(Params params, double maxTime);
+
+    public abstract String name();
 
     public final int intsSize() {
         return defaultParams().ints().length;
@@ -37,7 +38,7 @@ public abstract class GeneticMain<A> {
 
     public void main(String[] args) {
         long start = System.currentTimeMillis();
-        Tuple2<Population<A>, Object> res = alg(defaultParams(), MaxTime()).run(fullOutput());
+        Tuple2<Population<A>, Object> res = alg(defaultParams().toParams(), MaxTime()).run(fullOutput());
         long end = System.currentTimeMillis();
         long time = end - start;
 
