@@ -4,12 +4,15 @@ import java.io.{File, FileOutputStream, PrintStream}
 
 import func.GeneticFuncMain
 import genetic.GeneticMain
+import knapsack.GeneticKnapsackMain
 import params.Params
+import queens.GeneticQueenMain
+import string.GeneticStringMain
 import util.JavaUtil._
 import util.Util.avgExecutionTime
 
 class Analysis(name: String, main: GeneticMain[_], optimalParams: Params) {
-  val intsStepSize = 100
+  val intsStepSize = 10
   val doublesStep = 0.005
   val maxTime = 1.0
   val rounds = 100
@@ -17,7 +20,6 @@ class Analysis(name: String, main: GeneticMain[_], optimalParams: Params) {
   // modify each param at a time away from the optimum.
   def main(args: Array[String]) {
     new File(s"analysis/$name/").mkdirs()
-
     for (index <- 0 until main.intsSize()) {
       csvInt(index)
     }
@@ -30,7 +32,7 @@ class Analysis(name: String, main: GeneticMain[_], optimalParams: Params) {
   def csvInt(index: Int): Unit = {
     val file = new PrintStream(new FileOutputStream(s"analysis/$name/int-$index.csv"))
     for {
-      value <- (100 to main.intsMax() by intsStepSize).par
+      value <- (3 to main.intsMax() by intsStepSize).par
     } {
       val params = optimalParams.copy(ints = optimalParams.ints.updated(index, value))
       val time = avgExecutionTime(main.alg(params, maxTime).run(print = false), rounds)
@@ -43,7 +45,7 @@ class Analysis(name: String, main: GeneticMain[_], optimalParams: Params) {
   def csvDouble(index: Int): Unit = {
     val file = new PrintStream(new FileOutputStream(s"analysis/$name/double-$index.csv"))
     for {
-      value <- (0.0 to 1.0 by doublesStep).par
+      value <- (0.0 to 1 by doublesStep).par
     } {
       val params = optimalParams.copy(doubles = optimalParams.doubles.updated(index, value))
       val time = avgExecutionTime(main.alg(params, maxTime).run(print = false), rounds)
@@ -55,4 +57,4 @@ class Analysis(name: String, main: GeneticMain[_], optimalParams: Params) {
   }
 }
 
-object AnalysisFunc extends Analysis("Func2", GeneticFuncMain, GeneticFuncMain.defaultParams)
+object AnalysisQueens extends Analysis("Queens-pmx-complexInversion", GeneticQueenMain, GeneticQueenMain.defaultParams)

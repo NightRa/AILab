@@ -17,7 +17,7 @@ object GeneticQueenMain extends GeneticMain[QueenPermutation] {
   val DefaultElitismRate: Double = 0.1 // 0
   val DefaultMutationRate: Double = 0.4 // 1
   val DefaultTopRatio: Double = 0.62 // 2
-  override val intsMax = 1024 * 16
+  override val intsMax = 1024
   override val defaultParams = Params(DefaultPopulationSize)(
     DefaultElitismRate, DefaultMutationRate, DefaultTopRatio)
 
@@ -36,7 +36,7 @@ object GeneticQueenMain extends GeneticMain[QueenPermutation] {
 
     val genetic = new GeneticQueen(
       rand,
-      (as, bs, rnd) => QueenMating.cx(as, bs, rnd),
+      (as, bs, rnd) => QueenMating.pmx(as, bs, rnd),
       (as, rnd) => QueenMutation.complexInversion(as, rnd))
 
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)

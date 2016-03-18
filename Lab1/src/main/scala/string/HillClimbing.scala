@@ -24,7 +24,7 @@ class HillClimbing(heuristic: Array[Char] => Double, rand: Random) {
 }
 
 object HillClimbing extends App {
-  val TargetString: Array[Char] = "Hello world! How are you doing today? My name is Ilan.".toCharArray
+  val TargetString: Array[Char] = "How are you? My name is Ilan.".toCharArray
 
   private val rand = new Random()
   val before = System.nanoTime()

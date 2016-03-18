@@ -11,6 +11,6 @@ public class Gene<A> {
 
     @Override
     public String toString() {
-        return "" + fitness;
+        return gene + ", fitness = " + fitness;
     }
 }
