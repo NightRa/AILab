@@ -19,7 +19,7 @@ class GeneticParams(main: GeneticMain[_],
 
   def fitnessOnce(gene: Params): Double = {
     val before: Long = System.nanoTime()
-    val (population: Population[_], iterations: Int) = main.alg(gene, currentTimeLimit).run(print = false)
+    val (population: Population[_], iterations: Int) = main.alg(gene, currentTimeLimit).run(printEvery = 0)
     val after: Long = System.nanoTime()
     val time: Long = after - before
 

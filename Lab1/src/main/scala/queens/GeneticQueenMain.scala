@@ -14,7 +14,7 @@ class GeneticQueenMain(boardSize: Int,
 
   val name = "N-Queens"
   override val MaxTime: Double = 5.0
-  override def fullOutput = true
+  override def printEvery = 1
 
   // 8 ms - 10 ms
   override val intsMax = 1024

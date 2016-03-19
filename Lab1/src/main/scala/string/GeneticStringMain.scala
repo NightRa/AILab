@@ -14,7 +14,7 @@ class GeneticStringMain(targetString: String,
                         heuristic: (Array[Char], Array[Char]) => Double) extends GeneticMain[Array[Char]] {
   val name: String = "String Search"
   val MaxTime: Double = 5.0
-  val fullOutput = true
+  val printEvery = 100
   /*
     3.2 ms for Heuristic 1, Genetic Params.
     Params: [3] [0.4155463088614557,0.6205792746313119,0.6534676794176206]

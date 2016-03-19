@@ -1,12 +1,16 @@
 package util
 
+import java.text.DecimalFormat
 import java.util.Random
-
-import func.FuncSolution$
 
 import scala.reflect.ClassTag
 
 object Util {
+  def formatScientific(d: Double, precision: Int): String = {
+    val format = new DecimalFormat(s"0.${"#" * precision}E0")
+    format.format(d)
+  }
+
   def avgExecutionTime[A](value: => A, rounds: Int): Double = {
     var sum = 0.0
     for (i <- 0 until rounds) {

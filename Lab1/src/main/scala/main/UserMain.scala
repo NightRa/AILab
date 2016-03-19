@@ -10,7 +10,7 @@ import genetic.types.Population
 import knapsack.{GeneticKnapsackMain, Item}
 import params.{GeneticParamsMain, NamedParams, Params}
 import queens.{GeneticQueenMain, QueenMating, QueenMutation}
-import string.{GeneticStringMain, StringHeuristics}
+import string.{GeneticStringMain, HillClimbing, StringHeuristics}
 import util.{JavaUtil, Util}
 
 import scala.annotation.tailrec
@@ -19,20 +19,15 @@ import scala.util.Try
 object UserMain extends App {
   val in = new Scanner(System.in)
 
-  System.out.println("Genetic Algorithms Lab 1 by Ilan Godik & Yuval Alfassi")
-  System.out.println()
+  println("Genetic Algorithms Lab 1 by Ilan Godik & Yuval Alfassi")
+  println()
   runOption()
 
-
-  def runHillClimbing(): Unit = System.out.println("Not yet supported")
-
-  def runMinimalConflicts(): Unit = System.out.println("Not yet supported")
-
   def runOption(): Unit = {
-    System.out.println(
+    println(
       """1. Genetic Algorithm
-        |2. Hill Climbing - String matching
-        |3. Minimal Conflicts - N-Queens""".stripMargin)
+        |2. Hill Climbing - String matching""".stripMargin)
+    // |3. Minimal Conflicts - N-Queens
     val whatToRun = readIntLoop("Please choose what you want to run: ")
 
     whatToRun match {
@@ -40,16 +35,32 @@ object UserMain extends App {
         val alg = chooseGeneticAlg()
         menu(alg, alg.defaultParams())
       case 2 => runHillClimbing()
-      case 3 => runMinimalConflicts()
+      // case 3 => runMinimalConflicts()
       // None or invalid int
       case _ => runOption()
     }
   }
 
+  // def runMinimalConflicts(): Unit = println("Not yet supported")
+
+  def runHillClimbing(): Unit = {
+    println("Choose your secret: ")
+    val secret = in.nextLine()
+    println()
+    val heuristic = chooseStringHeuristic()
+    println()
+    val printInt = readIntWithDefault("Print intermediate states? (default 1): ", 1)
+    val print =
+      if (printInt == 1) true
+      else if (printInt == 0) false
+      else true
+    HillClimbing.run(secret, heuristic, print)
+  }
+
   def chooseGeneticAlg(): GeneticMain[_] = {
     // Choose genetic Alg.
     // Choose variants
-    System.out.println("\n" +
+    println("\n" +
       """1. String searching
         |2. Function optimization
         |3. N-Queens
@@ -64,14 +75,34 @@ object UserMain extends App {
     }
   }
 
+  @tailrec
+  def chooseStringHeuristic(): (Array[Char], Array[Char]) => Double = {
+    println(
+      """1. Individual distance heuristic
+        |2. Exact matches heuristic
+        |3. Exact matches and char-contained matches""".stripMargin)
+    val heuristicNum = readIntWithDefault("Choose a string heuristic (default 2): ", 2)
+    heuristicNum match {
+      case 1 => StringHeuristics.heuristic1
+      case 2 => StringHeuristics.heuristic2
+      case 3 =>
+        val exactsWeight = readIntLoop("Choose a weight for exact matches: ")
+        val containsWeight = readIntLoop("Choose a weight for contained matches: ")
+        StringHeuristics.heuristic3(_, _, containsWeight, exactsWeight)
+      case _ => chooseStringHeuristic()
+    }
+  }
+
   def chooseStringAlg(): GeneticMain[_] = {
     // Choose String
-    System.out.println("\nChoose your secret: ")
+    println("\nChoose your secret: ")
     val secret = in.nextLine()
+
+    println()
 
     // Choose crossover
     def chooseCrossover(): (Array[Char], Array[Char], Random) => Array[Char] = {
-      System.out.println(
+      println(
         """1. One Point Crossover
           |2. Two Point Crossover
           |3. Uniform   Crossover""".stripMargin)
@@ -85,24 +116,7 @@ object UserMain extends App {
 
     val crossover = chooseCrossover()
 
-    // Choose heuristic
-    @tailrec
-    def chooseStringHeuristic(): (Array[Char], Array[Char]) => Double = {
-      System.out.println(
-        """1. Individual distance heuristic
-          |2. Exact matches heuristic
-          |3. Exact matches and char-contained matches""".stripMargin)
-      val heuristicNum = readIntWithDefault("Choose a string heuristic (default 2): ", 2)
-      heuristicNum match {
-        case 1 => StringHeuristics.heuristic1
-        case 2 => StringHeuristics.heuristic2
-        case 3 =>
-          val exactsWeight = readIntLoop("Choose a weight for exact matches")
-          val containsWeight = readIntLoop("Choose a weight for contained matches")
-          StringHeuristics.heuristic3(_, _, containsWeight, exactsWeight)
-        case _ => chooseStringHeuristic()
-      }
-    }
+    println()
 
     val heuristic = chooseStringHeuristic()
     new GeneticStringMain(secret, crossover, heuristic)
@@ -110,7 +124,7 @@ object UserMain extends App {
 
   def chooseFunctionAlg(): GeneticMain[_] = {
     def chooseFunc(): Func = {
-      System.out.println(
+      println(
         """1. Lab test Function
           |2. Holder's table Function
         """.stripMargin)
@@ -130,7 +144,7 @@ object UserMain extends App {
     val boardSize = readIntWithDefault("Choose board size (default 10): ", 10)
 
     def chooseMating(): (Array[Int], Array[Int], Random) => Array[Int] = {
-      System.out.println(
+      println(
         """1. PMX - Partially Matched Crossover
           |2. OX  - Ordered Crossover
           |3. CX  - Cycle   Crossover
@@ -147,7 +161,7 @@ object UserMain extends App {
     val mating = chooseMating()
 
     def chooseMutation(): (Array[Int], Random) => Unit = {
-      System.out.println(
+      println(
         """1. Displacement
           |2. Exchange
           |3. Insertion
@@ -173,12 +187,13 @@ object UserMain extends App {
   }
 
   def chooseKnapsackAlg(): GeneticMain[_] = {
+    println()
     @tailrec
     def chooseItems(i: Int, items: ArrayList[Item]): Array[Item] = {
       val weight = readDoubleLoop(s"Enter the $i${numSuffix(i)} item's weight (0 to stop): ")
-      if (weight == 0) return items.toArray.asInstanceOf[Array[Item]]
+      if (weight == 0) return items.toArray(Array.empty[Item])
       val value = readDoubleLoop(s"Enter the $i${numSuffix(i)} item's value (0 to stop): ")
-      if (value == 0) return items.toArray.asInstanceOf[Array[Item]]
+      if (value == 0) return items.toArray(Array.empty[Item])
 
       items.add(Item(weight, value))
       chooseItems(i + 1, items)
@@ -187,47 +202,53 @@ object UserMain extends App {
     val items = chooseItems(1, new ArrayList[Item]())
 
     val maxWeight = readDoubleLoop("Enter the maximum weight: ")
-    System.out.print("Enter the solution if you know it (nothing if not): ")
+    print("Enter the solution if you know it (nothing if not): ")
     val solution = tryReadDouble()
 
     new GeneticKnapsackMain(items, maxWeight, solution)
   }
 
   def menu(main: GeneticMain[_], params: NamedParams): Unit = {
-    System.out.println("\n" +
-      s"""run      - Run ${main.name}
+    println("\n" +
+      s"""|run     - Run ${main.name}
           |params  - Change   Parameters of the Genetic Algorithm
           |opt     - Optimize Parameters of the Genetic Algorithm
           |analyse - Create a statistical report of the Genetic Algorithm
           |bench   - Benchmark the Genetic Algorithm
        """.stripMargin)
-    System.out.print("Enter your selection: ")
-    val input = in.next()
+    print("Enter your selection: ")
+    val input = in.nextLine()
     input match {
       case "run" =>
         val maxTime = readDoubleWithDefault("Enter the maximum runtime in seconds (default 1.0): ", 1.0) max 0
-        runGenetic(main, params.toParams, maxTime)
+        val defaultPrintEvery = main.printEvery()
+        val printEvery = readIntWithDefault(s"Print best every how many iterations? (default $defaultPrintEvery, 0 for never) ", defaultPrintEvery) max 0
+        runGenetic(main, params.toParams, maxTime, printEvery)
+        menu(main, params)
       case "params" =>
         val newParams = modifyParams(params)
         menu(main, newParams)
       case "opt" =>
         val maxTime = readDoubleWithDefault("Enter the maximum runtime in seconds (default 100.0): ", 100.0) max 0
         optimize(main, maxTime)
+        menu(main, params)
       case "analyse" =>
-        System.out.println("Enter analysis name: ")
+        println("Enter analysis name: ")
         val name = in.nextLine()
         analysis(name, main, params.toParams, Analysis.defaultParams)
-      case "bench" => bench(main, params.toParams)
+      case "bench" =>
+        bench(main, params.toParams)
+        menu(main, params)
       case _ => menu(main, params)
     }
   }
 
   def analysis(name: String, main: GeneticMain[_], params: Params, analysisParams: NamedParams): Unit = {
-    System.out.println(
+    println(
       """run    - Run the analysis
         |params - Change analysis parameters
       """.stripMargin)
-    val input = in.next()
+    val input = in.nextLine()
     input match {
       case "run" => new Analysis(name, main, params, analysisParams.toParams)
       case "params" =>
@@ -239,25 +260,26 @@ object UserMain extends App {
 
   def bench(main: GeneticMain[_], params: Params): Unit = {
     val rounds = readIntWithDefault("Enter the number of rounds (1000 default): ", 1000)
-    val time = Util.avgExecutionTime(main.alg(params, 1.0).run(print = false), rounds)
-    System.out.println(JavaUtil.formatDouble(time * 1000, 4) + " ms")
-
+    val time = Util.avgExecutionTime(main.alg(params, 1.0).run(printEvery = 0), rounds)
+    println(JavaUtil.formatDouble(time * 1000, 4) + " ms")
   }
 
   def modifyParams(params: NamedParams): NamedParams = {
-    System.out.println{
+    println {
       (params.ints ++ params.doubles).iterator.zipWithIndex.map {
         case ((name, value), index) => s"${index + 1}. $name = $value"
       }.mkString("\n")
     }
     val paramNum = readIntLoop("Which parameter to change? (0 to skip)  ")
-    if(paramNum >= 1 && paramNum <= params.ints.length + 1) {
+    if (paramNum == 0)
+      params
+    else if (paramNum >= 1 && paramNum <= params.ints.length + 1) {
       val index = paramNum - 1
       val paramName = params.ints(index)._1
       val newValue = readIntLoop(s"Set $paramName = ")
       new NamedParams(params.ints.updated(index, (paramName, newValue)), params.doubles)
 
-    } else if(paramNum <= params.ints.length + params.doubles.length + 1) {
+    } else if (paramNum <= params.ints.length + params.doubles.length + 1) {
       val index = paramNum - params.ints.length - 1
       val paramName = params.doubles(index)._1
       val newValue = readDoubleLoop(s"Set $paramName = ")
@@ -268,23 +290,25 @@ object UserMain extends App {
     }
   }
 
-  def runGenetic(main: GeneticMain[_], params: Params, maxTime: Double): Unit = {
+  def runGenetic[A](main: GeneticMain[A], params: Params, maxTime: Double, printEvery: Int): Unit = {
+    val alg = main.alg(params, maxTime)
+
     val start = System.currentTimeMillis
 
-    val (population: Population[_], iterations) = main.alg(params, maxTime).run(print = true)
+    val (population: Population[_], iterations) = alg.run(printEvery)
 
     val end = System.currentTimeMillis
     val time = end - start
 
-
-    System.out.println("Best 5:")
-    System.out.println(population.population.sortBy(_.fitness).take(5).map(_.toString).mkString("\n"))
-    System.out.println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + main.seed)
+    val popSize = population.population.length
+    println(s"Best ${5 min popSize}:")
+    println(population.population.sortBy(_.fitness).take(5).map(gene => alg.show(gene.gene) + ", fitness = " + gene.fitness).mkString("\n"))
+    println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + main.seed)
   }
 
   def optimize(main: GeneticMain[_], maxTime: Double): Unit = {
     val geneticParams = new GeneticParamsMain(main, maxTime)
-    runGenetic(geneticParams, geneticParams.defaultParams.toParams, maxTime)
+    runGenetic(geneticParams, geneticParams.defaultParams.toParams, maxTime, printEvery = 1)
   }
 
   // ---------------------------------------------------------------------------------------------------------
@@ -300,7 +324,7 @@ object UserMain extends App {
   }
 
   def readDoubleLoop(prompt: String): Double = {
-    System.out.print(prompt)
+    print(prompt)
     tryReadDouble() match {
       case Some(x) => x
       case None => readDoubleLoop(prompt)
@@ -308,19 +332,19 @@ object UserMain extends App {
   }
 
   def tryReadDouble(): Option[Double] = {
-    val line = in.next()
+    val line = in.nextLine()
     if (line.isEmpty) None
     else Try(line.toDouble).toOption
   }
 
   def readDoubleWithDefault(prompt: String, default: Double): Double = {
-    System.out.print(prompt)
+    print(prompt)
     tryReadDouble().getOrElse(default)
   }
 
   @tailrec
   def readIntLoop(prompt: String): Int = {
-    System.out.print(prompt)
+    print(prompt)
     tryReadInt() match {
       case Some(n) => n
       case None => readIntLoop(prompt)
@@ -328,14 +352,13 @@ object UserMain extends App {
   }
 
   def tryReadInt(): Option[Int] = {
-    /*val line = in.next()
+    val line = in.nextLine()
     if (line.isEmpty) None
-    else Try(line.toInt).toOption*/
-    Try(in.nextInt()).toOption
+    else Try(line.toInt).toOption
   }
 
   def readIntWithDefault(prompt: String, default: Int): Int = {
-    System.out.print(prompt)
+    print(prompt)
     tryReadInt().getOrElse(default)
   }
 

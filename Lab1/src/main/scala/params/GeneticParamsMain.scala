@@ -10,7 +10,7 @@ import params.GeneticParamsMain._
 import util.JavaUtil
 
 class GeneticParamsMain(main: GeneticMain[_], override val MaxTime: Double) extends GeneticMain[Params] {
-  override def fullOutput = false
+  override def printEvery = 1
   val name = "Genetic Parameter Search"
   override val intsMax: Int = 48
   override val defaultParams = NamedParams(

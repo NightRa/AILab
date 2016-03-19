@@ -8,7 +8,7 @@ import params.{GeneticParamsMain, NamedParams, Params}
 class GeneticFuncMain(func: Func) extends GeneticMain[FuncSolution] {
   val name = func.name + " Optimization"
   override val MaxTime: Double = 5.0
-  override def fullOutput = true
+  override def printEvery = 1
 
   // 6.07 ms: 190, 0.441, 0.46, 0.254, 0.5
   // 2.76 ms: 180, 0.16, 0.31, 0.035, 0.8

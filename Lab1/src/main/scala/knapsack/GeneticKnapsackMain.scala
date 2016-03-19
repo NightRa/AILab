@@ -8,7 +8,7 @@ import params.{GeneticParamsMain, NamedParams, Params}
 class GeneticKnapsackMain(items: Array[Item], maxWeight: Double, bestSolution: Option[Double]) extends GeneticMain[KnapsackElement] {
   val name = "Knapsack"
   val MaxTime: Double = 1
-  val fullOutput = true
+  val printEvery = 1
 
   // Parameters (9 ms - 20 ms)
   override val intsMax = 4096

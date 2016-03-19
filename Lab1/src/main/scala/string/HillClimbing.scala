@@ -4,7 +4,7 @@ import java.util.Random
 
 import util.Util
 
-class HillClimbing(heuristic: Array[Char] => Double, rand: Random) {
+class HillClimbing(heuristic: Array[Char] => Double, print: Boolean, rand: Random) {
   val chars: Array[Char] = (32 to 126).map(_.toChar).toArray
 
   def hillClimbing(state: Array[Char]): String = {
@@ -17,20 +17,23 @@ class HillClimbing(heuristic: Array[Char] => Double, rand: Random) {
       })
       state(index) = bestChar
       index += 1
+      if(print) println(state.mkString)
     }
     state.mkString
   }
 
 }
 
-object HillClimbing extends App {
-  val TargetString: Array[Char] = "How are you? My name is Ilan.".toCharArray
+object HillClimbing {
+  def run(secret: String, heuristic: (Array[Char], Array[Char]) => Double, print: Boolean): Unit = {
+    val TargetString: Array[Char] = secret.toCharArray
 
-  private val rand = new Random()
-  val before = System.nanoTime()
-  new HillClimbing(StringHeuristics.heuristic2(_, TargetString), rand).hillClimbing(Util.randString(TargetString.length, rand))
-  val after = System.nanoTime()
-  val time = after - before
-  val milis = (time / 1000).toDouble / 1000
-  println(s"Time: $milis ms")
+    val rand = new Random()
+    val before = System.nanoTime()
+    new HillClimbing(heuristic(_, TargetString), print, rand).hillClimbing(Array.ofDim[Char](secret.length))
+    val after = System.nanoTime()
+    val time = after - before
+    val milis = (time / 1000).toDouble / 1000
+    println(s"Time: $milis ms" + (if(print) " (including printing)" else ""))
+  }
 }
