@@ -13,7 +13,7 @@ import util.Util.avgExecutionTime
 
 class Analysis(name: String,
                main: GeneticMain[_],
-               optimalParams: Params,
+               optimalParams: NamedParams,
                analysisParams: Params) {
 
   val rounds = analysisParams.ints(0)
@@ -21,9 +21,16 @@ class Analysis(name: String,
   val doublesStep = analysisParams.doubles(0)
   val maxTime = analysisParams.doubles(1)
 
-  // modify each param at a time away from the optimum.
   def main(args: Array[String]) {
-    new File(s"analysis/$name/").mkdirs()
+    runAnalysis()
+  }
+
+  // modify each param at a time away from the optimum.
+  def runAnalysis(): Unit = {
+    val folder = new File(s"analysis/$name/")
+    folder.mkdirs()
+    println(s"Outputting analysis to ${folder.getAbsolutePath}")
+
     for (index <- 0 until main.intsSize()) {
       csvInt(index)
     }
@@ -31,29 +38,33 @@ class Analysis(name: String,
     for (index <- 0 until main.doublesSize()) {
       csvDouble(index)
     }
+
+    println(s"The Analysis is in ${folder.getAbsolutePath}")
   }
 
   def csvInt(index: Int): Unit = {
-    val file = new PrintStream(new FileOutputStream(s"analysis/$name/int-$index.csv"))
+    val paramName = optimalParams.ints(index)._1
+    val file = new PrintStream(new FileOutputStream(s"analysis/$name/${paramName.replace(" ", "")}.csv"))
     for {
       value <- (3 to main.intsMax() by intsStepSize).par
     } {
-      val params = optimalParams.copy(ints = optimalParams.ints.updated(index, value))
-      val time = avgExecutionTime(main.alg(params, maxTime).run(printEvery = 0), rounds)
-      println(s"Int param $index = $value, Time = ${formatDouble(time * 1000, 3)} ms.")
+      val params = optimalParams.copy(ints = optimalParams.ints.updated(index, (paramName, value)))
+      val time = avgExecutionTime(main.alg(params.toParams, maxTime).run(printEvery = 0), rounds)
+      println(s"Int param '$paramName' = $value, Time = ${formatDouble(time * 1000, 3)} ms.")
       file.println(s"$value, $time")
     }
     file.close()
   }
 
   def csvDouble(index: Int): Unit = {
-    val file = new PrintStream(new FileOutputStream(s"analysis/$name/double-$index.csv"))
+    val paramName = optimalParams.doubles(index)._1
+    val file = new PrintStream(new FileOutputStream(s"analysis/$name/${paramName.replace(" ", "")}.csv"))
     for {
       value <- (0.0 to 1 by doublesStep).par
     } {
-      val params = optimalParams.copy(doubles = optimalParams.doubles.updated(index, value))
-      val time = avgExecutionTime(main.alg(params, maxTime).run(printEvery = 0), rounds)
-      println(s"Double param $index = ${formatDouble(value, 3)}, Time = ${formatDouble(time * 1000, 3)} ms.")
+      val params = optimalParams.copy(doubles = optimalParams.doubles.updated(index, (paramName, value)))
+      val time = avgExecutionTime(main.alg(params.toParams, maxTime).run(printEvery = 0), rounds)
+      println(s"Double param '$paramName' = ${formatDouble(value, 3)}, Time = ${formatDouble(time * 1000, 3)} ms.")
       file.println(s"$value, $time")
     }
     file.close()
@@ -63,10 +74,10 @@ class Analysis(name: String,
 
 object Analysis {
   val defaultParams = NamedParams(
-    "Rounds" -> 100,
+    "Rounds" -> 10,
     "Ints Step Size" -> 10
   ) (
-    "Doubles Step" -> 0.005,
+    "Doubles Step" -> 0.01,
     "Max Time (seconds)" -> 0.2
   )
 }

@@ -45,12 +45,12 @@ object KnapsackElement {
     val minWeight = instance.items(0).weight
     while (weight <= instance.capacity && (instance.capacity - weight >= minWeight)) {
       val item = rand.nextInt(numItems)
-      if (weight + instance.items(item).value <= instance.capacity) {
-        amounts(item) += 1
-        weight += instance.items(item).value
-      }
+      amounts(item) += 1
+      weight += instance.items(item).value
     }
 
-    new KnapsackElement(amounts, instance)
+    val knapsack = new KnapsackElement(amounts, instance)
+    knapsack.trim(rand)
+    knapsack
   }
 }

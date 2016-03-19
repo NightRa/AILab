@@ -5,10 +5,12 @@ import genetic.selection.TopSelection
 import genetic.{GeneticAlg, GeneticMain}
 import params.{GeneticParamsMain, NamedParams, Params}
 
-class GeneticKnapsackMain(items: Array[Item], maxWeight: Double, bestSolution: Option[Double]) extends GeneticMain[KnapsackElement] {
+class GeneticKnapsackMain(items: Array[Item], userMaxWeight: Double, bestSolution: Option[Double]) extends GeneticMain[KnapsackElement] {
   val name = "Knapsack"
   val MaxTime: Double = 1
   val printEvery = 1
+
+  val maxWeight = userMaxWeight + 1e-9 // epsilon
 
   // Parameters (9 ms - 20 ms)
   override val intsMax = 4096

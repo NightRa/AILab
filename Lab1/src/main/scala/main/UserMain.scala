@@ -19,11 +19,16 @@ import scala.util.Try
 object UserMain extends App {
   val in = new Scanner(System.in)
 
-  println("Genetic Algorithms Lab 1 by Ilan Godik & Yuval Alfassi")
   println()
-  runOption()
+  println("Genetic Algorithms Lab 1 by Ilan Godik & Yuval Alfassi")
 
-  def runOption(): Unit = {
+  mainMenu()
+
+  println("Press any key to exit")
+  in.nextLine()
+
+  def mainMenu(): Unit = {
+    println()
     println(
       """1. Genetic Algorithm
         |2. Hill Climbing - String matching""".stripMargin)
@@ -37,7 +42,7 @@ object UserMain extends App {
       case 2 => runHillClimbing()
       // case 3 => runMinimalConflicts()
       // None or invalid int
-      case _ => runOption()
+      case _ => mainMenu()
     }
   }
 
@@ -49,12 +54,13 @@ object UserMain extends App {
     println()
     val heuristic = chooseStringHeuristic()
     println()
-    val printInt = readIntWithDefault("Print intermediate states? (default 1): ", 1)
+    val printInt = readIntWithDefault("Print intermediate states? (0 / 1): ", 1)
     val print =
       if (printInt == 1) true
       else if (printInt == 0) false
       else true
     HillClimbing.run(secret, heuristic, print)
+    mainMenu()
   }
 
   def chooseGeneticAlg(): GeneticMain[_] = {
@@ -86,8 +92,8 @@ object UserMain extends App {
       case 1 => StringHeuristics.heuristic1
       case 2 => StringHeuristics.heuristic2
       case 3 =>
-        val exactsWeight = readIntLoop("Choose a weight for exact matches: ")
-        val containsWeight = readIntLoop("Choose a weight for contained matches: ")
+        val exactsWeight = readIntLoop("Choose a relative weight for exact matches (int): ")
+        val containsWeight = readIntLoop("Choose a relative weight for contained matches (int): ")
         StringHeuristics.heuristic3(_, _, containsWeight, exactsWeight)
       case _ => chooseStringHeuristic()
     }
@@ -210,51 +216,59 @@ object UserMain extends App {
 
   def menu(main: GeneticMain[_], params: NamedParams): Unit = {
     println("\n" +
-      s"""|run     - Run ${main.name}
-          |params  - Change   Parameters of the Genetic Algorithm
-          |opt     - Optimize Parameters of the Genetic Algorithm
-          |analyse - Create a statistical report of the Genetic Algorithm
-          |bench   - Benchmark the Genetic Algorithm
+      s"""|1. run     - Run ${main.name}
+          |2. params  - Change   Parameters of the Genetic Algorithm
+          |3. opt     - Optimize Parameters of the Genetic Algorithm
+          |4. analyse - Create a statistical report of the Genetic Algorithm
+          |5. bench   - Benchmark the Genetic Algorithm
+          |6. main    - Return to the main menu
        """.stripMargin)
     print("Enter your selection: ")
     val input = in.nextLine()
     input match {
-      case "run" =>
+      case "run" | "1" =>
         val maxTime = readDoubleWithDefault("Enter the maximum runtime in seconds (default 1.0): ", 1.0) max 0
         val defaultPrintEvery = main.printEvery()
         val printEvery = readIntWithDefault(s"Print best every how many iterations? (default $defaultPrintEvery, 0 for never) ", defaultPrintEvery) max 0
         runGenetic(main, params.toParams, maxTime, printEvery)
         menu(main, params)
-      case "params" =>
+      case "params" | "2" =>
         val newParams = modifyParams(params)
         menu(main, newParams)
-      case "opt" =>
+      case "opt" | "3" =>
         val maxTime = readDoubleWithDefault("Enter the maximum runtime in seconds (default 100.0): ", 100.0) max 0
         optimize(main, maxTime)
         menu(main, params)
-      case "analyse" =>
+      case "analyse" | "4" =>
         println("Enter analysis name: ")
         val name = in.nextLine()
-        analysis(name, main, params.toParams, Analysis.defaultParams)
-      case "bench" =>
+        analysis(name, main, params, Analysis.defaultParams)
+      case "bench" | "5" =>
         bench(main, params.toParams)
         menu(main, params)
+      case "main" | "6" =>
+        mainMenu()
       case _ => menu(main, params)
     }
   }
 
-  def analysis(name: String, main: GeneticMain[_], params: Params, analysisParams: NamedParams): Unit = {
+  def analysis(name: String, main: GeneticMain[_], params: NamedParams, analysisParams: NamedParams): Unit = {
+    println()
     println(
       """run    - Run the analysis
         |params - Change analysis parameters
       """.stripMargin)
+    print("Enter your selection: ")
     val input = in.nextLine()
     input match {
-      case "run" => new Analysis(name, main, params, analysisParams.toParams)
+      case "run" =>
+        new Analysis(name, main, params, analysisParams.toParams).runAnalysis()
+        menu(main, params)
       case "params" =>
         val newAnalysisParams = modifyParams(analysisParams)
         analysis(name, main, params, newAnalysisParams)
-      case _ => ()
+      case _ =>
+        analysis(name, main, params, analysisParams)
     }
   }
 
@@ -273,13 +287,13 @@ object UserMain extends App {
     val paramNum = readIntLoop("Which parameter to change? (0 to skip)  ")
     if (paramNum == 0)
       params
-    else if (paramNum >= 1 && paramNum <= params.ints.length + 1) {
+    else if (paramNum >= 1 && paramNum < params.ints.length + 1) {
       val index = paramNum - 1
       val paramName = params.ints(index)._1
       val newValue = readIntLoop(s"Set $paramName = ")
       new NamedParams(params.ints.updated(index, (paramName, newValue)), params.doubles)
 
-    } else if (paramNum <= params.ints.length + params.doubles.length + 1) {
+    } else if (paramNum < params.ints.length + params.doubles.length + 1) {
       val index = paramNum - params.ints.length - 1
       val paramName = params.doubles(index)._1
       val newValue = readDoubleLoop(s"Set $paramName = ")

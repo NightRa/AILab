@@ -1,6 +1,6 @@
 package params
 
-class NamedParams(val ints: Array[(String, Int)], val doubles: Array[(String, Double)]) {
+case class NamedParams(ints: Array[(String, Int)], doubles: Array[(String, Double)]) {
   def toParams: Params = new Params(ints.map(_._2), doubles.map(_._2))
 }
 
