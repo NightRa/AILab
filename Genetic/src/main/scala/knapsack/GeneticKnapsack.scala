@@ -2,7 +2,8 @@ package knapsack
 
 import java.util.Random
 
-import genetic.Genetic
+import genetic.{Metric, Genetic}
+import util.Distance
 
 class GeneticKnapsack(mateFunc: (Array[Int], Array[Int], Random) => Array[Int],
                       mutateFunc: (KnapsackElement, Random) => Unit,
@@ -19,5 +20,11 @@ class GeneticKnapsack(mateFunc: (Array[Int], Array[Int], Random) => Array[Int],
   override def mutate(a: KnapsackElement): KnapsackElement = {
     mutateFunc(a, rand)
     a
+  }
+
+  override def metric(): Metric[KnapsackElement] = new Metric[KnapsackElement] {
+    override def distance(x: KnapsackElement, y: KnapsackElement): Double = {
+      Distance.arrayDistanceI(x.amounts, y.amounts)
+    }
   }
 }

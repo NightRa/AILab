@@ -4,7 +4,8 @@ import java.io.PrintWriter
 import java.util.Random
 
 import genetic.types.Population
-import genetic.{Genetic, GeneticMain}
+import genetic.{Metric, Genetic, GeneticMain}
+import util.Distance
 import util.Util._
 
 class GeneticParams(main: GeneticMain[_],
@@ -68,5 +69,13 @@ class GeneticParams(main: GeneticMain[_],
     }
 
     params
+  }
+
+  override def metric(): Metric[Params] = new Metric[Params] {
+    override def distance(x: Params, y: Params): Double = {
+      val doubleDist = Distance.arrayDistanceD(x.doubles, y.doubles)
+      val intDist = Distance.arrayDistanceI(x.ints.map(_ / main.intsMax()), y.ints.map(_ / main.intsMax()))
+      (intDist + doubleDist) / 2
+    }
   }
 }

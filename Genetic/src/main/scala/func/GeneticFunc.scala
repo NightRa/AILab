@@ -2,7 +2,8 @@ package func
 
 import java.util.Random
 
-import genetic.Genetic
+import genetic.{Metric, Genetic}
+import util.Distance
 import util.Util._
 
 class GeneticFunc(func: Func, MutationSize: Double, rand: Random) extends Genetic[FuncSolution] {
@@ -17,5 +18,11 @@ class GeneticFunc(func: Func, MutationSize: Double, rand: Random) extends Geneti
     val delta1 = (rand.nextFloat() - 0.5) * MutationSize * 2
     val delta2 = (rand.nextFloat() - 0.5) * MutationSize * 2
     FuncSolution(a.x + delta1 max 0 min 1, a.y + delta2 max 0 min 1, func)
+  }
+
+  override def metric(): Metric[FuncSolution] = new Metric[FuncSolution] {
+    override def distance(x: FuncSolution, y: FuncSolution): Double = {
+      Distance.euclidianDistance(x.xInRange, x.yInRange, y.xInRange, y.yInRange)
+    }
   }
 }
