@@ -31,7 +31,9 @@ class GeneticQueen(mateFunc: (Array[Int], Array[Int], Random) => Array[Int],
         val delta2 = abs(y.permutation(i) - y.permutation((i+1) % length))
         deltas += abs (delta1 - delta2)
       }
-      deltas
+      val res = deltas / ((length - 1) * length)
+      assert(res >= 0 && res <= 1)
+      res
     }
   }
 }

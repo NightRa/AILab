@@ -37,7 +37,7 @@ class GeneticQueenMain(boardSize: Int,
 
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
-    val localOptimaDetector = new IgnoreLocalOptima()
+    val localOptimaDetector = new IgnoreLocalOptima[QueenPermutation]()
 
     new GeneticAlg[QueenPermutation](
       genetic, mateStrategy, selectionStrategy,localOptimaDetector,

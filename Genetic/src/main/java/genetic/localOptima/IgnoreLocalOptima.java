@@ -2,9 +2,9 @@ package genetic.localOptima;
 
 import genetic.types.Population;
 
-public class IgnoreLocalOptima implements LocalOptimaSignal {
+public class IgnoreLocalOptima<A> implements LocalOptimaSignal<A> {
     @Override
-    public <A> boolean isInLocalOptima(Population<A> population) {
+    public boolean isInLocalOptima(Population<A> population) {
         return false;
     }
 }
