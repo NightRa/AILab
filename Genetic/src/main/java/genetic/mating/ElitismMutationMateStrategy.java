@@ -3,7 +3,6 @@ package genetic.mating;
 import genetic.Genetic;
 import genetic.types.Population;
 import genetic.selection.SelectionStrategy;
-import scala.Tuple2;
 
 import java.util.Random;
 
@@ -19,7 +18,7 @@ public class ElitismMutationMateStrategy implements MateStrategy {
     }
 
     @Override
-    public <A> void mateStrategy(Genetic<A> alg, SelectionStrategy selection, Population<A> population, Population<A> buffer, Population<A> parentsPool) {
+    public <A> void mateStrategy(Genetic<A> alg, SelectionStrategy selection, Population<A> population, Population<A> buffer, Population<A> parentsPool, boolean isInLocalOptimum) {
         int popSize = population.population.length;
         int elites = (int) (popSize * ElitismRate);
         elitism(population, buffer, elites);

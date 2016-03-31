@@ -2,6 +2,7 @@ package queens
 
 import java.util.Random
 
+import genetic.localOptima.IgnoreLocalOptima
 import genetic.mating.ElitismMutationMateStrategy
 import genetic.selection.TopSelection
 import genetic.{GeneticAlg, GeneticMain}
@@ -36,9 +37,11 @@ class GeneticQueenMain(boardSize: Int,
 
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
+    val localOptimaDetector = new IgnoreLocalOptima[QueenPermutation]()
 
     new GeneticAlg[QueenPermutation](
-      genetic, mateStrategy, selectionStrategy, PopulationSize,
+      genetic, mateStrategy, selectionStrategy,localOptimaDetector,
+      PopulationSize,
       maxTime, rand,
       QueenPermutation.getPermutationRandomly(boardSize, _),
       _.permutation.mkString("[", ",", "]"))

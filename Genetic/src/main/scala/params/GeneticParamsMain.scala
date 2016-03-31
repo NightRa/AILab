@@ -3,6 +3,7 @@ package params
 import java.util.Random
 
 import genetic._
+import genetic.localOptima.IgnoreLocalOptima
 import genetic.mating.ElitismMutationMateStrategy
 import genetic.selection.TopSelection
 import genetic.types.Gene
@@ -43,9 +44,12 @@ class GeneticParamsMain(main: GeneticMain[_], override val MaxTime: Double) exte
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
     val genetic = new GeneticParams(main, IntsMutationSize, DoublesMutationSize, MutationRate, TimeLimit, Rounds, printer, rand)
+    val localOptimaDetector = new IgnoreLocalOptima[Params]()
+
 
     new GeneticAlg[Params](
-      genetic, mateStrategy, selectionStrategy, PopulationSize,
+      genetic, mateStrategy, selectionStrategy,localOptimaDetector,
+      PopulationSize,
       maxTime, rand,
       randomParams(main, _),
       _.toString)

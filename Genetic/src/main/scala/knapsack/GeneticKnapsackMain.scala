@@ -1,5 +1,6 @@
 package knapsack
 
+import genetic.localOptima.IgnoreLocalOptima
 import genetic.mating.{Crossover, ElitismMutationMateStrategy}
 import genetic.selection.TopSelection
 import genetic.{GeneticAlg, GeneticMain}
@@ -42,9 +43,11 @@ class GeneticKnapsackMain(items: Array[Item], userMaxWeight: Double, bestSolutio
 
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
+    val localOptimaDetector = new IgnoreLocalOptima[KnapsackElement]()
 
     new GeneticAlg(
-      genetic, mateStrategy, selectionStrategy, PopulationSize,
+      genetic, mateStrategy, selectionStrategy, localOptimaDetector,
+      PopulationSize,
       maxTime, rand,
       KnapsackElement.randomKnapsack(knapsackInstance, _),
       _.toString)

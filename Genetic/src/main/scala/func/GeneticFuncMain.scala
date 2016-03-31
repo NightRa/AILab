@@ -1,6 +1,7 @@
 package func
 
 import genetic._
+import genetic.localOptima.IgnoreLocalOptima
 import genetic.mating.ElitismMutationMateStrategy
 import genetic.selection.TopSelection
 import params.{GeneticParamsMain, NamedParams, Params}
@@ -33,9 +34,11 @@ class GeneticFuncMain(func: Func) extends GeneticMain[FuncSolution] {
     val genetic = new GeneticFunc(func, MutationSize, rand)
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
+    val localOptimaDetector = new IgnoreLocalOptima[FuncSolution]()
 
     new GeneticAlg[FuncSolution](
-      genetic, mateStrategy, selectionStrategy, PopulationSize,
+      genetic, mateStrategy, selectionStrategy, localOptimaDetector,
+      PopulationSize,
       maxTime, rand,
       FuncSolution.genFuncSolution(func, _),
       _.toString)

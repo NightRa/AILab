@@ -3,6 +3,7 @@ package string
 import java.util.Random
 
 import genetic._
+import genetic.localOptima.IgnoreLocalOptima
 import genetic.mating.Crossover._
 import genetic.mating.{Crossover, ElitismMutationMateStrategy}
 import genetic.selection.TopSelection
@@ -53,9 +54,11 @@ class GeneticStringMain(targetString: String,
     val genetic = new GeneticString(appliedHeuristic, crossover, rand)
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
+    val localOptimaDetector = new IgnoreLocalOptima[Array[Char]]()
 
     new GeneticAlg(
-      genetic, mateStrategy, selectionStrategy, PopulationSize,
+      genetic, mateStrategy, selectionStrategy, localOptimaDetector,
+      PopulationSize,
       maxTime, rand,
       Util.randString(targetString.length, _),
       (arr: Array[Char]) => arr.mkString)

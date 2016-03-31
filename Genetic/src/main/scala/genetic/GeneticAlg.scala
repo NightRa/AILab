@@ -2,6 +2,7 @@ package genetic
 
 import java.util.Random
 
+import genetic.localOptima.LocalOptimaSignal
 import genetic.mating.MateStrategy
 import genetic.selection.SelectionStrategy
 import genetic.types.{Gene, Population}
@@ -10,13 +11,14 @@ import util.Util._
 
 import scala.annotation.tailrec
 
-class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: SelectionStrategy, PopulationSize: Int,
-                              MaxTimeSecs: Double, rand: Random,
-                              randomElement: Random => A,
-                              val show: A => String) {
+class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: SelectionStrategy, localOptimaSignal: LocalOptimaSignal[A],
+                    PopulationSize: Int,
+                    MaxTimeSecs: Double, rand: Random,
+                    randomElement: Random => A,
+                    val show: A => String) {
 
   val popSize = {
-    if(PopulationSize < 3) {
+    if (PopulationSize < 3) {
       println("PopulationSize < 3, not ok.")
     }
     PopulationSize max 3
@@ -48,7 +50,8 @@ class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: Sele
       JavaUtil.sortGenes(population.population)
       if (printEvery > 0 && i % printEvery == 0) print_best(population, i)
       if (population.population(0).fitness > epsilon) {
-        mateStrategy.mateStrategy(alg, selection, population, buffer, parentsPool)
+        val detectedLocalOptima = localOptimaSignal.isInLocalOptima(population)
+        mateStrategy.mateStrategy(alg, selection, population, buffer, parentsPool, detectedLocalOptima)
         goRun(buffer, population, parentsPool, i + 1, endTime, printEvery)
       } else
         (population, i)
