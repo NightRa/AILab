@@ -34,7 +34,7 @@ class GeneticFuncMain(func: Func) extends GeneticMain[FuncSolution] {
     val genetic = new GeneticFunc(func, MutationSize, rand)
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
-    val localOptimaDetector = new IgnoreLocalOptima[FuncSolution]()
+    val localOptimaDetector = new IgnoreLocalOptima()
 
     new GeneticAlg[FuncSolution](
       genetic, mateStrategy, selectionStrategy, localOptimaDetector,

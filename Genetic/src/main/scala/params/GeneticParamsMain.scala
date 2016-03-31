@@ -44,7 +44,7 @@ class GeneticParamsMain(main: GeneticMain[_], override val MaxTime: Double) exte
     val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
     val genetic = new GeneticParams(main, IntsMutationSize, DoublesMutationSize, MutationRate, TimeLimit, Rounds, printer, rand)
-    val localOptimaDetector = new IgnoreLocalOptima[Params]()
+    val localOptimaDetector = new IgnoreLocalOptima()
 
 
     new GeneticAlg[Params](

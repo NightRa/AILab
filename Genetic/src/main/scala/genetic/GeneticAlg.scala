@@ -11,7 +11,7 @@ import util.Util._
 
 import scala.annotation.tailrec
 
-class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: SelectionStrategy, localOptimaSignal: LocalOptimaSignal[A],
+class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: SelectionStrategy, localOptimaSignal: LocalOptimaSignal,
                     PopulationSize: Int,
                     MaxTimeSecs: Double, rand: Random,
                     randomElement: Random => A,
