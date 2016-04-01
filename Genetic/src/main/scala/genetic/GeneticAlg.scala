@@ -35,8 +35,7 @@ class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: Sele
     val endTime = startTime + timeMili
     val population: Population[A] = new Population[A](Array.fill(popSize)(new Gene(randomElement(rand), 0)))
     val initialBuffer = new Population[A](Array.fill(popSize)(new Gene[A](null.asInstanceOf[A], 0)))
-    val parentsPool: Population[A] = selection.initParentsPool(population.population.length)
-    val (bestPop, iterations) = goRun(population, initialBuffer, parentsPool, 0, endTime, printEvery)
+    val (bestPop, iterations) = goRun(population, initialBuffer, 0, endTime, printEvery)
     (bestPop, iterations)
   }
 
@@ -44,15 +43,15 @@ class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy, selection: Sele
 
   // printEvery - Every how many iterations to print best in population.
   @tailrec
-  final def goRun(population: Population[A], buffer: Population[A], parentsPool: Population[A], i: Int, endTime: Long, printEvery: Int): (Population[A], Int) = {
+  final def goRun(population: Population[A], buffer: Population[A], i: Int, endTime: Long, printEvery: Int): (Population[A], Int) = {
     if (System.currentTimeMillis() < endTime) {
       population.calc_fitness(alg)
       JavaUtil.sortGenes(population.population)
       if (printEvery > 0 && i % printEvery == 0) print_best(population, i)
       if (population.population(0).fitness > epsilon) {
         val detectedLocalOptima = localOptimaSignal.isInLocalOptima(population)
-        mateStrategy.mateStrategy(alg, selection, population, buffer, parentsPool, detectedLocalOptima)
-        goRun(buffer, population, parentsPool, i + 1, endTime, printEvery)
+        mateStrategy.mateStrategy(alg, selection, population, buffer, detectedLocalOptima)
+        goRun(buffer, population, i + 1, endTime, printEvery)
       } else
         (population, i)
     } else

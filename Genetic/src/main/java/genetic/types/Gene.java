@@ -1,5 +1,7 @@
 package genetic.types;
 
+import java.util.Comparator;
+
 public class Gene<A> {
     public A gene;
     public double fitness;
@@ -13,4 +15,6 @@ public class Gene<A> {
     public String toString() {
         return gene + ", fitness = " + fitness;
     }
+
+    public static Comparator<Gene<?>> fitnessComparator = Comparator.comparing(gene -> gene.fitness);
 }

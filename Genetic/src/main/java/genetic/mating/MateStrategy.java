@@ -9,6 +9,5 @@ public interface MateStrategy {
                           SelectionStrategy selection,
                           Population<A> population,
                           Population<A> buffer,
-                          Population<A> parentsPool,
                           boolean isInLocalOptimum);
 }
