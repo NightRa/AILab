@@ -32,7 +32,7 @@ class GeneticFuncMain(func: Func) extends GeneticMain[FuncSolution] {
     val TopRatio = params.doubles(3)
 
     val genetic = new GeneticFunc(func, MutationSize, rand)
-    val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
+    val mateStrategy = new ElitismMutationMateStrategy[FuncSolution](ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
     val localOptimaDetector = new IgnoreLocalOptima[FuncSolution]()
 

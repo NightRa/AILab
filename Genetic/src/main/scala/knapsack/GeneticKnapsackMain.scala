@@ -41,7 +41,7 @@ class GeneticKnapsackMain(items: Array[Item], userMaxWeight: Double, bestSolutio
 
     val genetic = new GeneticKnapsack(Crossover.onePointCrossoverInt, KnapsackMutate.binomialMutate(MutationProb, _, _), rand)
 
-    val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
+    val mateStrategy = new ElitismMutationMateStrategy[KnapsackElement](ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
     val localOptimaDetector = new IgnoreLocalOptima[KnapsackElement]()
 
