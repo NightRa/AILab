@@ -1,9 +1,10 @@
 package genetic.mating;
 
 import genetic.Genetic;
-import genetic.types.Population;
 import genetic.selection.SelectionStrategy;
+import genetic.types.Population;
 
+import java.util.Iterator;
 import java.util.Random;
 
 public class ElitismMutationMateStrategy implements MateStrategy {
@@ -22,9 +23,11 @@ public class ElitismMutationMateStrategy implements MateStrategy {
         int popSize = population.population.length;
         int elites = (int) (popSize * ElitismRate);
         elitism(population, buffer, elites);
+        int children = popSize - elites;
+        Iterator<A> parents = selection.chooseParents(population, children * 2, rand);
         for (int i = elites; i < popSize; i++) {
-            A parent1 = selection.chooseParent(population, rand);
-            A parent2 = selection.chooseParent(population, rand);
+            A parent1 = parents.next();
+            A parent2 = parents.next();
             buffer.population[i].gene = alg.mate(parent1, parent2);
             if(rand.nextFloat() < MutationRate)
                 buffer.population[i].gene = alg.mutate(buffer.population[i].gene);

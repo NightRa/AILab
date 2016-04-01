@@ -274,7 +274,7 @@ object UserMain extends App {
 
   def bench(main: GeneticMain[_], params: Params): Unit = {
     val rounds = readIntWithDefault("Enter the number of rounds (1000 default): ", 1000)
-    val time = Util.avgExecutionTime(main.alg(params, 1.0).run(printEvery = 0), rounds)
+    val time = Util.avgExecutionTime(main.alg(params, 0.3).run(printEvery = 0), rounds)
     println(JavaUtil.formatDouble(time * 1000, 4) + " ms")
   }
 

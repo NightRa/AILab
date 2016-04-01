@@ -4,18 +4,24 @@ import genetic.types.Gene;
 import genetic.types.Population;
 
 import java.util.Random;
-import java.util.stream.Stream;
 
 // Implemented using Stochastic Acceptance in O(1):
 //    http://arxiv.org/abs/1109.3627
-public class RouletteWheelSelection implements SelectionStrategy {
+public class RouletteWheelSelection extends IndependentSelection {
+
+    private static <A> double maxFitness(Gene<A>[] population) {
+        double min = Double.POSITIVE_INFINITY;
+        for (Gene<A> gene : population) {
+            if (gene.fitness < min) min = gene.fitness;
+        }
+        return 1 - min;
+    }
+
 
     @Override
-    public <A> A chooseParent(Population<A> population, Random rand) {
+    public <A> A chooseSingleParent(Population<A> population, Random rand) {
         int popSize = population.population.length;
-        double maxFitness =
-                1 - Stream.of(population.population)
-                        .min(Gene.fitnessComparator).get().fitness;
+        double maxFitness = maxFitness(population.population);
         int index;
         do {
             index = rand.nextInt(popSize); // 1/N probability to choose anyone

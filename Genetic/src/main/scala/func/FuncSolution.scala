@@ -12,8 +12,10 @@ abstract class Func(val minX: Double, val maxX: Double, val minY: Double, val ma
   // The function's minimum should be 0.
   protected def evaluate(x: Double, y: Double): Double
 
+  protected def maxValue: Double
+
   def calc(solution: FuncSolution): Double =
-    evaluate(toRange(solution.x, minX, maxX), toRange(solution.y, minY, maxY))
+    evaluate(toRange(solution.x, minX, maxX), toRange(solution.y, minY, maxY)) / maxValue
 }
 
 object Func {
@@ -26,7 +28,9 @@ object HoldersTableFunction extends Func(-10, 10, -10, 10) {
 
   // The function's minimum should be 0.
   override protected def evaluate(x: Double, y: Double): Double =
-    pow(1.5 - x + x * y, 2) + pow(2.25 - x + x * y * y, 2) + pow(2.625 - x + x * y * y * y, 2)
+    -abs(sin(x) * cos(y) * exp(abs(1 - sqrt(x * x + y * y) / PI))) + 19.2085
+
+  override def maxValue: Double = 19.2085
 }
 
 object LabTestFunction extends Func(-10, 10, -10, 10) {
@@ -35,10 +39,13 @@ object LabTestFunction extends Func(-10, 10, -10, 10) {
   // The function's minimum should be 0.
   override protected def evaluate(x: Double, y: Double): Double =
     20 + x * x + y * y - 10 * (cos(2 * PI * x) + cos(2 * PI * y))
+
+  override def maxValue: Double = 20 + maxX * maxX + maxY * maxY + 20
 }
 
 case class FuncSolution(x: Double, y: Double, func: Func) {
   def xInRange = Func.toRange(x, func.minX, func.maxX)
+
   def yInRange = Func.toRange(y, func.minY, func.maxY)
 
   override def toString: String = {
@@ -49,8 +56,8 @@ case class FuncSolution(x: Double, y: Double, func: Func) {
 object FuncSolution {
   def genFuncSolution(func: Func, rand: Random): FuncSolution = {
     FuncSolution(
-      toRange(rand.nextDouble(), func.minX, func.maxX),
-      toRange(rand.nextDouble(), func.minY, func.maxY),
+      rand.nextDouble(),
+      rand.nextDouble(),
       func)
   }
 }
