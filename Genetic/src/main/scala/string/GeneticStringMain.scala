@@ -52,7 +52,7 @@ class GeneticStringMain(targetString: String,
     val TopRatio = params.doubles(2)
 
     val genetic = new GeneticString(appliedHeuristic, crossover, rand)
-    val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
+    val mateStrategy = new ElitismMutationMateStrategy[Array[Char]](ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
     val localOptimaDetector = new IgnoreLocalOptima[Array[Char]]()
 

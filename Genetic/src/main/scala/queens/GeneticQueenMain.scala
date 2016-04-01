@@ -1,11 +1,12 @@
 package queens
 
-import java.util.Random
+import java.util.{Optional, Random}
 
-import genetic.localOptima.IgnoreLocalOptima
+import genetic.LocalOptimaEscapingMateStrategy.{Niching, HyperMutation}
+import genetic.localOptima.{StdDevLocalOptimaDetector, IgnoreLocalOptima}
 import genetic.mating.ElitismMutationMateStrategy
 import genetic.selection.TopSelection
-import genetic.{GeneticAlg, GeneticMain}
+import genetic.{LocalOptimaEscapingMateStrategy, GeneticAlg, GeneticMain}
 import params.{NamedParams, Params}
 
 class GeneticQueenMain(boardSize: Int,
@@ -35,9 +36,17 @@ class GeneticQueenMain(boardSize: Int,
 
     val genetic = new GeneticQueen(queenMating, queenMutation, rand)
 
-    val mateStrategy = new ElitismMutationMateStrategy(ElitismRate, MutationRate, rand)
+    //val mateStrategy = new ElitismMutationMateStrategy[QueenPermutation](ElitismRate, MutationRate, rand)
+    val hyperMutation = new HyperMutation(0.95)
+    val nieching = new Niching[QueenPermutation](1.0, 0.5, genetic.metric())
+    val mateStrategy = new LocalOptimaEscapingMateStrategy[QueenPermutation]( ElitismRate,
+                                                                              MutationRate,
+                                                                              rand,
+                                                                              Optional.empty(),
+                                                                              Optional.of(nieching),
+                                                                              Optional.of(hyperMutation))
     val selectionStrategy = new TopSelection(TopRatio)
-    val localOptimaDetector = new IgnoreLocalOptima[QueenPermutation]()
+    val localOptimaDetector = new StdDevLocalOptimaDetector[QueenPermutation](0.007)
 
     new GeneticAlg[QueenPermutation](
       genetic, mateStrategy, selectionStrategy,localOptimaDetector,

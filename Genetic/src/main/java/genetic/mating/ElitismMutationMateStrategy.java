@@ -7,7 +7,7 @@ import genetic.types.Population;
 import java.util.Iterator;
 import java.util.Random;
 
-public class ElitismMutationMateStrategy implements MateStrategy {
+public class ElitismMutationMateStrategy<A> implements MateStrategy<A> {
     public final double ElitismRate;
     public final double MutationRate;
     public final Random rand;
@@ -19,7 +19,7 @@ public class ElitismMutationMateStrategy implements MateStrategy {
     }
 
     @Override
-    public <A> void mateStrategy(Genetic<A> alg, SelectionStrategy selection, Population<A> population, Population<A> buffer, boolean isInLocalOptimum) {
+    public void mateStrategy(Genetic<A> alg, SelectionStrategy selection, Population<A> population, Population<A> buffer, boolean isInLocalOptimum) {
         int popSize = population.population.length;
         int elites = (int) (popSize * ElitismRate);
         elitism(population, buffer, elites);
