@@ -5,6 +5,7 @@ import genetic.selection.SelectionStrategy;
 import genetic.types.Gene;
 import genetic.types.Population;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
@@ -73,9 +74,12 @@ public class LocalOptimaEscapingMateStrategy<A> extends ElitismMutationMateStrat
         if (isInLocalOptimum && this.randomImmigrants.isPresent()){
             elites = randomImmigrant(population, buffer, elites, this.randomImmigrants.get());
         }
+        int children = popSize - elites;
+        Iterator<A> parentsPool = selection.chooseParents(population, children * 2, rand);
         for (int i = elites; i < popSize; i++) {
-            A parent1 = selection.chooseParent(population, rand);
-            A parent2 = selection.chooseParent(population, rand);
+
+            A parent1 = parentsPool.next();
+            A parent2 = parentsPool.next();
             buffer.population[i].gene = alg.mate(parent1, parent2);
 
             if (isInLocalOptimum && this.hyperMutation.isPresent()) {
@@ -86,7 +90,7 @@ public class LocalOptimaEscapingMateStrategy<A> extends ElitismMutationMateStrat
         }
     }
 
-    // O(n) more space - but its neglible. the Algor ithm is O(n^2) time... :) (Hi Ilan)
+    // O(n) more space - but its negligible. the Algorithm is O(n^2) time... :) (Hi Ilan)
     private static <A> Population<A> changeToNichingFitness(Population<A> population, Niching<A> niching) {
         Gene<A>[] newGenes = new Gene[population.population.length];
         for (int i = 0; i < population.population.length; i++)
