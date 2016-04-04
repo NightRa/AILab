@@ -1,0 +1,18 @@
+------------------ Architecture -----------------------------
+Generation:
+- Local Optima Detection: population => Boolean
+- Fitness Mapping Function:
+  - Scaling
+  - Nieching, Sharing
+  - Aging
+- Breeding: oldPopulation => child
+  - Choose Parents: oldPopulation => parent
+  - Crossover: Parent, Parent => child
+  - Mutation: child => mutate
+- Survivor Selection: oldPopulation, children => new Population
+
+Steady State:
+- Breeding: oldPopulation => child
+- Choose replacements: oldPoplulation => gene
+  - Replace most similiar
+  - Replace worst
