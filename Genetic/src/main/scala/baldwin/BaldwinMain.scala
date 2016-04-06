@@ -2,19 +2,17 @@ package baldwin
 
 import genetic.localOptima.IgnoreLocalOptima
 import genetic.mating.ElitismMutationMateStrategy
-import genetic.selection.TopSelection
+import genetic.selection.{RouletteWheelSelection, TopSelection}
 import genetic.{GeneticAlg, GeneticMain}
 import params.{GeneticParamsMain, Params, NamedParams}
 import string.StringHeuristics
 
-import scala.util.Random
+import java.util.Random
 
-class BaldwinMain(targetBits: Array[Bit],
-                        mate: (Array[Bit], Array[Bit], Random) => Array[Bit],
-                        mutate: (Array[Bit], Random) => Unit) extends GeneticMain[Array[Bit]] {
+class BaldwinMain(targetBits: Array[Bit]) extends GeneticMain[Array[BaldwinBit]] {
   val name: String = "Baldwin's bit-string search"
-  val MaxTime: Double = 5.0
-  val printEvery = 1000000
+  val MaxTime: Double = 20.0
+  val printEvery = 1
   override val intsMax: Int = 1024
   /*override val defaultParams = NamedParams(
     "Population Size" -> 5,
@@ -27,54 +25,45 @@ class BaldwinMain(targetBits: Array[Bit],
 
   // best: 35ms - 75ms (On yuval's computer.. should test it on Ilan's)
   override val defaultParams = NamedParams(
-    "Population Size" -> 3,
-    "Max Iterations" -> 405
+    "Population Size" -> 1000,
+    "Max Iterations" -> 1000
   )(
-    "Elitism Rate" -> 0.522,
-    "Mutation Rate" -> 0.387,
-    "Top Ratio" -> 0.725
+    "Elitism Rate" -> 0,
+    "Mutation Rate" -> 0.05,
+    "Top Ratio" -> 0.7
   )
   val target: Array[Bit] = targetBits
-
+  val length = target.length
   //def appliedHeuristic(state: Array[Char]) = heuristic(state, target)
 
-  def alg(params: Params, maxTime: Double): GeneticAlg[Array[Bit]] = {
+  def alg(params: Params, maxTime: Double): GeneticAlg[Array[BaldwinBit]] = {
     val PopulationSize = params.ints(0)
     val maxIterations = params.ints(1)
     val ElitismRate = params.doubles(0)
     val MutationRate = params.doubles(1)
     val TopRatio = params.doubles(2)
 
-    val genetic = new GeneticBaldwin(mate,mutate, rand, maxIterations, targetBits)
-    val mateStrategy = new ElitismMutationMateStrategy[Array[Bit]](ElitismRate, MutationRate, rand)
-    val selectionStrategy = new TopSelection(TopRatio)
-    val localOptimaDetector = new IgnoreLocalOptima[Array[Bit]]()
+    val genetic = new GeneticBaldwin(maxIterations, x => BaldwinBitString.bitStringEquals(x, targetBits), rand)
+    val mateStrategy = new ElitismMutationMateStrategy[Array[BaldwinBit]](ElitismRate, MutationRate, rand)
+    val selectionStrategy = new RouletteWheelSelection()
+    val localOptimaDetector = new IgnoreLocalOptima[Array[BaldwinBit]]()
 
-    new GeneticAlg[Array[Bit]](genetic,
+    new GeneticAlg[Array[BaldwinBit]](genetic,
       mateStrategy,
       selectionStrategy,
       localOptimaDetector,
       PopulationSize,
       MaxTime,
       rand,
-      rnd => BaldwinBitString.genRandomly(targetBits, maxIterations, a => BaldwinUtils.dist(a, targetBits), rnd),
+      BaldwinBitString.generateBitStringRandomly(length, _),
       BaldwinBitString.show
     )
   }
 }
 
 object StartingBits {
-  def genBits () : Array[Bit] = {
-    val length = 40
-    val array = new Array[Bit](length)
-    for (i <- 0 until length){
-      array(i) = Zero()
-    }
-    array
-  }
-
-  val bits = genBits ()
+  val bits = Array.fill[Bit](10)(Zero)
 }
 
-object GeneticBaldwinMain extends BaldwinMain(StartingBits.bits, BaldwinBitString.onePointCrossOver, BaldwinBitString.mutateRandomly)
+object GeneticBaldwinMain extends BaldwinMain(StartingBits.bits)
 object GeneticBaldwinOptimizationMain extends GeneticParamsMain(GeneticBaldwinMain, 40)

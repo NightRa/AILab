@@ -1,5 +1,7 @@
 package genetic.mating;
 
+import baldwin.BaldwinBit;
+
 import java.util.Random;
 
 import static java.lang.System.*;
@@ -71,5 +73,16 @@ public class Crossover {
             str[i] = inputs[rand.nextInt(2)][i];
         }
         return str;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static BaldwinBit[] onePointCrossover(BaldwinBit[] x, BaldwinBit[] y, Random rand) {
+        assert x.length == y.length;
+
+        int pos = rand.nextInt(x.length);
+        BaldwinBit[] array = new BaldwinBit[x.length];
+        arraycopy(x, 0, array, 0, pos);
+        arraycopy(y, pos, array, pos, y.length - pos);
+        return array;
     }
 }
