@@ -35,8 +35,6 @@ public class Generation<A> {
     public void nextGeneration(Genetic<A> alg,
                                Population<A> population,
                                Population<A> buffer) {
-        population.calc_fitness(alg, fitnessMappings);
-
         // Necessary for TopSelection & Elitism
         JavaUtil.sortGenes(population.population);
 
@@ -50,5 +48,6 @@ public class Generation<A> {
             };
         };
         survivorSelection.selectSurvivors(population, buffer, getChildren);
+        buffer.calc_fitness(alg, fitnessMappings);
     }
 }
