@@ -1,0 +1,19 @@
+------------------ Selection & Survivors ---------------------------
+
+- RWS Scaling:
+  - Windowing: minus worst score
+  - Exponential: sqrt(fitness)
+  - Sigma Scaling: max{(f - <f>)/2sigma, 1}, unless sigma = 0
+- Ranking:
+  - In sequence
+  - Linear ranking:
+    - 1 < s <= 2 : the advantage of the best individual
+    - Fittest has rank N, worst has rank 1
+    - p(i) = (2-s)/N + 2i(s-1)/(N*(N-1))
+  - Exponential Ranking:
+    - p(i) = (1 - e^-i)/c
+    - normalize @c according to the pop. size
+- Survivor Selection: 
+  - Aging model: Adults more fit than young and old
+  - Parent selections
+  - Elitism
