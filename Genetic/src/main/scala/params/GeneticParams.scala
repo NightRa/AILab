@@ -3,8 +3,8 @@ package params
 import java.io.PrintWriter
 import java.util.Random
 
-import genetic.types.Population
-import genetic.{Metric, Genetic, GeneticMain}
+import genetic.types.{Gene, Population}
+import genetic.{Genetic, GeneticMain, Metric}
 import util.Distance
 import util.Util._
 
@@ -20,7 +20,7 @@ class GeneticParams(main: GeneticMain[_],
 
   def fitnessOnce(gene: Params): Double = {
     val before: Long = System.nanoTime()
-    val (population: Population[_], iterations: Int) = main.alg(gene, currentTimeLimit).run(printEvery = 0)
+    val (population: Population[_], iterations: Int) = main.alg(gene).run(printEvery = 0, currentTimeLimit)
     val after: Long = System.nanoTime()
     val time: Long = after - before
 
@@ -78,4 +78,17 @@ class GeneticParams(main: GeneticMain[_],
       (intDist + doubleDist) / 2
     }
   }
+
+  override def randomElement(rand: Random): Params = GeneticParams.randomParams(main, rand)
+
+  override def show(gene: Params): String = gene.toString
+}
+
+object GeneticParams {
+  def randomParams(main: GeneticMain[_], rand: Random): Params = new Params(
+    Array.fill(main.intsSize)(rand.nextInt(main.intsMax())),
+    Array.fill(main.doublesSize())(rand.nextDouble()))
+
+  val emptyParams: Params = new Params(Array.emptyIntArray, Array.emptyDoubleArray)
+  val emptyParamsGene: Gene[Params] = new Gene(emptyParams, 0)
 }

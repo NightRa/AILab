@@ -6,10 +6,11 @@ import genetic.{Metric, Genetic}
 import util.Distance
 import util.Distance._
 
-class GeneticKnapsack(mateFunc: (Array[Int], Array[Int], Random) => Array[Int],
+class GeneticKnapsack(instance: KnapsackInstance,
+                      mateFunc: (Array[Int], Array[Int], Random) => Array[Int],
                       mutateFunc: (KnapsackElement, Random) => Unit,
                       rand: Random) extends Genetic[KnapsackElement] {
-  override def fitness(gene: KnapsackElement): Double = gene.fitnessOfUppedBound()
+  override def fitness(gene: KnapsackElement): Double = gene.fitnessUpperBound()
 
   override def mate(x: KnapsackElement, y: KnapsackElement): KnapsackElement = {
     val childAmounts = mateFunc(x.amounts, y.amounts, rand)
@@ -40,4 +41,8 @@ class GeneticKnapsack(mateFunc: (Array[Int], Array[Int], Random) => Array[Int],
       dist
     }
   }
+
+  override def randomElement(rand: Random): KnapsackElement = KnapsackElement.randomKnapsack(instance, rand)
+
+  override def show(gene: KnapsackElement): String = gene.toString
 }

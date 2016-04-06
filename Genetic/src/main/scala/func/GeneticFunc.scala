@@ -25,4 +25,8 @@ class GeneticFunc(func: Func, MutationSize: Double, rand: Random) extends Geneti
       Distance.euclidianDistance(x.xInRange, x.yInRange, y.xInRange, y.yInRange)
     }
   }
+
+  override def randomElement(rand: Random): FuncSolution = FuncSolution.genFuncSolution(func, rand)
+
+  override def show(funcSolution: FuncSolution): String = funcSolution.toString
 }

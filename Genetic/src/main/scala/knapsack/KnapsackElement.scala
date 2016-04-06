@@ -16,7 +16,7 @@ class KnapsackElement(val amounts: Array[Int], val instance: KnapsackInstance) {
     instance.items.iterator.zip(amounts.iterator).map { case (i, a) => i.value * a }.sum
   }
 
-  def fitnessOfUppedBound(): Double = {
+  def fitnessUpperBound(): Double = {
     1 - totalValue() / instance.valueUpperBound
   }
 

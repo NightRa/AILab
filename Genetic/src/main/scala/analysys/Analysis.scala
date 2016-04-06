@@ -49,7 +49,7 @@ class Analysis(name: String,
       value <- (3 to main.intsMax() by intsStepSize).par
     } {
       val params = optimalParams.copy(ints = optimalParams.ints.updated(index, (paramName, value)))
-      val time = avgExecutionTime(main.alg(params.toParams, maxTime).run(printEvery = 0), rounds)
+      val time = avgExecutionTime(main.alg(params.toParams).run(printEvery = 0, maxTime), rounds)
       println(s"Int param '$paramName' = $value, Time = ${formatDouble(time * 1000, 3)} ms.")
       file.println(s"$value, $time")
     }
@@ -63,7 +63,7 @@ class Analysis(name: String,
       value <- (0.0 to 1 by doublesStep).par
     } {
       val params = optimalParams.copy(doubles = optimalParams.doubles.updated(index, (paramName, value)))
-      val time = avgExecutionTime(main.alg(params.toParams, maxTime).run(printEvery = 0), rounds)
+      val time = avgExecutionTime(main.alg(params.toParams).run(printEvery = 0, maxTime), rounds)
       println(s"Double param '$paramName' = ${formatDouble(value, 3)}, Time = ${formatDouble(time * 1000, 3)} ms.")
       file.println(s"$value, $time")
     }

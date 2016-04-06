@@ -1,16 +1,16 @@
+/*
 package genetic;
 
-import genetic.mating.ElitismMutationMateStrategy;
-import genetic.selection.SelectionStrategy;
+import genetic.generation.Elitism;
+import genetic.selection.ParentSelection;
 import genetic.types.Gene;
 import genetic.types.Population;
 
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class LocalOptimaEscapingMateStrategy<A> extends ElitismMutationMateStrategy<A> {
+public class LocalOptimaEscapingGeneration<A> extends Elitism<A> {
 
     private Optional<RandomImmigrants<A>> randomImmigrants;
     private Optional<Niching<A>> niching;
@@ -48,12 +48,12 @@ public class LocalOptimaEscapingMateStrategy<A> extends ElitismMutationMateStrat
 
 
 
-    public LocalOptimaEscapingMateStrategy(double elitismRate,
-                                           double mutationRate,
-                                           Random rand,
-                                           Optional<RandomImmigrants<A>> randomImmigrants,
-                                           Optional<Niching<A>> niching,
-                                           Optional<HyperMutation> hyperMutation) {
+    public LocalOptimaEscapingGeneration(double elitismRate,
+                                         double mutationRate,
+                                         Random rand,
+                                         Optional<RandomImmigrants<A>> randomImmigrants,
+                                         Optional<Niching<A>> niching,
+                                         Optional<HyperMutation> hyperMutation) {
         super(elitismRate,mutationRate, rand);
         this.randomImmigrants = randomImmigrants;
         this.niching = niching;
@@ -61,25 +61,25 @@ public class LocalOptimaEscapingMateStrategy<A> extends ElitismMutationMateStrat
     }
 
     @Override
-    public void mateStrategy(Genetic<A> alg,
-                                 SelectionStrategy selection,
-                                 Population<A> population,
-                                 Population<A> buffer,
-                                 boolean isInLocalOptimum) {
+    public void nextGeneration(Genetic<A> alg,
+                               ParentSelection selection,
+                               Population<A> population,
+                               Population<A> buffer,
+                               boolean isInLocalOptimum) {
         if (isInLocalOptimum && this.niching.isPresent())
             population = changeToNichingFitness(population, this.niching.get());
         int popSize = population.population.length;
-        int elites = (int) (popSize * ElitismRate);
+        int elites = (int) (popSize * elitismRate);
         elitism(population, buffer, elites);
         if (isInLocalOptimum && this.randomImmigrants.isPresent()){
             elites = randomImmigrant(population, buffer, elites, this.randomImmigrants.get());
         }
         int children = popSize - elites;
-        Iterator<A> parentsPool = selection.chooseParents(population, children * 2, rand);
+        Supplier<A> parentsPool = selection.chooseParents(population, children * 2, rand);
         for (int i = elites; i < popSize; i++) {
 
-            A parent1 = parentsPool.next();
-            A parent2 = parentsPool.next();
+            A parent1 = parentsPool.get();
+            A parent2 = parentsPool.get();
             buffer.population[i].gene = alg.mate(parent1, parent2);
 
             if (isInLocalOptimum && this.hyperMutation.isPresent()) {
@@ -103,7 +103,7 @@ public class LocalOptimaEscapingMateStrategy<A> extends ElitismMutationMateStrat
         for (int i = 0; i < population.population.length; i++){
             double distance = niching.metric.distance(population.population[index].gene, population.population[i].gene);
             if (distance < niching.sigmaShare)
-                sumOfSharingFunc += 1 - distance / niching.sigmaShare;
+                sumOfSharingFunc += 1 - Math.pow(distance / niching.sigmaShare, niching.alpha);
         }
         return 1 - ((1 - population.population[index].fitness) / sumOfSharingFunc);
     }
@@ -119,3 +119,4 @@ public class LocalOptimaEscapingMateStrategy<A> extends ElitismMutationMateStrat
         return index;
     }
 }
+*/

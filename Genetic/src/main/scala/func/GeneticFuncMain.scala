@@ -1,9 +1,12 @@
 package func
 
 import genetic._
+import genetic.fitnessMapping.{FitnessMapping, IdentityFitnessMapping}
+import genetic.generation.Generation
 import genetic.localOptima.IgnoreLocalOptima
-import genetic.mating.ElitismMutationMateStrategy
+import genetic.mutation.RegularMutation
 import genetic.selection.TopSelection
+import genetic.survivors.Elitism
 import params.{GeneticParamsMain, NamedParams, Params}
 
 class GeneticFuncMain(func: Func) extends GeneticMain[FuncSolution] {
@@ -24,7 +27,7 @@ class GeneticFuncMain(func: Func) extends GeneticMain[FuncSolution] {
   )
   override val intsMax = 1024
 
-  def alg(params: Params, maxTime: Double): GeneticAlg[FuncSolution] = {
+  override def alg(params: Params): GeneticAlg[FuncSolution] = {
     val PopulationSize = params.ints(0)
     val ElitismRate = params.doubles(0)
     val MutationRate = params.doubles(1)
@@ -32,16 +35,26 @@ class GeneticFuncMain(func: Func) extends GeneticMain[FuncSolution] {
     val TopRatio = params.doubles(3)
 
     val genetic = new GeneticFunc(func, MutationSize, rand)
-    val mateStrategy = new ElitismMutationMateStrategy[FuncSolution](ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
     val localOptimaDetector = new IgnoreLocalOptima[FuncSolution]()
+    val survivorSelection = new Elitism[FuncSolution](ElitismRate)
+    val mutationStrategy = new RegularMutation(MutationRate, rand)
+    val normalGeneration = new Generation[FuncSolution](
+      selectionStrategy,
+      mutationStrategy,
+      survivorSelection,
+      Array.empty[FitnessMapping],
+      rand
+    )
 
     new GeneticAlg[FuncSolution](
-      genetic, mateStrategy, selectionStrategy, localOptimaDetector,
+      genetic,
+      localOptimaDetector,
+      normalGeneration,
+      normalGeneration,
       PopulationSize,
-      maxTime, rand,
-      FuncSolution.genFuncSolution(func, _),
-      _.toString)
+      rand
+    )
   }
 }
 

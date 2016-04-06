@@ -2,11 +2,11 @@ package string
 
 import java.util.Random
 
-import genetic.{Metric, Genetic}
-import genetic.mating.Crossover
-import genetic.mating.Crossover.onePointCrossoverInt
+import genetic.{Genetic, Metric}
+import util.Util
 
-class GeneticString(heuristic: Array[Char] => Double,
+class GeneticString(targetString: Array[Char],
+                    heuristic: Array[Char] => Double,
                     crossover: (Array[Char], Array[Char], Random) => Array[Char],
                     rand: Random) extends Genetic[Array[Char]] {
   def fitness(gene: Array[Char]): Double = heuristic(gene)
@@ -29,4 +29,8 @@ class GeneticString(heuristic: Array[Char] => Double,
       StringHeuristics.heuristic2(x, y)
     }
   }
+
+  override def randomElement(rand: Random): Array[Char] = Util.randString(targetString.length, rand)
+
+  override def show(charArr: Array[Char]): String = charArr.mkString
 }

@@ -1,5 +1,6 @@
 package genetic.selection;
 
+import genetic.fitnessMapping.FitnessMapping;
 import genetic.types.Gene;
 import genetic.types.Population;
 
@@ -9,9 +10,9 @@ import java.util.Random;
 //    http://arxiv.org/abs/1109.3627
 public class RouletteWheelSelection extends IndependentSelection {
 
-    private static <A> double maxFitness(Gene<A>[] population) {
+    private static <A> double maxFitness(Population<A> population) {
         double min = Double.POSITIVE_INFINITY;
-        for (Gene<A> gene : population) {
+        for (Gene<A> gene : population.population) {
             if (gene.fitness < min) min = gene.fitness;
         }
         return 1 - min;
@@ -21,7 +22,7 @@ public class RouletteWheelSelection extends IndependentSelection {
     @Override
     public <A> A chooseSingleParent(Population<A> population, Random rand) {
         int popSize = population.population.length;
-        double maxFitness = maxFitness(population.population);
+        double maxFitness = maxFitness(population);
         int index;
         do {
             index = rand.nextInt(popSize); // 1/N probability to choose anyone

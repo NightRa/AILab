@@ -3,18 +3,20 @@ package string
 import java.util.Random
 
 import genetic._
+import genetic.fitnessMapping.FitnessMapping
+import genetic.generation.Crossover._
+import genetic.generation.Generation
 import genetic.localOptima.IgnoreLocalOptima
-import genetic.mating.Crossover._
-import genetic.mating.{Crossover, ElitismMutationMateStrategy}
+import genetic.mutation.RegularMutation
 import genetic.selection.TopSelection
+import genetic.survivors.Elitism
 import params.{GeneticParamsMain, NamedParams, Params}
-import util.Util
 
 class GeneticStringMain(targetString: String,
                         crossover: (Array[Char], Array[Char], Random) => Array[Char],
                         heuristic: (Array[Char], Array[Char]) => Double) extends GeneticMain[Array[Char]] {
   val name: String = "String Search"
-  val MaxTime: Double = 5.0
+  val MaxTime: Double = 10000
   val printEvery = 100
   /*
     3.2 ms for Heuristic 1, Genetic Params.
@@ -45,23 +47,33 @@ class GeneticStringMain(targetString: String,
 
   def appliedHeuristic(state: Array[Char]) = heuristic(state, target)
 
-  def alg(params: Params, maxTime: Double): GeneticAlg[Array[Char]] = {
+  def alg(params: Params): GeneticAlg[Array[Char]] = {
     val PopulationSize = params.ints(0)
     val ElitismRate = params.doubles(0)
     val MutationRate = params.doubles(1)
     val TopRatio = params.doubles(2)
 
-    val genetic = new GeneticString(appliedHeuristic, crossover, rand)
-    val mateStrategy = new ElitismMutationMateStrategy[Array[Char]](ElitismRate, MutationRate, rand)
+    val genetic = new GeneticString(target, appliedHeuristic, crossover, rand)
     val selectionStrategy = new TopSelection(TopRatio)
     val localOptimaDetector = new IgnoreLocalOptima[Array[Char]]()
+    val survivorSelection = new Elitism[Array[Char]](ElitismRate)
+    val mutationStrategy = new RegularMutation(MutationRate, rand)
+    val normalGeneration = new Generation[Array[Char]](
+      selectionStrategy,
+      mutationStrategy,
+      survivorSelection,
+      Array.empty[FitnessMapping],
+      rand
+    )
 
-    new GeneticAlg(
-      genetic, mateStrategy, selectionStrategy, localOptimaDetector,
+    new GeneticAlg[Array[Char]](
+      genetic,
+      localOptimaDetector,
+      normalGeneration,
+      normalGeneration,
       PopulationSize,
-      maxTime, rand,
-      Util.randString(targetString.length, _),
-      (arr: Array[Char]) => arr.mkString)
+      rand
+    )
   }
 }
 

@@ -1,12 +1,16 @@
 package queens
 
-import java.util.{Optional, Random}
+import java.util.Random
 
-import genetic.LocalOptimaEscapingMateStrategy.{Niching, HyperMutation}
-import genetic.localOptima.{StdDevLocalOptimaDetector, IgnoreLocalOptima}
+import func.FuncSolution
+import genetic.fitnessMapping.FitnessMapping
+import genetic.generation.Generation
+import genetic.localOptima.IgnoreLocalOptima
 import genetic.mating.ElitismMutationMateStrategy
+import genetic.mutation.RegularMutation
 import genetic.selection.TopSelection
-import genetic.{LocalOptimaEscapingMateStrategy, GeneticAlg, GeneticMain}
+import genetic.survivors.Elitism
+import genetic.{GeneticAlg, GeneticMain}
 import params.{NamedParams, Params}
 
 class GeneticQueenMain(boardSize: Int,
@@ -28,32 +32,34 @@ class GeneticQueenMain(boardSize: Int,
     "Top Ratio" -> 0.62
   )
 
-  def alg(params: Params, maxTime: Double): GeneticAlg[QueenPermutation] = {
+  def alg(params: Params): GeneticAlg[QueenPermutation] = {
     val PopulationSize = params.ints(0)
     val ElitismRate = params.doubles(0)
     val MutationRate = params.doubles(1)
     val TopRatio = params.doubles(2)
 
-    val genetic = new GeneticQueen(queenMating, queenMutation, rand)
+    val genetic = new GeneticQueen(boardSize, queenMating, queenMutation, rand)
 
-    //val mateStrategy = new ElitismMutationMateStrategy[QueenPermutation](ElitismRate, MutationRate, rand)
-    val hyperMutation = new HyperMutation(0.95)
-    val nieching = new Niching[QueenPermutation](1.0, 0.5, genetic.metric())
-    val mateStrategy = new LocalOptimaEscapingMateStrategy[QueenPermutation]( ElitismRate,
-                                                                              MutationRate,
-                                                                              rand,
-                                                                              Optional.empty(),
-                                                                              Optional.of(nieching),
-                                                                              Optional.of(hyperMutation))
     val selectionStrategy = new TopSelection(TopRatio)
-    val localOptimaDetector = new StdDevLocalOptimaDetector[QueenPermutation](0.007)
+    val localOptimaDetector = new IgnoreLocalOptima[QueenPermutation]()
+    val survivorSelection = new Elitism[QueenPermutation](ElitismRate)
+    val mutationStrategy = new RegularMutation(MutationRate, rand)
+    val normalGeneration = new Generation[QueenPermutation](
+      selectionStrategy,
+      mutationStrategy,
+      survivorSelection,
+      Array.empty[FitnessMapping],
+      rand
+    )
 
     new GeneticAlg[QueenPermutation](
-      genetic, mateStrategy, selectionStrategy,localOptimaDetector,
+      genetic,
+      localOptimaDetector,
+      normalGeneration,
+      normalGeneration,
       PopulationSize,
-      maxTime, rand,
-      QueenPermutation.getPermutationRandomly(boardSize, _),
-      _.permutation.mkString("[", ",", "]"))
+      rand
+    )
   }
 }
 

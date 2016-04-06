@@ -25,7 +25,7 @@ public abstract class GeneticMain<A> {
 
     public abstract NamedParams defaultParams();
     public abstract int intsMax();
-    public abstract GeneticAlg<A> alg(Params params, double maxTime);
+    public abstract GeneticAlg<A> alg(Params params);
 
     public abstract String name();
 
@@ -38,7 +38,7 @@ public abstract class GeneticMain<A> {
 
     public void main(String[] args) {
         long start = System.currentTimeMillis();
-        Tuple2<Population<A>, Object> res = alg(defaultParams().toParams(), MaxTime()).run(printEvery());
+        Tuple2<Population<A>, Object> res = alg(defaultParams().toParams()).run(printEvery(), MaxTime());
         long end = System.currentTimeMillis();
         long time = end - start;
 

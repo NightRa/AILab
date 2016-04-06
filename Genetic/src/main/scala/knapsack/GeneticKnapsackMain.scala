@@ -1,8 +1,12 @@
 package knapsack
 
+import func.FuncSolution
+import genetic.fitnessMapping.FitnessMapping
 import genetic.localOptima.IgnoreLocalOptima
-import genetic.mating.{Crossover, ElitismMutationMateStrategy}
+import genetic.generation.{Crossover, Generation}
+import genetic.mutation.RegularMutation
 import genetic.selection.TopSelection
+import genetic.survivors.Elitism
 import genetic.{GeneticAlg, GeneticMain}
 import params.{GeneticParamsMain, NamedParams, Params}
 
@@ -32,25 +36,35 @@ class GeneticKnapsackMain(items: Array[Item], userMaxWeight: Double, bestSolutio
     }
   }
 
-  def alg(params: Params, maxTime: Double): GeneticAlg[KnapsackElement] = {
+  def alg(params: Params): GeneticAlg[KnapsackElement] = {
     val PopulationSize: Int = params.ints(0)
     val ElitismRate = params.doubles(0)
     val MutationRate = params.doubles(1)
     val MutationProb = params.doubles(2)
     val TopRatio = params.doubles(3)
 
-    val genetic = new GeneticKnapsack(Crossover.onePointCrossoverInt, KnapsackMutate.binomialMutate(MutationProb, _, _), rand)
+    val genetic = new GeneticKnapsack(knapsackInstance, Crossover.onePointCrossoverInt, KnapsackMutate.binomialMutate(MutationProb, _, _), rand)
 
-    val mateStrategy = new ElitismMutationMateStrategy[KnapsackElement](ElitismRate, MutationRate, rand)
     val selectionStrategy = new TopSelection(TopRatio)
     val localOptimaDetector = new IgnoreLocalOptima[KnapsackElement]()
+    val survivorSelection = new Elitism[KnapsackElement](ElitismRate)
+    val mutationStrategy = new RegularMutation(MutationRate, rand)
+    val normalGeneration = new Generation[KnapsackElement](
+      selectionStrategy,
+      mutationStrategy,
+      survivorSelection,
+      Array.empty[FitnessMapping],
+      rand
+    )
 
-    new GeneticAlg(
-      genetic, mateStrategy, selectionStrategy, localOptimaDetector,
+    new GeneticAlg[KnapsackElement](
+      genetic,
+      localOptimaDetector,
+      normalGeneration,
+      normalGeneration,
       PopulationSize,
-      maxTime, rand,
-      KnapsackElement.randomKnapsack(knapsackInstance, _),
-      _.toString)
+      rand
+    )
   }
 }
 

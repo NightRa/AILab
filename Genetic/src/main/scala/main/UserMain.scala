@@ -5,7 +5,7 @@ import java.util.{ArrayList, Random, Scanner}
 import analysys.Analysis
 import func.{Func, GeneticFuncMain, HoldersTableFunction, LabTestFunction}
 import genetic.GeneticMain
-import genetic.mating.Crossover
+import genetic.generation.Crossover
 import genetic.types.Population
 import knapsack.{GeneticKnapsackMain, Item}
 import params.{GeneticParamsMain, NamedParams, Params}
@@ -274,7 +274,7 @@ object UserMain extends App {
 
   def bench(main: GeneticMain[_], params: Params): Unit = {
     val rounds = readIntWithDefault("Enter the number of rounds (1000 default): ", 1000)
-    val time = Util.avgExecutionTime(main.alg(params, 0.3).run(printEvery = 0), rounds)
+    val time = Util.avgExecutionTime(main.alg(params).run(printEvery = 0, 0.3), rounds)
     println(JavaUtil.formatDouble(time * 1000, 4) + " ms")
   }
 
@@ -305,18 +305,18 @@ object UserMain extends App {
   }
 
   def runGenetic[A](main: GeneticMain[A], params: Params, maxTime: Double, printEvery: Int): Unit = {
-    val alg = main.alg(params, maxTime)
+    val alg = main.alg(params)
 
     val start = System.currentTimeMillis
 
-    val (population: Population[_], iterations) = alg.run(printEvery)
+    val (population: Population[_], iterations) = alg.run(printEvery, maxTime)
 
     val end = System.currentTimeMillis
     val time = end - start
 
     val popSize = population.population.length
     println(s"Best ${5 min popSize}:")
-    println(population.population.sortBy(_.fitness).take(5).map(gene => alg.show(gene.gene) + ", fitness = " + gene.fitness).mkString("\n"))
+    println(population.population.sortBy(_.fitness).take(5).map(gene => alg.genetic.show(gene.gene) + ", fitness = " + gene.fitness).mkString("\n"))
     println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + main.seed)
   }
 

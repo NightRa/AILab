@@ -1,13 +1,12 @@
 package params
 
-import java.util.Random
-
 import genetic._
+import genetic.fitnessMapping.FitnessMapping
+import genetic.generation.Generation
 import genetic.localOptima.IgnoreLocalOptima
-import genetic.mating.ElitismMutationMateStrategy
+import genetic.mutation.RegularMutation
 import genetic.selection.TopSelection
-import genetic.types.Gene
-import params.GeneticParamsMain._
+import genetic.survivors.Elitism
 import util.JavaUtil
 
 class GeneticParamsMain(main: GeneticMain[_], override val MaxTime: Double) extends GeneticMain[Params] {
@@ -31,7 +30,7 @@ class GeneticParamsMain(main: GeneticMain[_], override val MaxTime: Double) exte
     s"$timeMs ms; " + (if (timeFraction > 0.99) params else "")
   }
 
-  def alg(params: Params, maxTime: Double): GeneticAlg[Params] = {
+  def alg(params: Params): GeneticAlg[Params] = {
     val IntsMutationSize = params.ints(0)
     val PopulationSize = params.ints(1)
     val Rounds = params.ints(2)
@@ -41,26 +40,28 @@ class GeneticParamsMain(main: GeneticMain[_], override val MaxTime: Double) exte
     val TimeLimit = params.doubles(3)
     val TopRatio = params.doubles(4)
 
-    val mateStrategy = new ElitismMutationMateStrategy[Params](ElitismRate, MutationRate, rand)
-    val selectionStrategy = new TopSelection(TopRatio)
     val genetic = new GeneticParams(main, IntsMutationSize, DoublesMutationSize, MutationRate, TimeLimit, Rounds, printer, rand)
-    val localOptimaDetector = new IgnoreLocalOptima[Params]()
 
+    val selectionStrategy = new TopSelection(TopRatio)
+    val localOptimaDetector = new IgnoreLocalOptima[Params]()
+    val survivorSelection = new Elitism[Params](ElitismRate)
+    val mutationStrategy = new RegularMutation(MutationRate, rand)
+    val normalGeneration = new Generation[Params](
+      selectionStrategy,
+      mutationStrategy,
+      survivorSelection,
+      Array.empty[FitnessMapping],
+      rand
+    )
 
     new GeneticAlg[Params](
-      genetic, mateStrategy, selectionStrategy,localOptimaDetector,
+      genetic,
+      localOptimaDetector,
+      normalGeneration,
+      normalGeneration,
       PopulationSize,
-      maxTime, rand,
-      randomParams(main, _),
-      _.toString)
+      rand
+    )
   }
 }
 
-object GeneticParamsMain {
-  def randomParams(main: GeneticMain[_], rand: Random): Params = new Params(
-    Array.fill(main.intsSize)(rand.nextInt(main.intsMax())),
-    Array.fill(main.doublesSize())(rand.nextDouble()))
-
-  val emptyParams: Params = new Params(Array.emptyIntArray, Array.emptyDoubleArray)
-  val emptyParamsGene: Gene[Params] = new Gene(emptyParams, 0)
-}

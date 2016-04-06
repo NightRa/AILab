@@ -1,5 +1,7 @@
 package genetic.types;
 
+import genetic.fitnessMapping.FitnessMapping;
+
 import java.util.Comparator;
 
 public class Gene<A> {

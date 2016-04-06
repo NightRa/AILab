@@ -1,27 +1,18 @@
 package genetic.selection;
 
+import genetic.fitnessMapping.FitnessMapping;
 import genetic.types.Population;
 
 import java.util.Iterator;
 import java.util.Random;
-import java.util.stream.Stream;
+import java.util.function.Supplier;
 
-public abstract class IndependentSelection implements SelectionStrategy {
+public abstract class IndependentSelection implements ParentSelection {
     public abstract <A> A chooseSingleParent(Population<A> population, Random rand);
 
     @Override
-    public final <A> Iterator<A> chooseParents(Population<A> population, int size, Random rand) {
-        return new Iterator<A>() {
-            @Override
-            public boolean hasNext() {
-                return true;
-            }
-
-            @Override
-            public A next() {
-                return chooseSingleParent(population, rand);
-            }
-        };
+    public final <A> Supplier<A> chooseParents(Population<A> population, int size, Random rand) {
+            return () -> chooseSingleParent(population, rand);
     }
 
 }

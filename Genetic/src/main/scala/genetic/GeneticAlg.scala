@@ -2,20 +2,23 @@ package genetic
 
 import java.util.Random
 
+import genetic.fitnessMapping.FitnessMapping
 import genetic.localOptima.LocalOptimaSignal
-import genetic.mating.MateStrategy
-import genetic.selection.SelectionStrategy
+import genetic.generation.Generation
+import genetic.selection.ParentSelection
 import genetic.types.{Gene, Population}
 import util.JavaUtil
 import util.Util._
 
 import scala.annotation.tailrec
 
-class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy[A], selection: SelectionStrategy, localOptimaSignal: LocalOptimaSignal[A],
+class GeneticAlg[A](val genetic: Genetic[A],
+                    localOptimaSignal: LocalOptimaSignal[A],
+                    normalGeneration: Generation[A],
+                    localOptimaGeneration: Generation[A],
+
                     PopulationSize: Int,
-                    MaxTimeSecs: Double, rand: Random,
-                    randomElement: Random => A,
-                    val show: A => String) {
+                    rand: Random) {
 
   val popSize = {
     if (PopulationSize < 3) {
@@ -26,14 +29,16 @@ class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy[A], selection: S
 
   def print_best(population: Population[A], i: Int): Unit = {
     val (avg, theStdDev) = stdDev(population.population)((x: Gene[A]) => x.fitness)
-    println(f"Best ($i): ${show(population.population(0).gene)}; fitness: ${formatScientific(population.population(0).fitness, 3)}; avg: $avg%.3f; stdDev: $theStdDev%.3f")
+    println(f"Best ($i): ${genetic.show(population.population(0).gene)}; fitness: ${formatScientific(population.population(0).fitness, 3)}; avg: $avg%.3f; stdDev: $theStdDev%.3f")
   }
 
-  def run(printEvery: Int): (Population[A], Int) = {
+  def run(printEvery: Int, MaxTimeSecs: Double): (Population[A], Int) = {
     val timeMili = (1000 * MaxTimeSecs).toLong
     val startTime = System.currentTimeMillis()
     val endTime = startTime + timeMili
-    val population: Population[A] = new Population[A](Array.fill(popSize)(new Gene(randomElement(rand), 0)))
+    val population: Population[A] = new Population[A](Array.fill(popSize)(new Gene(genetic.randomElement(rand), 0)))
+    population.calc_fitness(genetic, normalGeneration.fitnessMappings)
+
     val initialBuffer = new Population[A](Array.fill(popSize)(new Gene[A](null.asInstanceOf[A], 0)))
     val (bestPop, iterations) = goRun(population, initialBuffer, 0, endTime, printEvery)
     (bestPop, iterations)
@@ -45,17 +50,25 @@ class GeneticAlg[A](alg: Genetic[A], mateStrategy: MateStrategy[A], selection: S
   @tailrec
   final def goRun(population: Population[A], buffer: Population[A], i: Int, endTime: Long, printEvery: Int): (Population[A], Int) = {
     if (System.currentTimeMillis() < endTime) {
-      population.calc_fitness(alg)
-      JavaUtil.sortGenes(population.population)
       if (printEvery > 0 && i % printEvery == 0) print_best(population, i)
       if (population.population(0).fitness > epsilon) {
-        val detectedLocalOptima = localOptimaSignal.isInLocalOptima(population)
-        mateStrategy.mateStrategy(alg, selection, population, buffer, detectedLocalOptima)
+
+        nextGeneration(population, buffer)
         goRun(buffer, population, i + 1, endTime, printEvery)
+
       } else
         (population, i)
     } else
       (population, i)
+  }
+
+  def nextGeneration(population: Population[A], buffer: Population[A]): Unit = {
+    val isInLocalOptima = localOptimaSignal.isInLocalOptima(population)
+    if (!isInLocalOptima) {
+      normalGeneration.nextGeneration(genetic, population, buffer)
+    } else {
+      localOptimaGeneration.nextGeneration(genetic, population, buffer)
+    }
   }
 
 }
