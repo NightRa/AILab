@@ -1,8 +1,10 @@
 package genetic.survivors;
 
+import genetic.Genetic;
 import genetic.survivors.SurvivorSelection;
 import genetic.types.Population;
 
+import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -18,8 +20,10 @@ public class Elitism<A> implements SurvivorSelection<A> {
     }
 
     @Override
-    public void selectSurvivors(Population<A> population, Population<A> buffer,
-                                Function<Integer, Supplier<A>> getChildren) {
+    public void selectSurvivors(Genetic<A> alg,
+                                Population<A> population, Population<A> buffer,
+                                Function<Integer, Supplier<A>> getChildren,
+                                Random rand) {
         int popSize = population.population.length;
         int elites = (int) (popSize * elitismRate);
         elitism(population, buffer, elites);

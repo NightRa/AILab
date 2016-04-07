@@ -62,7 +62,7 @@ class GeneticStringMain(targetString: String,
       selectionStrategy,
       mutationStrategy,
       survivorSelection,
-      Array.empty[FitnessMapping],
+      Array.empty,
       rand
     )
 

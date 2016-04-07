@@ -38,6 +38,7 @@ class GeneticAlg[A](val genetic: Genetic[A],
     val endTime = startTime + timeMili
     val population: Population[A] = new Population[A](Array.fill(popSize)(new Gene(genetic.randomElement(rand), 0)))
     population.calc_fitness(genetic, normalGeneration.fitnessMappings)
+    JavaUtil.sortGenes(population.population)
 
     val initialBuffer = new Population[A](Array.fill(popSize)(new Gene[A](null.asInstanceOf[A], 0)))
     val (bestPop, iterations) = goRun(population, initialBuffer, 0, endTime, printEvery)

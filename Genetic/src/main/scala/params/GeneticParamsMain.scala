@@ -50,7 +50,7 @@ class GeneticParamsMain(main: GeneticMain[_], override val MaxTime: Double) exte
       selectionStrategy,
       mutationStrategy,
       survivorSelection,
-      Array.empty[FitnessMapping],
+      Array.empty,
       rand
     )
 

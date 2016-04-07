@@ -23,7 +23,7 @@ public class Generation<A> {
     public Generation(ParentSelection selection,
                       MutationStrategy mutationStrategy,
                       SurvivorSelection<A> survivorSelection,
-                      FitnessMapping[] fitnessMappings,
+                      FitnessMapping<A>[] fitnessMappings,
                       Random rand) {
         this.selection = selection;
         this.mutationStrategy = mutationStrategy;
@@ -35,9 +35,6 @@ public class Generation<A> {
     public void nextGeneration(Genetic<A> alg,
                                Population<A> population,
                                Population<A> buffer) {
-        // Necessary for TopSelection & Elitism
-        JavaUtil.sortGenes(population.population);
-
         Function<Integer, Supplier<A>> getChildren = numChildren -> {
             Supplier<A> parents = selection.chooseParents(population, numChildren * 2, rand);
             return () -> {
@@ -47,7 +44,10 @@ public class Generation<A> {
                 return mutationStrategy.mutate(alg, child);
             };
         };
-        survivorSelection.selectSurvivors(population, buffer, getChildren);
+        survivorSelection.selectSurvivors(alg, population, buffer, getChildren, rand);
+
         buffer.calc_fitness(alg, fitnessMappings);
+        // Necessary for TopSelection & Elitism
+        JavaUtil.sortGenes(buffer.population);
     }
 }

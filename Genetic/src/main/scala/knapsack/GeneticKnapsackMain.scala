@@ -53,7 +53,7 @@ class GeneticKnapsackMain(items: Array[Item], userMaxWeight: Double, bestSolutio
       selectionStrategy,
       mutationStrategy,
       survivorSelection,
-      Array.empty[FitnessMapping],
+      Array.empty,
       rand
     )
 

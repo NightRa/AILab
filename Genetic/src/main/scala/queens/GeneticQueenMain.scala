@@ -48,7 +48,7 @@ class GeneticQueenMain(boardSize: Int,
       selectionStrategy,
       mutationStrategy,
       survivorSelection,
-      Array.empty[FitnessMapping],
+      Array.empty,
       rand
     )
 

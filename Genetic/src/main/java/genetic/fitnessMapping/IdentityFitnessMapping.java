@@ -3,9 +3,9 @@ package genetic.fitnessMapping;
 import genetic.types.Gene;
 import genetic.types.Population;
 
-public class IdentityFitnessMapping implements FitnessMapping {
+public class IdentityFitnessMapping<A> implements FitnessMapping<A> {
     @Override
-    public <A> double mapFitness(Population<A> population, Gene<A> gene) {
+    public double mapFitness(Population<A> population, Gene<A> gene) {
         return gene.fitness;
     }
 }

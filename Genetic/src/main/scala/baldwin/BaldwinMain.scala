@@ -53,7 +53,7 @@ class BaldwinMain(targetBits: Array[Bit]) extends GeneticMain[Array[BaldwinBit]]
       selectionStrategy,
       mutationStrategy,
       survivorSelection,
-      Array.empty[FitnessMapping],
+      Array.empty,
       rand
     )
 

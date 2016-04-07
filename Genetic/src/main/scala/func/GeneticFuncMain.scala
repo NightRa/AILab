@@ -43,7 +43,7 @@ class GeneticFuncMain(func: Func) extends GeneticMain[FuncSolution] {
       selectionStrategy,
       mutationStrategy,
       survivorSelection,
-      Array.empty[FitnessMapping],
+      Array.empty,
       rand
     )
 
