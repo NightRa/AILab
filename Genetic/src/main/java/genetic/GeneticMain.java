@@ -37,8 +37,9 @@ public abstract class GeneticMain<A> {
     }
 
     public void main(String[] args) {
+        GeneticAlg<A> alg = alg(defaultParams().toParams());
         long start = System.currentTimeMillis();
-        Tuple2<Population<A>, Object> res = alg(defaultParams().toParams()).run(printEvery(), MaxTime());
+        Tuple2<Population<A>, Object> res = alg.run(printEvery(), MaxTime());
         long end = System.currentTimeMillis();
         long time = end - start;
 
@@ -47,7 +48,7 @@ public abstract class GeneticMain<A> {
 
         System.out.println(defaultParams());
         System.out.println("Best 5:");
-        System.out.println(Stream.of(population.population).sorted(comparing(x -> x.fitness)).limit(5).map(Object::toString).collect(Collectors.joining("\n")));
+        System.out.println(Stream.of(population.population).sorted(comparing(x -> x.fitness)).limit(5).map(x -> x.show(alg.genetic())).collect(Collectors.joining("\n")));
         System.out.println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + seed);
     }
 }
