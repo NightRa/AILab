@@ -1,10 +1,12 @@
 package genetic;
 
+import baldwin.MyGeneticAlg;
 import genetic.types.Population;
 import params.NamedParams;
 import params.Params;
 import scala.Tuple2;
 
+import java.io.IOException;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,15 +38,20 @@ public abstract class GeneticMain<A> {
         return defaultParams().doubles().length;
     }
 
-    public void main(String[] args) {
+    public void main(String[] args) throws IOException {
         GeneticAlg<A> alg = alg(defaultParams().toParams());
         long start = System.currentTimeMillis();
+        MyGeneticAlg myAlg = (MyGeneticAlg)alg;
         Tuple2<Population<A>, Object> res = alg.run(printEvery(), MaxTime());
         long end = System.currentTimeMillis();
         long time = end - start;
 
         Population<A> population = res._1;
         int iterations = (Integer) res._2;
+        myAlg.addToFile(myAlg.percentCsv(), iterations, myAlg.corrects() + myAlg.incorrects() - (Double)myAlg.lastLearned().get());
+        myAlg.correctCsv().close();
+        myAlg.incorrectCsv().close();
+        myAlg.percentCsv().close();
 
         System.out.println(defaultParams());
         System.out.println("Best 5:");
