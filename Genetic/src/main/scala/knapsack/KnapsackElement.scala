@@ -9,11 +9,23 @@ class KnapsackElement(val amounts: Array[Int], val instance: KnapsackInstance) {
   def isValid(): Boolean = totalWeight() < instance.capacity
 
   def totalWeight(): Double = {
-    instance.items.iterator.zip(amounts.iterator).map { case (i, a) => i.weight * a }.sum
+    var sum : Double = 0
+    var i = 0
+    while (i < amounts.length){
+      sum += instance.items(i).weight * amounts(i)
+      i += 1
+    }
+    sum
   }
 
   def totalValue(): Double = {
-    instance.items.iterator.zip(amounts.iterator).map { case (i, a) => i.value * a }.sum
+    var sum : Double = 0
+    var i = 0
+    while (i < amounts.length){
+      sum += instance.items(i).value * amounts(i)
+      i += 1
+    }
+    sum
   }
 
   def fitnessUpperBound(): Double = {

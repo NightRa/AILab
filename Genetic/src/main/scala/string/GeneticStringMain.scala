@@ -10,14 +10,15 @@ import genetic.localOptima.IgnoreLocalOptima
 import genetic.mutation.RegularMutation
 import genetic.selection.TopSelection
 import genetic.survivors.Elitism
+import parametric.Parametric
 import params.{GeneticParamsMain, NamedParams, Params}
 
 class GeneticStringMain(targetString: String,
                         crossover: (Array[Char], Array[Char], Random) => Array[Char],
-                        heuristic: (Array[Char], Array[Char]) => Double) extends GeneticMain[Array[Char]] {
+                        heuristic: (Array[Char], Array[Char]) => Double) extends GeneticMetadata[Array[Char]] {
   val name: String = "String Search"
-  val MaxTime: Double = 10000
-  val printEvery = 100
+  val defaultMaxTime: Double = 10000
+  val defaultPrintEvery = 100
   /*
     3.2 ms for Heuristic 1, Genetic Params.
     Params: [3] [0.4155463088614557,0.6205792746313119,0.6534676794176206]
@@ -35,48 +36,25 @@ class GeneticStringMain(targetString: String,
     Params: [480] [0.49, 0.49, 0.4]
   */
 
-  override val intsMax: Int = 1024
-  override val defaultParams = NamedParams(
-    "Population Size" -> 3 // Minimum is best.
-  )(
-    "Elitism Rate" -> 0.63, // Doesn't influence anything at all.
-    "Mutation Rate" -> 0.99, // Very critical
-    "Top Ratio" -> 0.5 // Doesn't influence anything at all.
-  )
   val target: Array[Char] = targetString.toCharArray
-
   def appliedHeuristic(state: Array[Char]) = heuristic(state, target)
 
-  def alg(params: Params): GeneticAlg[Array[Char]] = {
-    val PopulationSize = params.ints(0)
-    val ElitismRate = params.doubles(0)
-    val MutationRate = params.doubles(1)
-    val TopRatio = params.doubles(2)
+  // To be overwritten to provide problem-specific defaults.
+  override def intNamesDefaults: Map[String, Int] = Map(
+    "Population Size" -> 3 // Minimum is best.
+  )
+  override def intsNamesMax: Map[String, Int] = Map(
+    "Population Size" -> 512
+  )
+  override def doubleNamesDefaults: Map[String, Double] = Map(
+    "Elitism Rate"  -> 0.63, // Doesn't influence anything at all.
+    "Mutation Rate" -> 0.99  // Very critical
+  )
 
-    val genetic = new GeneticString(target, appliedHeuristic, crossover, rand)
-    val selectionStrategy = new TopSelection(TopRatio)
-    val localOptimaDetector = new IgnoreLocalOptima[Array[Char]]()
-    val survivorSelection = new Elitism[Array[Char]](ElitismRate)
-    val mutationStrategy = new RegularMutation(MutationRate, rand)
-    val normalGeneration = new Generation[Array[Char]](
-      selectionStrategy,
-      mutationStrategy,
-      survivorSelection,
-      Array.empty,
-      rand
-    )
-
-    new GeneticAlg[Array[Char]](
-      genetic,
-      localOptimaDetector,
-      normalGeneration,
-      normalGeneration,
-      PopulationSize,
-      rand
-    )
-  }
+  override def genetic: Parametric[Genetic[Array[Char]]] =
+    Parametric.point(new GeneticString(target, appliedHeuristic, crossover, rand))
 }
 
 object GeneticStringMain extends GeneticStringMain("Hello world! My name is Ilan.", onePointCrossoverString, StringHeuristics.heuristic2)
 
-object GeneticStringOptimization extends GeneticParamsMain(GeneticStringMain, 100)
+// object GeneticStringOptimization extends GeneticParamsMain(GeneticStringMain, 100)

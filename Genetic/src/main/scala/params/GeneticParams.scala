@@ -1,15 +1,19 @@
 package params
 
-import java.io.PrintWriter
 import java.util.Random
 
 import genetic.types.{Gene, Population}
-import genetic.{Genetic, GeneticMain, Metric}
+import genetic.{Genetic, GeneticAlg, Metric}
+import parametric.Parametric
 import util.Distance
 import util.Util._
 
-class GeneticParams(main: GeneticMain[_],
-                    IntsMutationSize: Int, DoublesMutationSize: Double, MutationRate: Double, InitialTimeLimit: Double, Rounds: Int,
+class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
+                    IntsMutationSize: Double,
+                    DoublesMutationSize: Double,
+                    MutationRate: Double,
+                    InitialTimeLimit: Double,
+                    Rounds: Int,
                     logTimeSec: (Double, Double, Params) => Unit, rand: Random) extends Genetic[Params] {
 
   var lastAvgTime: Double = InitialTimeLimit
@@ -20,7 +24,7 @@ class GeneticParams(main: GeneticMain[_],
 
   def fitnessOnce(gene: Params): Double = {
     val before: Long = System.nanoTime()
-    val (population: Population[_], iterations: Int) = main.alg(gene).run(printEvery = 0, currentTimeLimit)
+    val (population: Population[_], iterations: Int) = geneticParam.applyArrayParams(gene).run(printEvery = 0, currentTimeLimit)
     val after: Long = System.nanoTime()
     val time: Long = after - before
 
@@ -55,9 +59,10 @@ class GeneticParams(main: GeneticMain[_],
   def mutate(params: Params): Params = {
     for (i <- params.ints.indices) {
       if (rand.nextDouble() < MutationRate) {
-        val delta = (rand.nextInt(IntsMutationSize) - (IntsMutationSize / 2)) * 2
+        val intMax: Int = iteratorIndex(geneticParam.intsMax.valuesIterator, i)
+        val delta = ((rand.nextDouble() * IntsMutationSize - (IntsMutationSize / 2)) * 2) * intMax
         // max 2 so that population size / 2 isn't 0.
-        params.ints(i) = (params.ints(i) + delta) max 3 min main.intsMax
+        params.ints(i) = (params.ints(i) + delta.toInt) max 3 min intMax
       }
     }
 
@@ -73,21 +78,23 @@ class GeneticParams(main: GeneticMain[_],
 
   override def metric(): Metric[Params] = new Metric[Params] {
     override def distance(x: Params, y: Params): Double = {
-      val doubleDist = Distance.arrayDistanceD(x.doubles, y.doubles)
-      val intDist = Distance.arrayDistanceI(x.ints.map(_ / main.intsMax()), y.ints.map(_ / main.intsMax()))
+      val doubleDist = Distance.arrayDistanceD(x.doubles.iterator, y.doubles.iterator)
+      def normInts(arr: Array[Int]): Iterator[Double] =
+        arr.iterator.zipWithIndex.map { case (v, i) => v.toDouble / iteratorIndex(geneticParam.intsMax.valuesIterator, i) }
+      val intDist = Distance.arrayDistanceD(normInts(x.ints), normInts(y.ints))
       (intDist + doubleDist) / 2
     }
   }
 
-  override def randomElement(rand: Random): Params = GeneticParams.randomParams(main, rand)
+  override def randomElement(rand: Random): Params = GeneticParams.randomParams(geneticParam, rand)
 
-  override def show(gene: Params): String = gene.toString
+  override def show(gene: Params): String = geneticParam.updateArrayParams(gene).toString
 }
 
 object GeneticParams {
-  def randomParams(main: GeneticMain[_], rand: Random): Params = new Params(
-    Array.fill(main.intsSize)(rand.nextInt(main.intsMax())),
-    Array.fill(main.doublesSize())(rand.nextDouble()))
+  def randomParams(geneticParam: Parametric[GeneticAlg[_]], rand: Random): Params = new Params(
+    Array.tabulate(geneticParam.intNamesDefaults.size)(i => Math.max(rand.nextInt(iteratorIndex(geneticParam.intsMax.valuesIterator, i)), 3)),
+    Array.fill(geneticParam.doubleNamesDefaults.size)(rand.nextDouble()))
 
   val emptyParams: Params = new Params(Array.emptyIntArray, Array.emptyDoubleArray)
   val emptyParamsGene: Gene[Params] = new Gene(emptyParams, 0)

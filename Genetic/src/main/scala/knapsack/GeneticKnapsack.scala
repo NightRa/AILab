@@ -33,10 +33,11 @@ class GeneticKnapsack(instance: KnapsackInstance,
         val maxItems: Double = capacity / instance.items(index).weight
         amounts(index) / maxItems
       }
-      def normalizedAmounts(amounts: Array[Int]): Array[Double] = {
-        Array.tabulate(amounts.length)(i => percentFull(i, amounts))
+      def normalizedAmounts(amounts: Array[Int]): Iterator[Double] = {
+        Iterator.tabulate(amounts.length)(i => percentFull(i, amounts))
       }
-      val dist = arrayDistanceD(normalizedAmounts(x.amounts), normalizedAmounts(y.amounts))
+      // TODO: This 10000 is arbitrary, fix it.
+      val dist = arrayDistanceD(normalizedAmounts(x.amounts), normalizedAmounts(y.amounts)) / 10000
       assert(dist >= 0 && dist <= 1)
       dist
     }

@@ -9,3 +9,5 @@ connectInput in run := true
 assemblyJarName in assembly := "Lab1.jar"
 
 mainClass in assembly := Some("main.UserMain")
+
+libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.2"

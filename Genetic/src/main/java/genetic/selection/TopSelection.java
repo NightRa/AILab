@@ -13,7 +13,8 @@ public class TopSelection extends IndependentSelection {
 
     @Override
     public <A> A chooseSingleParent(Population<A> population, Random rand) {
-        int parentsPool = (int) (population.population.length * topRatio);
+        int parentsPool = Math.max((int) (population.population.length * topRatio), 1);
+        // TODO: Fails here with non-positive parentsPool size
         return population.population[rand.nextInt(parentsPool)].gene;
     }
 }

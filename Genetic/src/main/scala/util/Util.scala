@@ -6,6 +6,8 @@ import java.util.Random
 import scala.reflect.ClassTag
 
 object Util {
+  def iteratorIndex[A](iterator: Iterator[A], index: Int): A = iterator.drop(index).next()
+
   def formatScientific(d: Double, precision: Int): String = {
     val format = new DecimalFormat(s"0.${"#" * precision}E0")
     format.format(d)

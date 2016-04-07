@@ -27,13 +27,15 @@ class GeneticQueen(boardSize: Int,
     override def distance(x: QueenPermutation, y: QueenPermutation): Double = {
       var deltas = 0
       val length: Int = x.permutation.length
-      for (i <- 0 until length) {
+      var i = 0
+      while (i < length) {
         val delta1 = abs(x.permutation(i) - x.permutation((i + 1) % length))
         val delta2 = abs(y.permutation(i) - y.permutation((i + 1) % length))
         deltas += abs(delta1 - delta2)
+        i += 1
       }
       val res = deltas / ((length - 1) * length)
-      assert(res >= 0 && res <= 1)
+      // assert(res >= 0 && res <= 1)
       res
     }
   }

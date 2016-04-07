@@ -1,3 +1,4 @@
+/*
 package mcts;
 
 import func.GeneticFuncMain$;
@@ -192,3 +193,4 @@ public class MCTS {
         }
     }
 }
+*/

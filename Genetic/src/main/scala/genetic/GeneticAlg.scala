@@ -66,9 +66,9 @@ class GeneticAlg[A](val genetic: Genetic[A],
   def nextGeneration(population: Population[A], buffer: Population[A]): Unit = {
     val isInLocalOptima = localOptimaSignal.isInLocalOptima(population)
     if (!isInLocalOptima) {
-      normalGeneration.nextGeneration(genetic, population, buffer)
+      normalGeneration.nextGeneration(genetic, population, buffer, rand)
     } else {
-      localOptimaGeneration.nextGeneration(genetic, population, buffer)
+      localOptimaGeneration.nextGeneration(genetic, population, buffer, rand)
     }
   }
 

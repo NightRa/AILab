@@ -2,7 +2,6 @@ package genetic.generation;
 
 import genetic.Genetic;
 import genetic.fitnessMapping.FitnessMapping;
-import genetic.localOptima.LocalOptimaSignal;
 import genetic.mutation.MutationStrategy;
 import genetic.survivors.SurvivorSelection;
 import genetic.types.Population;
@@ -18,30 +17,28 @@ public class Generation<A> {
     public final MutationStrategy mutationStrategy;
     public final SurvivorSelection<A> survivorSelection;
     public final FitnessMapping[] fitnessMappings;
-    public final Random rand;
 
     public Generation(ParentSelection selection,
                       MutationStrategy mutationStrategy,
                       SurvivorSelection<A> survivorSelection,
-                      FitnessMapping<A>[] fitnessMappings,
-                      Random rand) {
+                      FitnessMapping<A>[] fitnessMappings) {
         this.selection = selection;
         this.mutationStrategy = mutationStrategy;
         this.survivorSelection = survivorSelection;
         this.fitnessMappings = fitnessMappings;
-        this.rand = rand;
     }
 
     public void nextGeneration(Genetic<A> alg,
                                Population<A> population,
-                               Population<A> buffer) {
+                               Population<A> buffer,
+                               Random rand) {
         Function<Integer, Supplier<A>> getChildren = numChildren -> {
             Supplier<A> parents = selection.chooseParents(population, numChildren * 2, rand);
             return () -> {
                 A parent1 = parents.get();
                 A parent2 = parents.get();
                 A child = alg.mate(parent1, parent2);
-                return mutationStrategy.mutate(alg, child);
+                return mutationStrategy.mutate(alg, child, rand);
             };
         };
         survivorSelection.selectSurvivors(alg, population, buffer, getChildren, rand);

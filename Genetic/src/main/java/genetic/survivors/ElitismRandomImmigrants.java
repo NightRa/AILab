@@ -30,7 +30,7 @@ public class ElitismRandomImmigrants<A> implements SurvivorSelection<A> {
             buffer.population[i].gene = alg.randomElement(rand);
         }
 
-        int numChildren = Math.min(popSize - elites - immigrants, 0);
+        int numChildren = Math.max(popSize - elites - immigrants, 0);
         Supplier<A> children = getChildren.apply(numChildren);
         for (int i = elites; i < popSize; i++) {
             buffer.population[i].gene = children.get();

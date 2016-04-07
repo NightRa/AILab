@@ -10,6 +10,7 @@ import java.util.Random;
 //    http://arxiv.org/abs/1109.3627
 public class RouletteWheelSelection extends IndependentSelection {
 
+    // Was very performance critical
     private static <A> double maxFitness(Population<A> population) {
         double min = Double.POSITIVE_INFINITY;
         for (Gene<A> gene : population.population) {
