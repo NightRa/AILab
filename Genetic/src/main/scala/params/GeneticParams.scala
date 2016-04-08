@@ -62,7 +62,8 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
         val intMax: Int = iteratorIndex(geneticParam.intsMax.valuesIterator, i)
         val delta = ((rand.nextDouble() * IntsMutationSize - (IntsMutationSize / 2)) * 2) * intMax
         // max 2 so that population size / 2 isn't 0.
-        params.ints(i) = (params.ints(i) + delta.toInt) max 3 min intMax
+        val current = params.ints(i)
+        params.ints(i) = (current + delta.toInt) max 3 min intMax
       }
     }
 

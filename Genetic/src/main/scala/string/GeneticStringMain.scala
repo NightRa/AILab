@@ -44,17 +44,27 @@ class GeneticStringMain(targetString: String,
     "Population Size" -> 3 // Minimum is best.
   )
   override def intsNamesMax: Map[String, Int] = Map(
-    "Population Size" -> 512
+    "Population Size" -> 20
   )
   override def doubleNamesDefaults: Map[String, Double] = Map(
-    "Elitism Rate"  -> 0.63, // Doesn't influence anything at all.
-    "Mutation Rate" -> 0.99  // Very critical
+    "Elitism Rate"  -> 0.31, // Doesn't influence anything at all.
+    "Gene Similarity Threshold" -> 0.485,
+    "Local Optimum: Elitism Rate" -> 0.384,
+    "Local Optimum: Hyper Mutation Rate" -> 1.0,
+    "Local Optimum: Immigrants Rate" -> 0.41,
+    "Local Optimum: Top Ratio" -> 0.356,
+    "Mutation Rate" -> 0.52, // Very critical
+    "Top Ratio" -> 0.55
   )
 
   override def genetic: Parametric[Genetic[Array[Char]]] =
     Parametric.point(new GeneticString(target, appliedHeuristic, crossover, rand))
 }
 
-object GeneticStringMain extends GeneticStringMain("Hello world! My name is Ilan.", onePointCrossoverString, StringHeuristics.heuristic2)
+object GeneticStringMain extends GeneticStringMain("Hello world! My name is Ilan.", onePointCrossoverString, StringHeuristics.heuristic2) with App {
+  GeneticMain.runMain(this)
+}
 
-// object GeneticStringOptimization extends GeneticParamsMain(GeneticStringMain, 100)
+object GeneticStringOptimization extends GeneticParamsMain(GeneticStringMain.defaultGeneticAlgParametric, 300) with App {
+  GeneticMain.runMain(this)
+}
