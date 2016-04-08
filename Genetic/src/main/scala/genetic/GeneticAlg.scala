@@ -2,10 +2,8 @@ package genetic
 
 import java.util.Random
 
-import genetic.fitnessMapping.FitnessMapping
-import genetic.localOptima.LocalOptimaSignal
 import genetic.generation.Generation
-import genetic.selection.ParentSelection
+import genetic.localOptima.LocalOptimaSignal
 import genetic.types.{Gene, Population}
 import util.JavaUtil
 import util.Util._
