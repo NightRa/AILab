@@ -1,14 +1,14 @@
 package genetic
 
-import java.util.Random
-
 import genetic.types.{Gene, Population}
+import it.unimi.dsi.Util
+import it.unimi.dsi.util.XorShift128PlusRandom
 import parametric.Instances._
 import parametric.Parametric
 
 abstract class GeneticMetadata[A] {
-  val seed = 8682522807148012L ^ System.nanoTime
-  val rand: Random = new Random(seed)
+  val seed = Util.randomSeed()
+  val rand: XorShift128PlusRandom = new XorShift128PlusRandom(seed)
 
   def name: String
   def defaultMaxTime: Double

@@ -14,11 +14,13 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
                     MutationRate: Double,
                     InitialTimeLimit: Double,
                     Rounds: Int,
+                    pressure: Double,
+                    relief: Double,
                     logTimeSec: (Double, Double, Params) => Unit, rand: Random) extends Genetic[Params] {
 
   var lastAvgTime: Double = InitialTimeLimit
 
-  def currentTimeLimit: Double = 4 * lastAvgTime
+  def currentTimeLimit: Double = (pressure * 10) * lastAvgTime
 
   def currentTimeFraction(timeS: Double) = timeS / currentTimeLimit
 
@@ -33,7 +35,11 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
 
     logTimeSec(timeS, timeFraction, gene)
 
-    if (timeFraction > 0.99) 1
+    if (timeFraction > 0.99) {
+      lastAvgTime *= (1 + relief)
+      lastAvgTime = Math.min(lastAvgTime, InitialTimeLimit)
+      1
+    }
     // Finished => [0,0.5], Not finished => [0.5,1]
     else 0.5 * timeFraction + 0.5 * population.population.minBy(_.fitness).fitness
   }

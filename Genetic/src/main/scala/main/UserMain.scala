@@ -3,10 +3,11 @@ package main
 import java.util.{ArrayList, Random, Scanner}
 
 import analysys.Analysis
+import baldwin.BaldwinMain
 import func.{Func, GeneticFuncMain, HoldersTableFunction, LabTestFunction}
 import genetic.fitnessMapping.FitnessMapping
 import genetic.generation.{Crossover, Generation}
-import genetic.localOptima.LocalOptimaSignal
+import genetic.localOptima.{IgnoreLocalOptima, LocalOptimaSignal}
 import genetic.selection.ParentSelection
 import genetic.survivors.SurvivorSelection
 import genetic.types.Population
@@ -37,8 +38,10 @@ object UserMain extends App {
     println()
     println(
       """1. Genetic Algorithm
-        |2. Hill Climbing - String matching""".stripMargin)
-    // |3. Minimal Conflicts - N-Queens
+        |2. Hill Climbing - String matching
+        |3. Baldwin's Effect""".stripMargin)
+    // |4. Minimal Conflicts - N-Queens
+
     val whatToRun = readIntLoop("Please choose what you want to run: ")
 
     whatToRun match {
@@ -46,7 +49,21 @@ object UserMain extends App {
         val alg = chooseGeneticMetadata()
         menu(alg, alg.defaultGeneticAlgParametric)
       case 2 => runHillClimbing()
-      // case 3 => runMinimalConflicts()
+      case 3 =>
+        val baldwin = chooseBaldwinAlg()
+        val generation =
+          for {
+            selection <- Instances.rws
+            mutation <- Instances.mutation.updateDefaults(Map.empty, Map.empty, Map("Mutation Rate" -> 0.0))
+            survivorSelection <- Instances.elitism.updateDefaults(Map.empty, Map.empty, Map("Elitism Rate" -> 0.0))
+          } yield new Generation(selection, mutation, survivorSelection, Array.empty)
+
+        val engine = Instances.geneticEngine(Instances.ignoreLocalOptima, generation, generation)
+        val geneticAlg = baldwin.alg(engine)
+        println("## Genetic Engine: Using RWS ##")
+
+        menu(baldwin, geneticAlg)
+      // case 4 => runMinimalConflicts()
       // None or invalid int
       case _ => mainMenu()
     }
@@ -103,6 +120,26 @@ object UserMain extends App {
         StringHeuristics.heuristic3(_, _, containsWeight, exactsWeight)
       case _ => chooseStringHeuristic()
     }
+  }
+
+  def chooseBaldwinAlg(): GeneticMetadata[_] = {
+    @tailrec
+    def chooseBinaryString(): Array[Byte] = {
+      println("\nChoose a binary string to search (blank for 20 x 0's): ")
+      val secret = in.nextLine()
+      if(secret.isEmpty) Array.fill(20)(0)
+      else if (secret.forall(c => c == '0' || c == '1')) {
+        secret.iterator.map[Byte] {
+          case '0' => 0
+          case '1' => 1
+        }.toArray
+      } else {
+        chooseBinaryString()
+      }
+    }
+
+    val secret = chooseBinaryString()
+    new BaldwinMain(secret)
   }
 
   def chooseStringAlg(): GeneticMetadata[_] = {
@@ -386,7 +423,8 @@ object UserMain extends App {
 
   def bench(alg: Parametric[GeneticAlg[_]]): Unit = {
     val rounds = readIntWithDefault("Enter the number of rounds (1000 default): ", 1000)
-    val time = Util.avgExecutionTime(alg.applyDefaults().run(printEvery = 0, 0.3), rounds)
+    val maxTime = readDoubleWithDefault("Enter the time limit per run (0.3 default): " , 0.3)
+    val time = Util.avgExecutionTime(alg.applyDefaults().run(printEvery = 0, maxTime), rounds)
     println(JavaUtil.formatDouble(time * 1000, 4) + " ms")
   }
 
@@ -432,7 +470,7 @@ object UserMain extends App {
     println(s"Best ${5 min popSize}:")
     println(population.population.sortBy(_.fitness).take(5).map(gene => alg.genetic.asInstanceOf[Genetic[Object]].show(gene.gene.asInstanceOf[Object]) + ", fitness = " + gene.fitness).mkString("\n"))
     println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + main.seed)
-    if(main.isOpt) {
+    if (main.isOpt) {
       population.asInstanceOf[Population[Params]].population(0).gene
     } else
       algParams.defaultNamedParams.toParams
