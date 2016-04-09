@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class Elitism<A> implements SurvivorSelection<A> {
+public class Elitism implements SurvivorSelection {
     public final double elitismRate;
 
     public Elitism(double elitismRate) {
@@ -20,7 +20,7 @@ public class Elitism<A> implements SurvivorSelection<A> {
     }
 
     @Override
-    public void selectSurvivors(Genetic<A> alg,
+    public <A> void selectSurvivors(Genetic<A> alg,
                                 Population<A> population, Population<A> buffer,
                                 Function<Integer, Supplier<A>> getChildren,
                                 Random rand) {
@@ -31,6 +31,7 @@ public class Elitism<A> implements SurvivorSelection<A> {
         Supplier<A> children = getChildren.apply(numChildren);
         for (int i = elites; i < popSize; i++) {
             buffer.population[i].gene = children.get();
+            buffer.population[i].age = 0;
         }
     }
 }

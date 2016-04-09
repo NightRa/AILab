@@ -1,17 +1,18 @@
 package genetic.types;
 
 import genetic.Genetic;
-import genetic.fitnessMapping.FitnessMapping;
 
 import java.util.Comparator;
 
 public class Gene<A> {
     public A gene;
     public double fitness;
+    public int age;
 
     public Gene(A gene, double fitness) {
         this.gene = gene;
         this.fitness = fitness;
+        this.age = 0;
     }
 
     @Override

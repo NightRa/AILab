@@ -60,10 +60,10 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
     for (i <- params.ints.indices) {
       if (rand.nextDouble() < MutationRate) {
         val intMax: Int = iteratorIndex(geneticParam.intsMax.valuesIterator, i)
+        val intMin: Int = iteratorIndex(geneticParam.intsMin.valuesIterator, i)
         val delta = ((rand.nextDouble() * IntsMutationSize - (IntsMutationSize / 2)) * 2) * intMax
-        // max 2 so that population size / 2 isn't 0.
         val current = params.ints(i)
-        params.ints(i) = (current + delta.toInt) max 3 min intMax
+        params.ints(i) = (current + delta.toInt) max intMin min intMax
       }
     }
 
@@ -94,7 +94,11 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
 
 object GeneticParams {
   def randomParams(geneticParam: Parametric[GeneticAlg[_]], rand: Random): Params = new Params(
-    Array.tabulate(geneticParam.intNamesDefaults.size)(i => Math.max(rand.nextInt(iteratorIndex(geneticParam.intsMax.valuesIterator, i)), 3)),
+    Array.tabulate(geneticParam.intNamesDefaults.size)(i => {
+      val max: Int = iteratorIndex(geneticParam.intsMax.valuesIterator, i)
+      val min: Int = iteratorIndex(geneticParam.intsMin.valuesIterator, i)
+      Math.max(rand.nextInt(max), min)
+    }),
     Array.fill(geneticParam.doubleNamesDefaults.size)(rand.nextDouble()))
 
   val emptyParams: Params = new Params(Array.emptyIntArray, Array.emptyDoubleArray)

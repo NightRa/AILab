@@ -23,54 +23,15 @@ abstract class GeneticMetadata[A] {
   def intsNamesMax: Map[String, Int] = Map.empty
   def doubleNamesDefaults: Map[String, Double] = Map.empty
 
+  def alg(engine: Parametric[GeneticEngine]): Parametric[GeneticAlg[A]] =
+    geneticAlg(genetic, engine, rand).updateDefaults(intNamesDefaults, intsNamesMax, doubleNamesDefaults)
 
-  def alg(localOptimaSignal: LocalOptimaSignal[A], normalGeneration: Generation[A], localOptimaGeneration: Generation[A]): Parametric[GeneticAlg[A]] =
-    for {
-      gen <- genetic
-      popSize <- intParam("Population Size", default = 100, maxValue = 256)
-    } yield new GeneticAlg[A](gen, localOptimaSignal, normalGeneration, localOptimaGeneration, popSize, rand)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // A SPECIFIC THING! Just for testing stuff I guess!
   def defaultGeneticAlgParametric: Parametric[GeneticAlg[A]] =
-    (for {
-      gen <- genetic
-      localOptimaSignal <- geneSimilarity[A](gen)     // A SPECIFIC THING!
-      normalGen <- normalGeneration[A]                // A SPECIFIC THING!
-      localOptimaGen <- localOptimaGeneration[A](gen) // A SPECIFIC THING!
-      geneticAlg <- alg(localOptimaSignal, normalGen, localOptimaGen)
-    } yield geneticAlg).updateDefaults(intNamesDefaults, intsNamesMax, doubleNamesDefaults)
+    defaultGeneticAlg(genetic, rand).updateDefaults(intNamesDefaults, intsNamesMax, doubleNamesDefaults)
 }
 
 object GeneticMain {
-  // Such as here!
+  // A main with the default genetic algorithm engine
   def runMain[A](geneticMeta: GeneticMetadata[A]): Unit = {
       val geneticAlg = geneticMeta.defaultGeneticAlgParametric.applyDefaults()
 
@@ -81,7 +42,7 @@ object GeneticMain {
       val time: Long = end - start
       println(geneticMeta.defaultGeneticAlgParametric.toString)
       println("Best 5:")
-      println(population.population.sorted(Ordering.by((x: Gene[A]) => x.fitness)).take(5).map(x => x.show(geneticAlg.genetic)).mkString("\n"))
+      println(population.population.sorted(Ordering.by((x: Gene[A]) => x.fitness)).take(5).map(x => x.show(geneticMeta.genetic.applyDefaults())).mkString("\n"))
       println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + geneticMeta.seed)
 
   }

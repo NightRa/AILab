@@ -1,14 +1,14 @@
-/*
 package main
 
 import java.util.{ArrayList, Random, Scanner}
 
 import analysys.Analysis
 import func.{Func, GeneticFuncMain, HoldersTableFunction, LabTestFunction}
-import genetic.GeneticMetadata
+import genetic.{Genetic, GeneticAlg, GeneticMetadata}
 import genetic.generation.Crossover
-import genetic.types.Population
+import genetic.types.{Gene, Population}
 import knapsack.{GeneticKnapsackMain, Item}
+import parametric.Parametric
 import params.{GeneticParamsMain, NamedParams, Params}
 import queens.{GeneticQueenMain, QueenMating, QueenMutation}
 import string.{GeneticStringMain, HillClimbing, StringHeuristics}
@@ -38,8 +38,8 @@ object UserMain extends App {
 
     whatToRun match {
       case 1 =>
-        val alg = chooseGeneticAlg()
-        menu(alg, alg.defaultParams())
+        val alg = chooseGeneticMetadata()
+        menu(alg, alg.defaultGeneticAlgParametric)
       case 2 => runHillClimbing()
       // case 3 => runMinimalConflicts()
       // None or invalid int
@@ -64,7 +64,7 @@ object UserMain extends App {
     mainMenu()
   }
 
-  def chooseGeneticAlg(): GeneticMetadata[_] = {
+  def chooseGeneticMetadata(): GeneticMetadata[_] = {
     // Choose genetic Alg.
     // Choose variants
     println("\n" +
@@ -78,7 +78,7 @@ object UserMain extends App {
       case 2 => chooseFunctionAlg()
       case 3 => chooseNQueensAlg()
       case 4 => chooseKnapsackAlg()
-      case _ => chooseGeneticAlg()
+      case _ => chooseGeneticMetadata()
     }
   }
 
@@ -215,9 +215,9 @@ object UserMain extends App {
     new GeneticKnapsackMain(items, maxWeight, solution)
   }
 
-  def menu(main: GeneticMetadata[_], params: NamedParams): Unit = {
+  def menu(geneticMeta: GeneticMetadata[_], algParams: Parametric[GeneticAlg[_]]): Unit = {
     println("\n" +
-      s"""|1. run     - Run ${main.name}
+      s"""|1. run     - Run ${geneticMeta.name}
           |2. params  - Change   Parameters of the Genetic Algorithm
           |3. opt     - Optimize Parameters of the Genetic Algorithm
           |4. analyse - Create a statistical report of the Genetic Algorithm
@@ -229,31 +229,32 @@ object UserMain extends App {
     input match {
       case "run" | "1" =>
         val maxTime = readDoubleWithDefault("Enter the maximum runtime in seconds (default 1.0): ", 1.0) max 0
-        val defaultPrintEvery = main.defaultPrintEvery()
+        val defaultPrintEvery = geneticMeta.defaultPrintEvery
         val printEvery = readIntWithDefault(s"Print best every how many iterations? (default $defaultPrintEvery, 0 for never) ", defaultPrintEvery) max 0
-        runGenetic(main, params.toParams, maxTime, printEvery)
-        menu(main, params)
+        runGenetic(geneticMeta, algParams, maxTime, printEvery)
+        menu(geneticMeta, algParams)
       case "params" | "2" =>
-        val newParams = modifyParams(params)
-        menu(main, newParams)
+        val newParams = modifyParams(algParams)
+        menu(geneticMeta, newParams)
       case "opt" | "3" =>
         val maxTime = readDoubleWithDefault("Enter the maximum runtime in seconds (default 100.0): ", 100.0) max 0
-        optimize(main, maxTime)
-        menu(main, params)
+        optimize(algParams, maxTime)
+        menu(geneticMeta, algParams)
       case "analyse" | "4" =>
         println("Enter analysis name: ")
         val name = in.nextLine()
-        analysis(name, main, params, Analysis.defaultParams)
+        analysis(name, Analysis.analysis(name, algParams))
+        menu(geneticMeta, algParams)
       case "bench" | "5" =>
-        bench(main, params.toParams)
-        menu(main, params)
+        bench(algParams)
+        menu(geneticMeta, algParams)
       case "main" | "6" =>
         mainMenu()
-      case _ => menu(main, params)
+      case _ => menu(geneticMeta, algParams)
     }
   }
 
-  def analysis(name: String, main: GeneticMetadata[_], params: NamedParams, analysisParams: NamedParams): Unit = {
+  def analysis(name: String, analysisParams: Parametric[Analysis]): Unit = {
     println()
     println(
       """run    - Run the analysis
@@ -263,50 +264,51 @@ object UserMain extends App {
     val input = in.nextLine()
     input match {
       case "run" =>
-        new Analysis(name, main, params, analysisParams.toParams).runAnalysis()
-        menu(main, params)
+        analysisParams.applyDefaults().runAnalysis()
       case "params" =>
         val newAnalysisParams = modifyParams(analysisParams)
-        analysis(name, main, params, newAnalysisParams)
+        analysis(name, newAnalysisParams)
       case _ =>
-        analysis(name, main, params, analysisParams)
+        analysis(name, analysisParams)
     }
   }
 
-  def bench(main: GeneticMetadata[_], params: Params): Unit = {
+  def bench(alg: Parametric[GeneticAlg[_]]): Unit = {
     val rounds = readIntWithDefault("Enter the number of rounds (1000 default): ", 1000)
-    val time = Util.avgExecutionTime(main.genetic(params).run(printEvery = 0, 0.3), rounds)
+    val time = Util.avgExecutionTime(alg.applyDefaults().run(printEvery = 0, 0.3), rounds)
     println(JavaUtil.formatDouble(time * 1000, 4) + " ms")
   }
 
-  def modifyParams(params: NamedParams): NamedParams = {
+  def modifyParams[A](params: Parametric[A]): Parametric[A] = {
+    val ints = params.intNamesDefaults.toIndexedSeq
+    val doubles = params.doubleNamesDefaults.toIndexedSeq
     println {
-      (params.ints ++ params.doubles).iterator.zipWithIndex.map {
+      (ints ++ doubles).iterator.zipWithIndex.map {
         case ((name, value), index) => s"${index + 1}. $name = $value"
       }.mkString("\n")
     }
     val paramNum = readIntLoop("Which parameter to change? (0 to skip)  ")
     if (paramNum == 0)
       params
-    else if (paramNum >= 1 && paramNum < params.ints.length + 1) {
+    else if (paramNum >= 1 && paramNum < ints.length + 1) {
       val index = paramNum - 1
-      val paramName = params.ints(index)._1
+      val paramName = ints(index)._1
       val newValue = readIntLoop(s"Set $paramName = ")
-      new NamedParams(params.ints.updated(index, (paramName, newValue)), params.doubles)
+      Parametric(params.applyParams, params.intNamesDefaults.updated(paramName, newValue), params.intsMin, params.intsMax, params.doubleNamesDefaults)
 
-    } else if (paramNum < params.ints.length + params.doubles.length + 1) {
-      val index = paramNum - params.ints.length - 1
-      val paramName = params.doubles(index)._1
+    } else if (paramNum < ints.length + doubles.length + 1) {
+      val index = paramNum - ints.length - 1
+      val paramName = doubles(index)._1
       val newValue = readDoubleLoop(s"Set $paramName = ")
-      new NamedParams(params.ints, params.doubles.updated(index, (paramName, newValue)))
+      Parametric(params.applyParams, params.intNamesDefaults, params.intsMin, params.intsMax, params.doubleNamesDefaults.updated(paramName, newValue))
 
     } else {
       params
     }
   }
 
-  def runGenetic[A](main: GeneticMetadata[A], params: Params, maxTime: Double, printEvery: Int): Unit = {
-    val alg = main.genetic(params)
+  def runGenetic(main: GeneticMetadata[_], algParams: Parametric[GeneticAlg[_]], maxTime: Double, printEvery: Int): Unit = {
+    val alg = algParams.applyDefaults()
 
     val start = System.currentTimeMillis
 
@@ -317,13 +319,13 @@ object UserMain extends App {
 
     val popSize = population.population.length
     println(s"Best ${5 min popSize}:")
-    println(population.population.sortBy(_.fitness).take(5).map(gene => alg.genetic.show(gene.gene) + ", fitness = " + gene.fitness).mkString("\n"))
+    println(population.population.sortBy(_.fitness).take(5).map(gene => alg.genetic.asInstanceOf[Genetic[Object]].show(gene.gene.asInstanceOf[Object]) + ", fitness = " + gene.fitness).mkString("\n"))
     println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + main.seed)
   }
 
-  def optimize(main: GeneticMetadata[_], maxTime: Double): Unit = {
-    val geneticParams = new GeneticParamsMain(main, maxTime)
-    runGenetic(geneticParams, geneticParams.defaultParams.toParams, maxTime, printEvery = 1)
+  def optimize(algParams: Parametric[GeneticAlg[_]], maxTime: Double): Unit = {
+    val geneticParams = new GeneticParamsMain(algParams, maxTime)
+    runGenetic(geneticParams, geneticParams.defaultGeneticAlgParametric, maxTime, printEvery = 1)
   }
 
   // ---------------------------------------------------------------------------------------------------------
@@ -379,4 +381,3 @@ object UserMain extends App {
 
 
 }
-*/

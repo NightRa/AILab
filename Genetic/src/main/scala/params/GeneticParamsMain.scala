@@ -18,7 +18,7 @@ class GeneticParamsMain(geneticAlgParams: Parametric[GeneticAlg[_]], val default
 
   override def genetic: Parametric[Genetic[Params]] =
     for {
-      rounds              <- intParam   ("Rounds", default = 10, maxValue = 100)
+      rounds              <- intParam   ("Rounds", default = 10, minValue = 1, maxValue = 100)
       intsMutationSize    <- doubleParam("Ints Mutation Size"   , 0.1)
       doublesMutationSize <- doubleParam("Doubles Mutation Size", 0.1)
       mutationRate        <- doubleParam("Mutation Rate"        , 0.5)

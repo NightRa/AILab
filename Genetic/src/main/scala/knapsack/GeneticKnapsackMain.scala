@@ -51,3 +51,7 @@ object GeneticKnapsackMain extends GeneticKnapsackMain(
 object KnapsackOptimization extends GeneticParamsMain(GeneticKnapsackMain.defaultGeneticAlgParametric, 100) with App {
   GeneticMain.runMain(this)
 }
+
+object KnapsackMetaOptimization extends GeneticParamsMain(KnapsackOptimization.defaultGeneticAlgParametric, 100) with App {
+  GeneticMain.runMain(this)
+}

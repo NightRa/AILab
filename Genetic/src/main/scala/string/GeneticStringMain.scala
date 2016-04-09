@@ -54,7 +54,8 @@ class GeneticStringMain(targetString: String,
     "Local Optimum: Immigrants Rate" -> 0.41,
     "Local Optimum: Top Ratio" -> 0.356,
     "Mutation Rate" -> 0.52, // Very critical
-    "Top Ratio" -> 0.55
+    "Top Ratio" -> 0.55,
+    "Local Optimum: Immigrants Rate" -> 0.0
   )
 
   override def genetic: Parametric[Genetic[Array[Char]]] =

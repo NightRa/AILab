@@ -2,6 +2,7 @@ package analysys
 
 import func.GeneticFuncMain
 import genetic.GeneticMetadata
+import knapsack.GeneticKnapsackMain
 import string.GeneticStringMain
 import util.{JavaUtil, Util}
 
@@ -10,4 +11,4 @@ class SingleAnalysis[A <: AnyRef](metaGenetic: GeneticMetadata[A], Rounds: Int) 
   println(JavaUtil.formatDouble(time * 1000, 4) + " ms")
 }
 
-object SingleFunc extends SingleAnalysis(GeneticStringMain, 1000)
+object SingleFunc extends SingleAnalysis(GeneticKnapsackMain, 1000)

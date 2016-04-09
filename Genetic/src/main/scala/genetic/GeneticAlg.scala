@@ -11,12 +11,9 @@ import util.Util._
 import scala.annotation.tailrec
 
 class GeneticAlg[A](val genetic: Genetic[A],
-                    localOptimaSignal: LocalOptimaSignal[A],
-                    normalGeneration: Generation[A],
-                    localOptimaGeneration: Generation[A],
-
-                    PopulationSize: Int,
+                    geneticEngine: GeneticEngine,
                     rand: Random) {
+  import geneticEngine._
 
   val popSize = {
     if (PopulationSize < 3) {
@@ -62,7 +59,7 @@ class GeneticAlg[A](val genetic: Genetic[A],
   }
 
   def nextGeneration(population: Population[A], buffer: Population[A]): Unit = {
-    val isInLocalOptima = localOptimaSignal.isInLocalOptima(population)
+    val isInLocalOptima = localOptimaSignal.isInLocalOptima(genetic.metric(), population)
     if (!isInLocalOptima) {
       normalGeneration.nextGeneration(genetic, population, buffer, rand)
     } else {

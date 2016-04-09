@@ -1,10 +1,11 @@
 package genetic.localOptima;
 
+import genetic.Metric;
 import genetic.types.Population;
 
-public class IgnoreLocalOptima<A> implements LocalOptimaSignal<A> {
+public class IgnoreLocalOptima implements LocalOptimaSignal {
     @Override
-    public boolean isInLocalOptima(Population<A> population) {
+    public <A> boolean isInLocalOptima(Metric<A> metric, Population<A> population) {
         return false;
     }
 }

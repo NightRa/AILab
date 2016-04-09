@@ -4,19 +4,17 @@ import genetic.Metric;
 import genetic.types.Gene;
 import genetic.types.Population;
 
-public class Niching<A> implements FitnessMapping<A> {
+public class Niching implements FitnessMapping {
     public final double alpha;
     public final double sigmaShare;
-    public final Metric<A> metric;
 
-    public Niching(double alpha, double sigmaShare, Metric<A> metric) {
+    public Niching(double alpha, double sigmaShare) {
         this.alpha = alpha;
         this.sigmaShare = sigmaShare;
-        this.metric = metric;
     }
 
     @Override
-    public double mapFitness(Population<A> population, Gene<A> gene) {
+    public <A> double mapFitness(Metric<A> metric, Population<A> population, Gene<A> gene) {
         double sumOfSharingFunc = 0;
         for (int i = 0; i < population.population.length; i++){
             double distance = metric.distance(gene.gene, population.population[i].gene);

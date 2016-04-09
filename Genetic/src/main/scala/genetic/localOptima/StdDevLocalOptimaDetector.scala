@@ -1,11 +1,11 @@
 package genetic.localOptima
 
+import genetic.Metric
 import genetic.types.Population
-import util.{RunningStat, Util}
+import util.RunningStat
 
-case class StdDevLocalOptimaDetector[A](stdDevThreshold : Double) extends LocalOptimaSignal[A]{
-
-  override def isInLocalOptima(population: Population[A]): Boolean = {
+case class StdDevLocalOptimaDetector(stdDevThreshold : Double) extends LocalOptimaSignal{
+  override def isInLocalOptima[A](metric: Metric[A], population: Population[A]): Boolean = {
     val statistics = new RunningStat()
     var i = 0
     while (i < population.population.length) {
