@@ -2,8 +2,7 @@ package knapsack
 
 import java.util.Random
 
-import genetic.{Metric, Genetic}
-import util.Distance
+import genetic.{Genetic, Metric}
 import util.Distance._
 
 class GeneticKnapsack(instance: KnapsackInstance,

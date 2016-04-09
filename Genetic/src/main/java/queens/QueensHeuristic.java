@@ -1,7 +1,5 @@
 package queens;
 
-import java.util.Arrays;
-
 import static java.lang.Math.abs;
 
 public class QueensHeuristic {
@@ -13,7 +11,7 @@ public class QueensHeuristic {
             return 0;
     }
 
-    public static double queensHeuristic(QueenPermutation gene){
+    public static double queensHeuristic(QueenPermutation gene) {
         int sum = 0;
         int size = gene.size();
         int count = 0;

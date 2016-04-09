@@ -1,34 +1,44 @@
 package baldwin
 
-import genetic.{Metric, Genetic}
-
 import java.util.Random
 
+import genetic.generation.Crossover
+import genetic.{Genetic, Metric}
+
 class GeneticBaldwin(maxIterations: Int,
-                     target: Array[Bit],
-                     rand: Random) extends Genetic[Array[BaldwinBit]] {
-  override def fitness(gene: Array[BaldwinBit]): Double = {
-    val remainingIterations = BaldwinBitString.localSearchToBest(gene, maxIterations, BaldwinBitString.bitStringEquals(_, target), rand)
-    val rawFitness = 1 + 19.0 * remainingIterations.toDouble / maxIterations // 1~20
-    val normalized = (20 -  rawFitness) / 20 // 1 -> 1, 20 -> 0
-    assert(normalized >= 0 && normalized <= 1)
-    normalized
+                     target: Array[Byte],
+                     rand: Random) extends Genetic[Array[Byte]] {
+
+  override def fitness(gene: Array[Byte]): Double = {
+    if(java.util.Arrays.equals(gene, target)) 0
+    else {
+      // do not let the fitness to be 0
+      val remainingIterations = Math.min(BaldwinBitString.localSearchesTimeRemaining(gene, target, maxIterations, rand), maxIterations - 1)
+      val rawFitness = 1 + 19.0 * remainingIterations.toDouble / maxIterations // 1~20
+      val normalized = 1 - rawFitness / 20 // 1 -> 1, 20 -> 0
+      normalized
+    }
   }
 
-  override def metric(): Metric[Array[BaldwinBit]] = new Metric[Array[BaldwinBit]] {
-    override def distance(x: Array[BaldwinBit], y: Array[BaldwinBit]): Double = 1
+  override def mate(x: Array[Byte], y: Array[Byte]): Array[Byte] = Crossover.onePointCrossoverBytes(x,y, rand)
+
+  override def randomElement(rand: Random): Array[Byte] = BaldwinBitString.randomBaldwinString(target.length ,rand)
+
+  override def metric(): Metric[Array[Byte]] = new Metric[Array[Byte]] {
+    override def distance(x: Array[Byte], y: Array[Byte]): Double = 1
   }
 
-  override def mate(x: Array[BaldwinBit], y: Array[BaldwinBit]): Array[BaldwinBit] = {
-    BaldwinBitString.onePointCrossOver(x, y, rand)
+  override def show(gene: Array[Byte]): String = {
+    gene.iterator.map {
+      case BaldwinBit.Zero => '0'
+      case BaldwinBit.One => '1'
+      case BaldwinBit.QuestionMark => '?'
+    }.mkString
   }
 
-  override def mutate(a: Array[BaldwinBit]): Array[BaldwinBit] = {
+  override def mutate(a: Array[Byte]): Array[Byte] = {
     val index = rand.nextInt(a.length)
-    a(index) = BaldwinBitString.genBaldwinBit(rand)
+    a(index) = BaldwinBit.genBaldwinBit(rand)
     a
   }
-
-  override def randomElement(rand: Random): Array[BaldwinBit] = BaldwinBitString.generateBitStringRandomly(target.length,rand)
-  override def show(gene: Array[BaldwinBit]): String = gene.mkString
 }

@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 import static genetic.survivors.Elitism.elitism;
 
-public class ElitismRandomImmigrants<A> implements SurvivorSelection<A> {
+public class ElitismRandomImmigrants implements SurvivorSelection {
 
     public final double randomImmigrantsPercent;
     public final double elitismRate;
@@ -20,7 +20,7 @@ public class ElitismRandomImmigrants<A> implements SurvivorSelection<A> {
     }
 
     @Override
-    public void selectSurvivors(Genetic<A> alg, Population<A> population, Population<A> buffer, Function<Integer, Supplier<A>> getChildren, Random rand) {
+    public <A> void selectSurvivors(Genetic<A> alg, Population<A> population, Population<A> buffer, Function<Integer, Supplier<A>> getChildren, Random rand) {
         int popSize = population.population.length;
         int elites = (int) (popSize * elitismRate);
         elitism(population, buffer, elites);
@@ -28,12 +28,14 @@ public class ElitismRandomImmigrants<A> implements SurvivorSelection<A> {
         int immigrants = (int) randomImmigrantsPercent * popSize;
         for (int i = elites; i < (elites + immigrants) && i < popSize; i++) {
             buffer.population[i].gene = alg.randomElement(rand);
+            buffer.population[i].age = 0;
         }
 
         int numChildren = Math.max(popSize - elites - immigrants, 0);
         Supplier<A> children = getChildren.apply(numChildren);
         for (int i = elites; i < popSize; i++) {
             buffer.population[i].gene = children.get();
+            buffer.population[i].age = 0;
         }
     }
 }

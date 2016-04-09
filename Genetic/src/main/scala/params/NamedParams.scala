@@ -5,8 +5,3 @@ case class NamedParams(ints: Array[(String, Int)], doubles: Array[(String, Doubl
 
   override def toString: String = s"Params: (ints: ${ints.toMap.toString.drop(3)}, doubles: ${doubles.toMap.toString.drop(3)})"
 }
-
-object NamedParams {
-  def apply(ints: (String, Int)*)(doubles: (String, Double)*): NamedParams =
-    new NamedParams(ints.toArray, doubles.toArray)
-}

@@ -1,7 +1,5 @@
 package string;
 
-import java.util.Random;
-
 public class StringHeuristics {
     public static double heuristic1(char[] elem, char[] target) {
         int len = Math.min(elem.length, target.length);
@@ -9,7 +7,7 @@ public class StringHeuristics {
         for (int i = 0; i < len; i++) {
             fitness += Math.abs(elem[i] - target[i]);
         }
-        return (double) fitness / (91*target.length);
+        return (double) fitness / (91 * target.length);
     }
 
     public static double heuristic2(char[] elem, char[] target) {

@@ -3,10 +3,10 @@ package analysys
 import java.io.{File, FileOutputStream, PrintStream}
 
 import genetic.GeneticAlg
-import util.JavaUtil._
-import util.Util.avgExecutionTime
 import parametric.Parametric
 import parametric.Parametric._
+import util.JavaUtil._
+import util.Util.avgExecutionTime
 
 class Analysis(name: String,
                geneticParam: Parametric[GeneticAlg[_]],
@@ -41,7 +41,7 @@ class Analysis(name: String,
   }
 
   def csvInt(paramName: String): Unit = {
-    val file = new PrintStream(new FileOutputStream(s"analysis/$name/${paramName.replace(" ", "")}.csv"))
+    val file = new PrintStream(new FileOutputStream(s"analysis/$name/${paramName.replace(":", " -")}.csv"))
     for {
       value <- (3 to intsMax(paramName) by intsStepSize).par
     } {
@@ -54,7 +54,7 @@ class Analysis(name: String,
   }
 
   def csvDouble(paramName: String): Unit = {
-    val file = new PrintStream(new FileOutputStream(s"analysis/$name/${paramName.replace(" ", "")}.csv"))
+    val file = new PrintStream(new FileOutputStream(s"analysis/$name/${paramName.replace(":", " -")}.csv"))
     for {
       value <- (0.0 to 1 by doublesStep).par
     } {
@@ -70,8 +70,8 @@ class Analysis(name: String,
 object Analysis {
   def analysis(analysisName: String, geneticParam: Parametric[GeneticAlg[_]]): Parametric[Analysis] =
     for {
-      rounds <- intParam("Rounds", default = 10, maxValue = 100)
-      intsStepSize <- intParam("Ints Step Size", default = 10, maxValue = 100)
+      rounds <- intParam("Rounds", default = 10, minValue = 1, maxValue = 100)
+      intsStepSize <- intParam("Ints Step Size", default = 10, minValue = 1, maxValue = 100)
       doublesStep <- doubleParam("Doubles Step", 0.01)
       maxTime <- doubleParam("Max Time per run (seconds)", 0.2)
     } yield new Analysis(analysisName, geneticParam, rounds, intsStepSize, doublesStep, maxTime)

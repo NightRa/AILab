@@ -25,6 +25,7 @@ class GeneticQueenMain(boardSize: Int,
   override def intNamesDefaults: Map[String, Int] = Map(
     "Population Size" -> 100
   )
+
   override def doubleNamesDefaults: Map[String, Double] = Map(
     "Elitism Rate" -> 0.1,
     "Mutation Rate" -> 0.4
@@ -42,6 +43,6 @@ object GeneticQueenMain extends GeneticQueenMain(10, QueenMating.pmx, QueenMutat
   }
 }
 
-object QueenOptimization extends GeneticParamsMain(GeneticQueenMain.defaultGeneticAlgParametric, 100) with App {
+object QueenOptimization extends GeneticParamsMain(GeneticQueenMain, GeneticQueenMain.defaultGeneticAlgParametric, 100) with App {
   GeneticMain.runMain(this)
 }

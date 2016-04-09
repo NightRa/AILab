@@ -2,9 +2,21 @@ package genetic.generation;
 
 import java.util.Random;
 
-import static java.lang.System.*;
+import static java.lang.System.arraycopy;
 
 public class Crossover {
+    // So many copy-pasting to avoid boxing.
+
+    public static byte[] onePointCrossoverBytes(byte[] x, byte[] y, Random rand) {
+        assert x.length == y.length;
+
+        int pos = rand.nextInt(x.length);
+        byte[] str = new byte[x.length];
+        arraycopy(x, 0, str, 0, pos);
+        arraycopy(y, pos, str, pos, y.length - pos);
+        return str;
+    }
+
     // For Strings
     public static char[] onePointCrossoverString(char[] x, char[] y, Random rand) {
         assert x.length == y.length;

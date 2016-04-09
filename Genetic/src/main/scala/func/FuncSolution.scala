@@ -3,7 +3,7 @@ package func
 import java.lang.Math._
 import java.util.Random
 
-import Func._
+import func.Func._
 import util.Util.formatScientific
 
 abstract class Func(val minX: Double, val maxX: Double, val minY: Double, val maxY: Double) {

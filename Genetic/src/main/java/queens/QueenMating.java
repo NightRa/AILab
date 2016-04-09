@@ -7,7 +7,7 @@ import java.util.Random;
 public final class QueenMating {
 
     // partially matched crossover
-    public static int[] pmx(int[] a1, int[] a2, Random rand){
+    public static int[] pmx(int[] a1, int[] a2, Random rand) {
         assert (a1.length == a2.length);
         int size = a1.length;
         int[] newArray = a1.clone();
@@ -24,15 +24,15 @@ public final class QueenMating {
     // it is slightly different from what described... but well enough
     // complexity: O(n^2), O(1) space
     // ordered crossover
-    public static int[] ox(int a1[], int a2[], Random rand){
+    public static int[] ox(int a1[], int a2[], Random rand) {
         int[] newArray = a1.clone();
 
         for (int i = 0; i < a1.length; i++)
             if (rand.nextBoolean())
                 newArray[i] = -1;
 
-        for (int i = 0 ; i < a1.length; i++)
-            if (!JavaUtil.containsValue(newArray, a2[i])){
+        for (int i = 0; i < a1.length; i++)
+            if (!JavaUtil.containsValue(newArray, a2[i])) {
                 int index = JavaUtil.firstIndexOf(-1, newArray);
                 newArray[index] = a2[i];
             }
@@ -41,7 +41,7 @@ public final class QueenMating {
     }
 
     // cycle crossover
-    public static int[] cx(int[] a1, int[] a2, Random rand){
+    public static int[] cx(int[] a1, int[] a2, Random rand) {
         int[] newArray = a2.clone();
         int index = rand.nextInt(a1.length);
         int newIndex = index;

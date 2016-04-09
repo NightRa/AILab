@@ -6,7 +6,7 @@ import java.util.Optional;
 
 
 public final class minConflictsMain {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         int size = 20;
         Random rand = new Random();
         QueenBoard board = QueenBoard.genRandom(size, rand);

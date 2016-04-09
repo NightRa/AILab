@@ -3,7 +3,10 @@ package genetic.selection;
 import genetic.types.Gene;
 import genetic.types.Population;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,6 +25,7 @@ public class StochasticUniversalSampling implements ParentSelection {
         double stepSize = fitnessSum / size;
         Supplier<A> supplier = new Supplier<A>() {
             RoulettePosition pos = initialPosition;
+
             @Override
             public A get() {
                 int i = pos.index;
