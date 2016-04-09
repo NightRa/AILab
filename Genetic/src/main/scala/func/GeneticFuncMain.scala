@@ -6,7 +6,9 @@ import parametric.Parametric._
 
 class GeneticFuncMain(func: Func) extends GeneticMetadata[FuncSolution] {
   val name = func.name + " Optimization"
+
   def defaultPrintEvery = 1
+
   def defaultMaxTime: Double = 1
 
   override def genetic: Parametric[Genetic[FuncSolution]] =
@@ -21,6 +23,7 @@ class GeneticFuncMain(func: Func) extends GeneticMetadata[FuncSolution] {
   override def intNamesDefaults: Map[String, Int] = Map(
     "Population Size" -> 180
   )
+
   override def doubleNamesDefaults: Map[String, Double] = Map(
     "Elitism Rate" -> 0.16,
     "Mutation Rate" -> 0.31,

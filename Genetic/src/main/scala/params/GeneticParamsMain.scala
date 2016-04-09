@@ -1,12 +1,6 @@
 package params
 
 import genetic._
-import genetic.fitnessMapping.FitnessMapping
-import genetic.generation.Generation
-import genetic.localOptima.IgnoreLocalOptima
-import genetic.mutation.RegularMutation
-import genetic.selection.TopSelection
-import genetic.survivors.Elitism
 import parametric.Parametric
 import parametric.Parametric._
 import util.JavaUtil

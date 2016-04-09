@@ -1,16 +1,15 @@
 package parametric
 
-
 import java.util.Random
 
-import genetic.{Genetic, GeneticAlg, GeneticEngine}
-import genetic.fitnessMapping.{Aging, FitnessMapping, Niching, Windowing}
-import Parametric._
+import genetic.fitnessMapping.{Aging, Niching, Windowing}
 import genetic.generation.Generation
 import genetic.localOptima.{DistanceSimilarityDetector, LocalOptimaSignal, StdDevLocalOptimaDetector}
 import genetic.mutation.RegularMutation
 import genetic.selection.{RouletteWheelSelection, TopSelection}
 import genetic.survivors.{Elitism, ElitismRandomImmigrants}
+import genetic.{Genetic, GeneticAlg, GeneticEngine}
+import parametric.Parametric._
 
 object Instances {
   def niching: Parametric[Niching] =

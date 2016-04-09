@@ -2,16 +2,15 @@ package knapsack
 
 import java.util.Random
 
-import util.JavaUtil
 import util.JavaUtil.formatDouble
 
 class KnapsackElement(val amounts: Array[Int], val instance: KnapsackInstance) {
   def isValid(): Boolean = totalWeight() < instance.capacity
 
   def totalWeight(): Double = {
-    var sum : Double = 0
+    var sum: Double = 0
     var i = 0
-    while (i < amounts.length){
+    while (i < amounts.length) {
       sum += instance.items(i).weight * amounts(i)
       i += 1
     }
@@ -19,9 +18,9 @@ class KnapsackElement(val amounts: Array[Int], val instance: KnapsackInstance) {
   }
 
   def totalValue(): Double = {
-    var sum : Double = 0
+    var sum: Double = 0
     var i = 0
-    while (i < amounts.length){
+    while (i < amounts.length) {
       sum += instance.items(i).value * amounts(i)
       i += 1
     }

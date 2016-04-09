@@ -1,10 +1,10 @@
 package util;
 
 import genetic.types.Gene;
-import java.util.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import static java.util.Comparator.comparing;
 
@@ -31,14 +31,14 @@ public final class JavaUtil {
         array[j] = temp;
     }
 
-    public static int indexOf(int[] array, int num){
+    public static int indexOf(int[] array, int num) {
         for (int i = 0; i < array.length; i++)
             if (array[i] == num)
                 return i;
         throw new IllegalArgumentException("the array does not contain num: " + num);
     }
 
-    public static boolean containsValue(int[] array, int value){
+    public static boolean containsValue(int[] array, int value) {
         for (int i = 0; i < array.length; i++)
             if (array[i] == value)
                 return true;

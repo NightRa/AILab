@@ -83,7 +83,7 @@ object Parametric {
     Parametric((ints, doubles) => p1.applyParams(ints, doubles).applyParams(ints, doubles), p1.intNamesDefaults ++ p2.intNamesDefaults, p1.intsMin ++ p2.intsMin, p1.intsMax ++ p2.intsMax, p1.doubleNamesDefaults ++ p2.doubleNamesDefaults)
   }
 
-  def intParam(name: String, default: Int, minValue:Int, maxValue: Int): Parametric[Int] =
+  def intParam(name: String, default: Int, minValue: Int, maxValue: Int): Parametric[Int] =
     Parametric((ints, doubles) => ints.getOrElse(name, throw new IllegalArgumentException(s"Int parameter not found: $name")),
       SortedMap(name -> default),
       SortedMap(name -> minValue),

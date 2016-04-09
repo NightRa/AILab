@@ -1,7 +1,6 @@
 package genetic.survivors;
 
 import genetic.Genetic;
-import genetic.survivors.SurvivorSelection;
 import genetic.types.Population;
 
 import java.util.Random;
@@ -21,9 +20,9 @@ public class Elitism implements SurvivorSelection {
 
     @Override
     public <A> void selectSurvivors(Genetic<A> alg,
-                                Population<A> population, Population<A> buffer,
-                                Function<Integer, Supplier<A>> getChildren,
-                                Random rand) {
+                                    Population<A> population, Population<A> buffer,
+                                    Function<Integer, Supplier<A>> getChildren,
+                                    Random rand) {
         int popSize = population.population.length;
         int elites = (int) (popSize * elitismRate);
         elitism(population, buffer, elites);

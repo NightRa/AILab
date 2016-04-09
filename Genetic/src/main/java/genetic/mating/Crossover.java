@@ -4,7 +4,7 @@ import baldwin.BaldwinBit;
 
 import java.util.Random;
 
-import static java.lang.System.*;
+import static java.lang.System.arraycopy;
 
 public class Crossover {
     // For Strings

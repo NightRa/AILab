@@ -16,7 +16,7 @@ public class Niching implements FitnessMapping {
     @Override
     public <A> double mapFitness(Metric<A> metric, Population<A> population, Gene<A> gene) {
         double sumOfSharingFunc = 0;
-        for (int i = 0; i < population.population.length; i++){
+        for (int i = 0; i < population.population.length; i++) {
             double distance = metric.distance(gene.gene, population.population[i].gene);
             if (distance < sigmaShare)
                 sumOfSharingFunc += 1 - Math.pow(distance / sigmaShare, alpha);

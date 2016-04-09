@@ -2,14 +2,12 @@ package string
 
 import java.util.Random
 
-import util.Util
-
 class HillClimbing(heuristic: Array[Char] => Double, print: Boolean, rand: Random) {
   val chars: Array[Char] = (32 to 126).map(_.toChar).toArray
 
   def hillClimbing(state: Array[Char]): String = {
     var index = 0
-    while(heuristic(state) > 0 && index < state.length) {
+    while (heuristic(state) > 0 && index < state.length) {
       val bestChar = chars.minBy(c => {
         state(index) = c
         val value = heuristic(state)
@@ -17,7 +15,7 @@ class HillClimbing(heuristic: Array[Char] => Double, print: Boolean, rand: Rando
       })
       state(index) = bestChar
       index += 1
-      if(print) println(state.mkString)
+      if (print) println(state.mkString)
     }
     state.mkString
   }
@@ -34,6 +32,6 @@ object HillClimbing {
     val after = System.nanoTime()
     val time = after - before
     val milis = (time / 1000).toDouble / 1000
-    println(s"Time: $milis ms" + (if(print) " (including printing)" else ""))
+    println(s"Time: $milis ms" + (if (print) " (including printing)" else ""))
   }
 }

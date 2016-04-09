@@ -4,12 +4,12 @@ import java.util.{ArrayList, Random, Scanner}
 
 import analysys.Analysis
 import func.{Func, GeneticFuncMain, HoldersTableFunction, LabTestFunction}
-import genetic.{Genetic, GeneticAlg, GeneticMetadata}
 import genetic.generation.Crossover
-import genetic.types.{Gene, Population}
+import genetic.types.Population
+import genetic.{Genetic, GeneticAlg, GeneticMetadata}
 import knapsack.{GeneticKnapsackMain, Item}
 import parametric.Parametric
-import params.{GeneticParamsMain, NamedParams, Params}
+import params.GeneticParamsMain
 import queens.{GeneticQueenMain, QueenMating, QueenMutation}
 import string.{GeneticStringMain, HillClimbing, StringHeuristics}
 import util.{JavaUtil, Util}

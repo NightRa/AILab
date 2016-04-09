@@ -3,8 +3,6 @@ package genetic.types;
 import genetic.Genetic;
 import genetic.fitnessMapping.FitnessMapping;
 
-import java.util.List;
-
 public class Population<A> {
     public Gene<A>[] population;
     private double minFitness;

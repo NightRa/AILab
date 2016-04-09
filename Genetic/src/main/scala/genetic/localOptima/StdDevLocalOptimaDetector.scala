@@ -4,7 +4,7 @@ import genetic.Metric
 import genetic.types.Population
 import util.RunningStat
 
-case class StdDevLocalOptimaDetector(stdDevThreshold : Double) extends LocalOptimaSignal{
+case class StdDevLocalOptimaDetector(stdDevThreshold: Double) extends LocalOptimaSignal {
   override def isInLocalOptima[A](metric: Metric[A], population: Population[A]): Boolean = {
     val statistics = new RunningStat()
     var i = 0

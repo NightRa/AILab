@@ -1,7 +1,5 @@
 package genetic.selection;
 
-import genetic.fitnessMapping.FitnessMapping;
-import genetic.types.Gene;
 import genetic.types.Population;
 
 import java.util.Random;

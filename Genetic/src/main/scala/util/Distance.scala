@@ -7,14 +7,14 @@ object Distance {
     x * x
   }
 
-  def arrayDistanceD (x : Iterator[Double], y : Iterator[Double]): Double ={
-    var sum : Double = 0
+  def arrayDistanceD(x: Iterator[Double], y: Iterator[Double]): Double = {
+    var sum: Double = 0
     while (x.hasNext) {
       val a = x.next
       val b = y.next
-      sum += (a-b)*(a-b)
+      sum += (a - b) * (a - b)
     }
-    sqrt (sum)
+    sqrt(sum)
   }
 
   def euclidianDistance(x1: Double, y1: Double, x2: Double, y2: Double): Double = {

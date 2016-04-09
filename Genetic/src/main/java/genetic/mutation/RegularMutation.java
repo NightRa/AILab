@@ -14,7 +14,7 @@ public class RegularMutation extends MutationStrategy {
 
     @Override
     public <A> A mutate(Genetic<A> alg, A a, Random rand) {
-        if(rand.nextDouble() < mutationRate)
+        if (rand.nextDouble() < mutationRate)
             return alg.mutate(a);
         else
             return a;

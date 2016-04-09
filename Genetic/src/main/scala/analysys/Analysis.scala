@@ -3,10 +3,10 @@ package analysys
 import java.io.{File, FileOutputStream, PrintStream}
 
 import genetic.GeneticAlg
-import util.JavaUtil._
-import util.Util.avgExecutionTime
 import parametric.Parametric
 import parametric.Parametric._
+import util.JavaUtil._
+import util.Util.avgExecutionTime
 
 class Analysis(name: String,
                geneticParam: Parametric[GeneticAlg[_]],

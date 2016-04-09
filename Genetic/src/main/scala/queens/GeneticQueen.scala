@@ -3,7 +3,7 @@ package queens
 import java.lang.Math.abs
 import java.util.Random
 
-import genetic.{Metric, Genetic}
+import genetic.{Genetic, Metric}
 
 class GeneticQueen(boardSize: Int,
                    mateFunc: (Array[Int], Array[Int], Random) => Array[Int],

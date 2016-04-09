@@ -3,15 +3,9 @@ package string
 import java.util.Random
 
 import genetic._
-import genetic.fitnessMapping.FitnessMapping
 import genetic.generation.Crossover._
-import genetic.generation.Generation
-import genetic.localOptima.IgnoreLocalOptima
-import genetic.mutation.RegularMutation
-import genetic.selection.TopSelection
-import genetic.survivors.Elitism
 import parametric.Parametric
-import params.{GeneticParamsMain, NamedParams, Params}
+import params.GeneticParamsMain
 
 class GeneticStringMain(targetString: String,
                         crossover: (Array[Char], Array[Char], Random) => Array[Char],
@@ -37,17 +31,20 @@ class GeneticStringMain(targetString: String,
   */
 
   val target: Array[Char] = targetString.toCharArray
+
   def appliedHeuristic(state: Array[Char]) = heuristic(state, target)
 
   // To be overwritten to provide problem-specific defaults.
   override def intNamesDefaults: Map[String, Int] = Map(
     "Population Size" -> 3 // Minimum is best.
   )
+
   override def intsNamesMax: Map[String, Int] = Map(
     "Population Size" -> 20
   )
+
   override def doubleNamesDefaults: Map[String, Double] = Map(
-    "Elitism Rate"  -> 0.31, // Doesn't influence anything at all.
+    "Elitism Rate" -> 0.31, // Doesn't influence anything at all.
     "Gene Similarity Threshold" -> 0.485,
     "Local Optimum: Elitism Rate" -> 0.384,
     "Local Optimum: Hyper Mutation Rate" -> 1.0,

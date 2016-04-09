@@ -3,9 +3,9 @@ package genetic.generation;
 import genetic.Genetic;
 import genetic.fitnessMapping.FitnessMapping;
 import genetic.mutation.MutationStrategy;
+import genetic.selection.ParentSelection;
 import genetic.survivors.SurvivorSelection;
 import genetic.types.Population;
-import genetic.selection.ParentSelection;
 import util.JavaUtil;
 
 import java.util.Random;

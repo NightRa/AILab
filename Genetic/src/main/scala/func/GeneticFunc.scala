@@ -2,7 +2,7 @@ package func
 
 import java.util.Random
 
-import genetic.{Metric, Genetic}
+import genetic.{Genetic, Metric}
 import util.Distance
 import util.Util._
 

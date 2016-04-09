@@ -2,8 +2,6 @@ package genetic
 
 import java.util.Random
 
-import genetic.generation.Generation
-import genetic.localOptima.LocalOptimaSignal
 import genetic.types.{Gene, Population}
 import util.JavaUtil
 import util.Util._
@@ -13,6 +11,7 @@ import scala.annotation.tailrec
 class GeneticAlg[A](val genetic: Genetic[A],
                     geneticEngine: GeneticEngine,
                     rand: Random) {
+
   import geneticEngine._
 
   val popSize = {

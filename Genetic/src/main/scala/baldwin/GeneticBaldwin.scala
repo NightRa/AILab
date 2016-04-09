@@ -1,8 +1,8 @@
 package baldwin
 
-import genetic.{Metric, Genetic}
-
 import java.util.Random
+
+import genetic.{Genetic, Metric}
 
 class GeneticBaldwin(maxIterations: Int,
                      target: Array[Bit],
@@ -10,7 +10,7 @@ class GeneticBaldwin(maxIterations: Int,
   override def fitness(gene: Array[BaldwinBit]): Double = {
     val remainingIterations = BaldwinBitString.localSearchToBest(gene, maxIterations, BaldwinBitString.bitStringEquals(_, target), rand)
     val rawFitness = 1 + 19.0 * remainingIterations.toDouble / maxIterations // 1~20
-    val normalized = (20 -  rawFitness) / 20 // 1 -> 1, 20 -> 0
+    val normalized = (20 - rawFitness) / 20 // 1 -> 1, 20 -> 0
     assert(normalized >= 0 && normalized <= 1)
     normalized
   }
@@ -29,6 +29,7 @@ class GeneticBaldwin(maxIterations: Int,
     a
   }
 
-  override def randomElement(rand: Random): Array[BaldwinBit] = BaldwinBitString.generateBitStringRandomly(target.length,rand)
+  override def randomElement(rand: Random): Array[BaldwinBit] = BaldwinBitString.generateBitStringRandomly(target.length, rand)
+
   override def show(gene: Array[BaldwinBit]): String = gene.mkString
 }

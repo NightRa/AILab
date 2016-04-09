@@ -25,6 +25,7 @@ class GeneticQueenMain(boardSize: Int,
   override def intNamesDefaults: Map[String, Int] = Map(
     "Population Size" -> 100
   )
+
   override def doubleNamesDefaults: Map[String, Double] = Map(
     "Elitism Rate" -> 0.1,
     "Mutation Rate" -> 0.4

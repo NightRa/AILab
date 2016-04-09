@@ -10,6 +10,6 @@ case class Params(ints: Array[Int], doubles: Array[Double]) {
 }
 
 object Params {
-  def init(rand:Random, intsMax: Array[Int], intsSize: Int, doublesSize: Int): Params =
+  def init(rand: Random, intsMax: Array[Int], intsSize: Int, doublesSize: Int): Params =
     new Params(Array.tabulate(intsSize)(i => rand.nextInt(intsMax(i))), Array.fill(doublesSize)(rand.nextDouble()))
 }
