@@ -4,15 +4,20 @@ import java.util.{ArrayList, Random, Scanner}
 
 import analysys.Analysis
 import func.{Func, GeneticFuncMain, HoldersTableFunction, LabTestFunction}
-import genetic.generation.Crossover
+import genetic.fitnessMapping.FitnessMapping
+import genetic.generation.{Crossover, Generation}
+import genetic.localOptima.LocalOptimaSignal
+import genetic.selection.ParentSelection
+import genetic.survivors.SurvivorSelection
 import genetic.types.Population
-import genetic.{Genetic, GeneticAlg, GeneticMetadata}
+import genetic.{Genetic, GeneticAlg, GeneticEngine, GeneticMetadata}
 import knapsack.{GeneticKnapsackMain, Item}
-import parametric.Parametric
+import parametric.{Instances, Parametric}
 import params.GeneticParamsMain
 import queens.{GeneticQueenMain, QueenMating, QueenMutation}
 import string.{GeneticStringMain, HillClimbing, StringHeuristics}
 import util.{JavaUtil, Util}
+import scalaz.std.list.listInstance
 
 import scala.annotation.tailrec
 import scala.util.Try
@@ -151,12 +156,13 @@ object UserMain extends App {
     val boardSize = readIntWithDefault("Choose board size (default 10): ", 10)
 
     def chooseMating(): (Array[Int], Array[Int], Random) => Array[Int] = {
+      println()
       println(
-        """1. PMX - Partially Matched Crossover
+        """1. PMX - Partially Matched Crossover (*)
           |2. OX  - Ordered Crossover
           |3. CX  - Cycle   Crossover
         """.stripMargin)
-      val matingNum = readIntLoop("Choose a mating algorithm: ")
+      val matingNum = readIntWithDefault("Choose a mating algorithm (default 1): ", 1)
       matingNum match {
         case 1 => QueenMating.pmx
         case 2 => QueenMating.ox
@@ -168,15 +174,16 @@ object UserMain extends App {
     val mating = chooseMating()
 
     def chooseMutation(): (Array[Int], Random) => Unit = {
+      println()
       println(
         """1. Displacement
-          |2. Exchange
+          |2. Exchange (*)
           |3. Insertion
           |4. Simple Inversion
           |5. Complex Inversion
           |6. Scramble
         """.stripMargin)
-      val mutationNum = readIntLoop("Choose a mutation algorithm: ")
+      val mutationNum = readIntWithDefault("Choose a mutation algorithm (default 2): ", 2)
       mutationNum match {
         case 1 => QueenMutation.displacement
         case 2 => QueenMutation.exchange
@@ -215,14 +222,111 @@ object UserMain extends App {
     new GeneticKnapsackMain(items, maxWeight, solution)
   }
 
+  @tailrec
+  def chooseParentSelection(): Parametric[ParentSelection] = {
+    println("\n# Choose Parent Selection Algorithm:")
+    println(
+      """1. Top Selection (*)
+        |2. Roulette Wheel Selection - RWS
+        |3. Stochastic Universal Sampling - SUS
+        |4. Tournament
+      """.stripMargin)
+    readIntWithDefault("Choose a parent selection strategy (default 1): ", 1) match {
+      case 1 => Instances.topSelection
+      case 2 => Instances.rws
+      case 3 => Instances.sus
+      case 4 => Instances.tournament
+      case _ => chooseParentSelection()
+    }
+  }
+
+  def chooseSurvivorSelection(localOptimum: Boolean): Parametric[SurvivorSelection] = {
+    println("\n# Choose Survivor Selection Algorithm:")
+    val default = if (!localOptimum) 1 else 2
+    println("1. Elitism " + (if (!localOptimum) "(*)" else ""))
+    println("2. Elitism with Random Immigrants " + (if (localOptimum) "(*)" else ""))
+    readIntWithDefault(s"Choose a survivor selection strategy (default $default): ", default) match {
+      case 1 => Instances.elitism
+      case 2 => Instances.randomImmigrantsElitism
+      case _ => chooseSurvivorSelection(localOptimum)
+    }
+  }
+
+  def chooseFitnessMappings(): Parametric[List[FitnessMapping]] = {
+    def optional[A](select: Boolean, element: A): List[A] = if (select) List(element) else Nil
+    @tailrec
+    def go(windowing: Boolean, aging: Boolean, niching: Boolean): List[Parametric[FitnessMapping]] = {
+      println("\n# Choose Fitness Mappings:")
+      println("1. Windowing " + (if (windowing) "(*)" else ""))
+      println("2. Aging " + (if (aging) "(*)" else ""))
+      println("3. Niching " + (if (niching) "(*)" else ""))
+      print("Enter what you want to choose (multiple selection, blank to continue): ")
+      tryReadInt() match {
+        case Some(1) => go(!windowing, aging, niching)
+        case Some(2) => go(windowing, !aging, niching)
+        case Some(3) => go(windowing, aging, !niching)
+        case Some(_) => go(windowing, aging, niching)
+        case None =>
+          optional(windowing, Instances.windowing) ++
+            optional(aging, Instances.aging) ++
+            optional(niching, Instances.niching)
+      }
+    }
+    val mappings: List[Parametric[FitnessMapping]] = go(windowing = false, aging = false, niching = false)
+    Parametric.parametricMonad.sequence(mappings)
+  }
+
+  def chooseGeneration(localOptimum: Boolean): Parametric[Generation] = {
+    if (!localOptimum) println("\n### Choosing Normal Generation ###") else println("\n### Choosing Local Optimum Generation ###")
+
+    val parentSelectionParam: Parametric[ParentSelection] = chooseParentSelection()
+    val survivorSelectionParam: Parametric[SurvivorSelection] = chooseSurvivorSelection(localOptimum)
+    val fitnessMappingsParam: Parametric[List[FitnessMapping]] = chooseFitnessMappings()
+    val mutationStrategy = if (!localOptimum) Instances.mutation else Instances.hyperMutation
+    for {
+      parentSelection <- parentSelectionParam
+      mutationStrategy <- mutationStrategy
+      survivorSelection <- survivorSelectionParam
+      fitnessMappings <- fitnessMappingsParam
+    } yield new Generation(parentSelection, mutationStrategy, survivorSelection, fitnessMappings.toArray)
+  }
+
+  def chooseLocalOptimumSignal(): (Boolean, Parametric[LocalOptimaSignal]) = {
+    println("\n# Choose Local Optima Signal:")
+    println(
+      """1. Ignore Local Optima
+        |2. Gene Similarity Detection (*)
+        |3. Fitness Similarity Detection (std. dev)
+      """.stripMargin)
+    readIntWithDefault("Choose a local optima signal (default 2): ", 2) match {
+      case 1 => (false, Instances.ignoreLocalOptima)
+      case 2 => (true, Instances.geneSimilarity)
+      case 3 => (true, Instances.stdDevSimilarity)
+      case _ => chooseLocalOptimumSignal()
+    }
+  }
+
+  def chooseEngine(): Parametric[GeneticEngine] = {
+    println("\n########## Choosing Genetic Engine ##########\n")
+    val normalGeneration: Parametric[Generation] = chooseGeneration(localOptimum = false)
+    val (detectLocalOptimum, localOptimumSignal) = chooseLocalOptimumSignal()
+    val localOptimumGeneration =
+      if (detectLocalOptimum)
+        Instances.localOptimumParams(chooseGeneration(localOptimum = true))
+      else
+        normalGeneration
+    Instances.geneticEngine(localOptimumSignal, normalGeneration, localOptimumGeneration)
+  }
+
   def menu(geneticMeta: GeneticMetadata[_], algParams: Parametric[GeneticAlg[_]]): Unit = {
     println("\n" +
       s"""|1. run     - Run ${geneticMeta.name}
-          |2. params  - Change   Parameters of the Genetic Algorithm
-          |3. opt     - Optimize Parameters of the Genetic Algorithm
-          |4. analyse - Create a statistical report of the Genetic Algorithm
-          |5. bench   - Benchmark the Genetic Algorithm
-          |6. main    - Return to the main menu
+          |2. params  - Change Parameters of the Genetic Algorithm
+          |3. engine  - Choose the Genetic Engine features
+          |4. opt     - Optimize Parameters of the Genetic Algorithm
+          |5. analyse - Create a statistical report of the Genetic Algorithm
+          |6. bench   - Benchmark the Genetic Algorithm
+          |7. main    - Return to the main menu
        """.stripMargin)
     print("Enter your selection: ")
     val input = in.nextLine()
@@ -236,19 +340,22 @@ object UserMain extends App {
       case "params" | "2" =>
         val newParams = modifyParams(algParams)
         menu(geneticMeta, newParams)
-      case "opt" | "3" =>
+      case "engine" | "3" =>
+        val newEngine = chooseEngine()
+        menu(geneticMeta, geneticMeta.alg(newEngine))
+      case "opt" | "4" =>
         val maxTime = readDoubleWithDefault("Enter the maximum runtime in seconds (default 100.0): ", 100.0) max 0
         optimize(algParams, maxTime)
         menu(geneticMeta, algParams)
-      case "analyse" | "4" =>
+      case "analyse" | "5" =>
         println("Enter analysis name: ")
         val name = in.nextLine()
         analysis(name, Analysis.analysis(name, algParams))
         menu(geneticMeta, algParams)
-      case "bench" | "5" =>
+      case "bench" | "6" =>
         bench(algParams)
         menu(geneticMeta, algParams)
-      case "main" | "6" =>
+      case "main" | "7" =>
         mainMenu()
       case _ => menu(geneticMeta, algParams)
     }

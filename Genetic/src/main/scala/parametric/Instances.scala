@@ -4,9 +4,9 @@ import java.util.Random
 
 import genetic.fitnessMapping.{Aging, Niching, Windowing}
 import genetic.generation.Generation
-import genetic.localOptima.{DistanceSimilarityDetector, LocalOptimaSignal, StdDevLocalOptimaDetector}
+import genetic.localOptima.{DistanceSimilarityDetector, IgnoreLocalOptima, LocalOptimaSignal, StdDevLocalOptimaDetector}
 import genetic.mutation.RegularMutation
-import genetic.selection.{RouletteWheelSelection, TopSelection}
+import genetic.selection.{RouletteWheelSelection, StochasticUniversalSampling, TopSelection, Tournament}
 import genetic.survivors.{Elitism, ElitismRandomImmigrants}
 import genetic.{Genetic, GeneticAlg, GeneticEngine}
 import parametric.Parametric._
@@ -28,6 +28,11 @@ object Instances {
       stdDevThreshold <- doubleParam("Std. Dev. Similarity Threshold", 0.01)
     } yield new StdDevLocalOptimaDetector(stdDevThreshold)
 
+  def ignoreLocalOptima: Parametric[IgnoreLocalOptima] =
+    Parametric.point {
+      new IgnoreLocalOptima()
+    }
+
   def elitism: Parametric[Elitism] =
     for {
       elitismRate <- doubleParam("Elitism Rate", 0.5)
@@ -48,6 +53,16 @@ object Instances {
     Parametric.point {
       new RouletteWheelSelection()
     }
+
+  def sus: Parametric[StochasticUniversalSampling] =
+    Parametric.point {
+      new StochasticUniversalSampling()
+    }
+
+  def tournament: Parametric[Tournament] =
+    for {
+      tournamentSize <- intParam("Tournament Size", default = 4, minValue = 1, maxValue = 100)
+    } yield new Tournament(tournamentSize)
 
   def mutation: Parametric[RegularMutation] =
     for {
@@ -79,31 +94,31 @@ object Instances {
     // aging <- aging[A]
     } yield new Generation(selectionStrategy, mutationStrategy, survivorSelection, Array(/*windowing *//*aging*/))
 
+  def localOptimumParams[A](parametric: Parametric[A]): Parametric[A] =
+    parametric.prefixed("Local Optimum: ")
+
   def defaultLocalOptimaGeneration: Parametric[Generation] = {
-    val prefix = "Local Optimum: "
-    (for {
+    localOptimumParams(for {
       selectionStrategy <- topSelection
       mutationStrategy <- hyperMutation
       survivorSelection <- randomImmigrantsElitism
     // windowing <- windowing[A]
     // aging <- aging[A]
     // niching <- niching(alg)
-    } yield new Generation(selectionStrategy, mutationStrategy, survivorSelection, Array(/*windowing *//*aging*//*niching*/))).prefixed(prefix)
+    } yield new Generation(selectionStrategy, mutationStrategy, survivorSelection, Array(/*windowing *//*aging*//*niching*/)))
   }
 
-
-  def geneticEngine(localOptimaSignal: LocalOptimaSignal, normalGeneration: Generation, localOptimaGeneration: Generation): Parametric[GeneticEngine] =
+  def geneticEngine(localOptimaSignal: Parametric[LocalOptimaSignal], normalGeneration: Parametric[Generation], localOptimaGeneration: Parametric[Generation]): Parametric[GeneticEngine] =
     for {
+    // The ordering here is important, so that consequent ones can read Population Size for example in tournament selection.
       popSize <- intParam("Population Size", default = 100, minValue = 3, maxValue = 256)
-    } yield new GeneticEngine(localOptimaSignal, normalGeneration, localOptimaGeneration, popSize)
+      localOptimaSignal <- localOptimaSignal
+      normalGeneration <- normalGeneration
+      localOptimumGeneration <- localOptimaGeneration
+    } yield new GeneticEngine(localOptimaSignal, normalGeneration, localOptimumGeneration, popSize)
 
   def defaultGeneticEngine: Parametric[GeneticEngine] =
-    for {
-      localOptimaSignal <- geneSimilarity
-      normalGeneration <- defaultNormalGeneration
-      localOptimumGeneration <- defaultLocalOptimaGeneration
-      engine <- geneticEngine(localOptimaSignal, normalGeneration, localOptimumGeneration)
-    } yield engine
+    geneticEngine(geneSimilarity, defaultNormalGeneration, defaultLocalOptimaGeneration)
 
   def geneticAlg[A](genetic: Parametric[Genetic[A]], engine: Parametric[GeneticEngine], rand: Random): Parametric[GeneticAlg[A]] =
     for {

@@ -17,8 +17,10 @@ public class Aging implements FitnessMapping {
     @Override
     public <A> double mapFitness(Metric<A> metric, Population<A> population, Gene<A> gene) {
         int age = gene.age;
+        if(matureAt == 0) return age;
         // Scale x such that matureAt goes to 0.5.
-        return f(1 - agingInfluence, (double) age / (2 * matureAt));
+        else
+            return Math.max(0, Math.min(1, f(1 - agingInfluence, (double) age / (2 * matureAt))));
     }
 
     // A function on [0, 1] that intersects (0,h), (0.5, 1), (1,h)
