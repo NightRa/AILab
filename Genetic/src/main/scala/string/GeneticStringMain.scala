@@ -11,7 +11,7 @@ class GeneticStringMain(targetString: String,
                         crossover: (Array[Char], Array[Char], Random) => Array[Char],
                         heuristic: (Array[Char], Array[Char]) => Double) extends GeneticMetadata[Array[Char]] {
   val name: String = "String Search"
-  val defaultMaxTime: Double = 10000
+  val defaultMaxTime: Double = 1.0
   val defaultPrintEvery = 100
   /*
     3.2 ms for Heuristic 1, Genetic Params.
@@ -63,6 +63,6 @@ object GeneticStringMain extends GeneticStringMain("Hello world! My name is Ilan
   GeneticMain.runMain(this)
 }
 
-object GeneticStringOptimization extends GeneticParamsMain(GeneticStringMain.defaultGeneticAlgParametric, 300) with App {
+object GeneticStringOptimization extends GeneticParamsMain(GeneticStringMain, GeneticStringMain.defaultGeneticAlgParametric, 300) with App {
   GeneticMain.runMain(this)
 }

@@ -10,6 +10,10 @@ import static java.util.Comparator.comparing;
 
 public final class JavaUtil {
 
+    public static String padInt(int n, int minLength) {
+        return String.format("%" + minLength + "d", n);
+    }
+
     public static String formatDouble(double d, int precision) {
         return String.format("%." + precision + "f", d);
     }

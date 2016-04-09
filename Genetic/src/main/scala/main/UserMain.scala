@@ -13,14 +13,14 @@ import genetic.types.Population
 import genetic.{Genetic, GeneticAlg, GeneticEngine, GeneticMetadata}
 import knapsack.{GeneticKnapsackMain, Item}
 import parametric.{Instances, Parametric}
-import params.GeneticParamsMain
+import params.{GeneticParamsMain, Params}
 import queens.{GeneticQueenMain, QueenMating, QueenMutation}
 import string.{GeneticStringMain, HillClimbing, StringHeuristics}
 import util.{JavaUtil, Util}
-import scalaz.std.list.listInstance
 
 import scala.annotation.tailrec
 import scala.util.Try
+import scalaz.std.list.listInstance
 
 object UserMain extends App {
   val in = new Scanner(System.in)
@@ -318,11 +318,11 @@ object UserMain extends App {
     Instances.geneticEngine(localOptimumSignal, normalGeneration, localOptimumGeneration)
   }
 
-  def menu(geneticMeta: GeneticMetadata[_], algParams: Parametric[GeneticAlg[_]]): Unit = {
+  def menu(geneticMeta: GeneticMetadata[_], algParams: Parametric[GeneticAlg[_]]): Params = {
     println("\n" +
       s"""|1. run     - Run ${geneticMeta.name}
           |2. params  - Change Parameters of the Genetic Algorithm
-          |3. engine  - Choose the Genetic Engine features
+          |3. engine  - Choose the Genetic Engine Algorithms
           |4. opt     - Optimize Parameters of the Genetic Algorithm
           |5. analyse - Create a statistical report of the Genetic Algorithm
           |6. bench   - Benchmark the Genetic Algorithm
@@ -332,11 +332,13 @@ object UserMain extends App {
     val input = in.nextLine()
     input match {
       case "run" | "1" =>
-        val maxTime = readDoubleWithDefault("Enter the maximum runtime in seconds (default 1.0): ", 1.0) max 0
+        val defaultMaxTime = geneticMeta.defaultMaxTime
+        val maxTime = readDoubleWithDefault(s"Enter the maximum runtime in seconds (default $defaultMaxTime): ", defaultMaxTime) max 0
         val defaultPrintEvery = geneticMeta.defaultPrintEvery
         val printEvery = readIntWithDefault(s"Print best every how many iterations? (default $defaultPrintEvery, 0 for never) ", defaultPrintEvery) max 0
-        runGenetic(geneticMeta, algParams, maxTime, printEvery)
-        menu(geneticMeta, algParams)
+        val newParams = runGenetic(geneticMeta, algParams, maxTime, printEvery)
+        if (!geneticMeta.isOpt) menu(geneticMeta, algParams)
+        else newParams // return, not recurse
       case "params" | "2" =>
         val newParams = modifyParams(algParams)
         menu(geneticMeta, newParams)
@@ -344,9 +346,9 @@ object UserMain extends App {
         val newEngine = chooseEngine()
         menu(geneticMeta, geneticMeta.alg(newEngine))
       case "opt" | "4" =>
-        val maxTime = readDoubleWithDefault("Enter the maximum runtime in seconds (default 100.0): ", 100.0) max 0
-        optimize(algParams, maxTime)
-        menu(geneticMeta, algParams)
+        val geneticParams = new GeneticParamsMain(geneticMeta, algParams, defaultMaxTime = 100.0)
+        val optimizedAlgParams = menu(geneticParams, geneticParams.defaultGeneticAlgParametric)
+        menu(geneticMeta, algParams.updateArrayParams(optimizedAlgParams))
       case "analyse" | "5" =>
         println("Enter analysis name: ")
         val name = in.nextLine()
@@ -357,6 +359,8 @@ object UserMain extends App {
         menu(geneticMeta, algParams)
       case "main" | "7" =>
         mainMenu()
+        System.exit(0)
+        throw new IllegalStateException()
       case _ => menu(geneticMeta, algParams)
     }
   }
@@ -414,7 +418,7 @@ object UserMain extends App {
     }
   }
 
-  def runGenetic(main: GeneticMetadata[_], algParams: Parametric[GeneticAlg[_]], maxTime: Double, printEvery: Int): Unit = {
+  def runGenetic(main: GeneticMetadata[_], algParams: Parametric[GeneticAlg[_]], maxTime: Double, printEvery: Int): Params = {
     val alg = algParams.applyDefaults()
 
     val start = System.currentTimeMillis
@@ -428,11 +432,10 @@ object UserMain extends App {
     println(s"Best ${5 min popSize}:")
     println(population.population.sortBy(_.fitness).take(5).map(gene => alg.genetic.asInstanceOf[Genetic[Object]].show(gene.gene.asInstanceOf[Object]) + ", fitness = " + gene.fitness).mkString("\n"))
     println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + main.seed)
-  }
-
-  def optimize(algParams: Parametric[GeneticAlg[_]], maxTime: Double): Unit = {
-    val geneticParams = new GeneticParamsMain(algParams, maxTime)
-    runGenetic(geneticParams, geneticParams.defaultGeneticAlgParametric, maxTime, printEvery = 1)
+    if(main.isOpt) {
+      population.asInstanceOf[Population[Params]].population(0).gene
+    } else
+      algParams.defaultNamedParams.toParams
   }
 
   // ---------------------------------------------------------------------------------------------------------

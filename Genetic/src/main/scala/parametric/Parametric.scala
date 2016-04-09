@@ -2,7 +2,7 @@ package parametric
 
 import params.{NamedParams, Params}
 import util.JavaUtil
-import util.JavaUtil.formatDouble
+import util.JavaUtil.{formatDouble, padInt}
 
 import scala.collection.immutable.SortedMap
 import scalaz.Monad
@@ -59,7 +59,7 @@ case class Parametric[+A](applyParams: (Map[String, Int], Map[String, Double]) =
 
   def defaultNamedParams: NamedParams = NamedParams(intNamesDefaults.toArray, doubleNamesDefaults.toArray)
 
-  override def toString: String = s"Params: (ints: ${intNamesDefaults.toString.drop(3)}, doubles: ${doubleNamesDefaults.mapValues(formatDouble(_, 3)).toString.drop(3)})"
+  override def toString: String = s"Params: (ints: ${intNamesDefaults.mapValues(padInt(_, 3)).toString.drop(3)}, doubles: ${doubleNamesDefaults.mapValues(formatDouble(_, 3)).toString.drop(3)})"
 }
 
 object Parametric {

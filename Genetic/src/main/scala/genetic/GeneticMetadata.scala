@@ -14,6 +14,7 @@ abstract class GeneticMetadata[A] {
   def defaultMaxTime: Double
   def defaultPrintEvery: Int
   def genetic: Parametric[Genetic[A]]
+  def isOpt: Boolean = false
 
   // To be overwritten to provide problem-specific defaults.
   def intNamesDefaults: Map[String, Int] = Map.empty

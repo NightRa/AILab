@@ -43,6 +43,6 @@ object GeneticQueenMain extends GeneticQueenMain(10, QueenMating.pmx, QueenMutat
   }
 }
 
-object QueenOptimization extends GeneticParamsMain(GeneticQueenMain.defaultGeneticAlgParametric, 100) with App {
+object QueenOptimization extends GeneticParamsMain(GeneticQueenMain, GeneticQueenMain.defaultGeneticAlgParametric, 100) with App {
   GeneticMain.runMain(this)
 }

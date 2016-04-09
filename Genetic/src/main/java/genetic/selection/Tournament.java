@@ -1,10 +1,8 @@
 package genetic.selection;
 
-import genetic.types.Gene;
 import genetic.types.Population;
 
 import java.util.Random;
-import java.util.stream.Stream;
 
 public class Tournament extends IndependentSelection {
     public final int tournamentSize;
@@ -13,14 +11,17 @@ public class Tournament extends IndependentSelection {
         this.tournamentSize = tournamentSize;
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Override
     public <A> A chooseSingleParent(Population<A> population, Random rand) {
         assert tournamentSize > 0;
-        Gene<A>[] pop = population.population;
-        return Stream.generate(() -> pop[rand.nextInt(pop.length)])
-                .limit(tournamentSize)
-                .min(Gene.fitnessComparator)
-                .get().gene;
+        int popSize = population.population.length;
+
+        int index = Integer.MAX_VALUE;
+        for (int i = 0; i < tournamentSize; i++) {
+            int newIndex = rand.nextInt(popSize);
+            if(newIndex < index) index = newIndex;
+        }
+
+        return population.population[index].gene;
     }
 }
