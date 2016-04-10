@@ -40,7 +40,7 @@ class GeneticStringMain(targetString: String,
   )
 
   override def intsNamesMax: Map[String, Int] = Map(
-    "Population Size" -> 20
+    "Population Size" -> 256
   )
 
   override def doubleNamesDefaults: Map[String, Double] = Map(
@@ -51,8 +51,7 @@ class GeneticStringMain(targetString: String,
     "Local Optimum: Immigrants Rate" -> 0.41,
     "Local Optimum: Top Ratio" -> 0.356,
     "Mutation Rate" -> 0.52, // Very critical
-    "Top Ratio" -> 0.55,
-    "Local Optimum: Immigrants Rate" -> 0.0
+    "Top Ratio" -> 0.55
   )
 
   override def genetic: Parametric[Genetic[Array[Char]]] =

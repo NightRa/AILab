@@ -1,11 +1,13 @@
 package params
 
+import util.JavaUtil
 import util.JavaUtil.formatDouble
 
 import scala.util.Random
 
 // ints: [0, intsMax], doubles: [0,1]
 case class Params(ints: Array[Int], doubles: Array[Double]) {
+  def prettify: Params = Params(ints, doubles.map(JavaUtil.formatDouble(_, 3).toDouble))
   override def toString: String = "Params: " + ints.mkString("[", ",", "]") + " " + doubles.map(formatDouble(_, 3)).mkString("[", ",", "]")
 }
 

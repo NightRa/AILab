@@ -384,7 +384,7 @@ object UserMain extends App {
         menu(geneticMeta, geneticMeta.alg(newEngine))
       case "opt" | "4" =>
         val geneticParams = new GeneticParamsMain(geneticMeta, algParams, defaultMaxTime = 100.0)
-        val optimizedAlgParams = menu(geneticParams, geneticParams.defaultGeneticAlgParametric)
+        val optimizedAlgParams = menu(geneticParams, geneticParams.defaultGeneticAlgParametric).prettify
         menu(geneticMeta, algParams.updateArrayParams(optimizedAlgParams))
       case "analyse" | "5" =>
         println("Enter analysis name: ")

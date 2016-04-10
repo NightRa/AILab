@@ -1,5 +1,6 @@
 package parametric
 
+import genetic.GeneticMain
 import params.{NamedParams, Params}
 import util.JavaUtil
 import util.JavaUtil.{formatDouble, padInt}
@@ -51,10 +52,20 @@ case class Parametric[+A](applyParams: (Map[String, Int], Map[String, Double]) =
   def updateDefaults(intNamesDefaults: Map[String, Int],
                      intsNamesMax: Map[String, Int],
                      doubleNamesDefaults: Map[String, Double]): Parametric[A] = {
-    assert(intNamesDefaults.keySet.subsetOf(this.intNamesDefaults.keySet), s"Invalid default Int keys: ${intNamesDefaults.keySet} not <= ${this.intNamesDefaults.keySet}")
-    assert(intsNamesMax.keySet.subsetOf(this.intsMax.keySet), s"Invalid Int-max keys: ${intsNamesMax.keySet} not <= ${this.intsMax.keySet}")
-    assert(doubleNamesDefaults.keySet.subsetOf(this.doubleNamesDefaults.keySet), s"Invalid Double keys: ${doubleNamesDefaults.keySet} not <= ${this.doubleNamesDefaults.keySet}")
-    Parametric(this.applyParams, this.intNamesDefaults ++ intNamesDefaults, intsMin, this.intsMax ++ intsNamesMax, this.doubleNamesDefaults ++ doubleNamesDefaults)
+    if(GeneticMain.DebugParams) {
+      assert(intNamesDefaults.keySet.subsetOf(this.intNamesDefaults.keySet), s"Invalid default Int keys: ${intNamesDefaults.keySet} not <= ${this.intNamesDefaults.keySet}")
+      assert(intsNamesMax.keySet.subsetOf(this.intsMax.keySet), s"Invalid Int-max keys: ${intsNamesMax.keySet} not <= ${this.intsMax.keySet}")
+      assert(doubleNamesDefaults.keySet.subsetOf(this.doubleNamesDefaults.keySet), s"Invalid Double keys: ${doubleNamesDefaults.keySet} not <= ${this.doubleNamesDefaults.keySet}")
+      Parametric(this.applyParams, this.intNamesDefaults ++ intNamesDefaults, intsMin, this.intsMax ++ intsNamesMax, this.doubleNamesDefaults ++ doubleNamesDefaults)
+    } else {
+      Parametric(this.applyParams,
+        this.intNamesDefaults ++ intNamesDefaults.filterKeys(this.intNamesDefaults.isDefinedAt),
+        intsMin,
+        this.intsMax ++ intsNamesMax.filterKeys(this.intsMax.isDefinedAt),
+        this.doubleNamesDefaults ++ doubleNamesDefaults.filterKeys(this.doubleNamesDefaults.isDefinedAt)
+      )
+    }
+
   }
 
   def defaultNamedParams: NamedParams = NamedParams(intNamesDefaults.toArray, doubleNamesDefaults.toArray)

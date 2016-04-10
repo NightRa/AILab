@@ -29,6 +29,7 @@ abstract class GeneticMetadata[A] {
 }
 
 object GeneticMain {
+  val DebugParams = false
   // A main with the default genetic algorithm engine
   def runMain[A](geneticMeta: GeneticMetadata[A]): Unit = {
     val geneticAlg = geneticMeta.defaultGeneticAlgParametric.applyDefaults()
