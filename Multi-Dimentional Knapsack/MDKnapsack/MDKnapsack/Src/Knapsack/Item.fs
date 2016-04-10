@@ -5,7 +5,7 @@ open System
 
 [<Struct>]
 [<CustomEquality>]
-[<NoComparison>]
+[<CustomComparison>]
 type Item(name : string, price : int, constraints : Dictionary<Knapsack, int>) = 
     member x.Name = name
     member x.Price = price
@@ -23,28 +23,10 @@ type Item(name : string, price : int, constraints : Dictionary<Knapsack, int>) =
         (sprintf "Name: %s" name) + ", " +
         (sprintf "price: %A" price) + ", " +
         (sprintf "constraints: %A" (constraints |> Seq.toList))
-        
-
-type IsTaking = 
-    | No = 0
-    | Yes = 1
-
-type ItemTaking = Item -> IsTaking
-
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module ItemTaking = 
-    let takings (items : Item array) (isTaking : Item -> IsTaking) : Item seq = 
-        items
-        |> Array.toSeq
-        |> Seq.filter (fun item -> 
-               match isTaking item with
-               | IsTaking.Yes -> true
-               | IsTaking.No -> false)
-    
-    let totalWeights (items : Item array) (isTaking : Item -> IsTaking) : Knapsack -> int = 
-        let takenItems = takings items isTaking
-        fun knapsack -> takenItems |> Seq.sumBy (fun item -> item.ConstraintOf knapsack)
-    
-    let isValid (knapsacks : Knapsack array) (items : Item array) (isTaking : Item -> IsTaking) : bool = 
-        let getWeightOfKnapsack = totalWeights items isTaking
-        knapsacks |> Array.forall (fun k -> getWeightOfKnapsack k < k.Capacity)
+    interface IComparable<Item> with
+        member x.CompareTo other = name.CompareTo (other.Name)
+    interface IComparable with
+        member x.CompareTo obj = 
+            match box obj with
+            |(:? Item as item) -> (x :> IComparable<Item>).CompareTo item
+            | _ -> failwith "Unauthorized comparison"

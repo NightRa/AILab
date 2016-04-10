@@ -60,6 +60,10 @@
     <Compile Include="Src\Knapsack\KnapsackProblem.fs" />
     <Compile Include="Src\Knapsack\PasingUtil.fs" />
     <Compile Include="Src\Knapsack\Parsing.fs" />
+    <Compile Include="Src\IsTaking.fs" />
+    <Compile Include="Src\Solution.fs" />
+    <Compile Include="Src\Branch.fs" />
+    <Compile Include="Src\Bound.fs" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Program.fs" />
     <Content Include="App.config" />
