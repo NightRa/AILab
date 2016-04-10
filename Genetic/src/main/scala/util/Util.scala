@@ -15,7 +15,7 @@ object Util {
 
   def avgExecutionTime[A](value: => A, rounds: Int): Double = {
     var sum = 0.0
-    for (i <- 0 until rounds) {
+    for (i <- (0 until rounds).par) {
       val result = timeExecution(value)
       sum += result
     }

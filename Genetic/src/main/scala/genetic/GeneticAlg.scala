@@ -14,6 +14,8 @@ class GeneticAlg[A](val genetic: Genetic[A],
 
   import geneticEngine._
 
+  var lastStartTime: Long = System.currentTimeMillis()
+
   val popSize = {
     if (PopulationSize < 3) {
       println("PopulationSize < 3, not ok.")
@@ -22,8 +24,15 @@ class GeneticAlg[A](val genetic: Genetic[A],
   }
 
   def print_best(population: Population[A], i: Int): Unit = {
+    val generationTime = System.currentTimeMillis() - lastStartTime
     val (avg, theStdDev) = stdDev(population.population)((x: Gene[A]) => x.fitness)
-    println(f"Best ($i): ${genetic.show(population.population(0).gene)}; fitness: ${formatScientific(population.population(0).fitness, 3)}; avg: $avg%.3f; stdDev: $theStdDev%.3f")
+    val fitness: Double = population.population(0).fitness
+    val showFitness =
+      if(genetic.showScientific())
+        formatScientific(fitness, 3)
+      else
+        JavaUtil.formatDouble(fitness, 4)
+    println(f"Best ($i): ${genetic.show(population.population(0).gene)}; fitness: $showFitness; time: $generationTime ms; avg: $avg%.3f; stdDev: $theStdDev%.3f")
   }
 
   def run(printEvery: Int, MaxTimeSecs: Double): (Population[A], Int) = {
@@ -44,8 +53,11 @@ class GeneticAlg[A](val genetic: Genetic[A],
   // printEvery - Every how many iterations to print best in population.
   @tailrec
   final def goRun(population: Population[A], buffer: Population[A], i: Int, endTime: Long, printEvery: Int): (Population[A], Int) = {
-    if (System.currentTimeMillis() < endTime) {
-      if (printEvery > 0 && i % printEvery == 0) print_best(population, i)
+    if (printEvery > 0 && i % printEvery == 0) print_best(population, i)
+
+    val generationStartTime = System.currentTimeMillis()
+    if (generationStartTime < endTime) {
+      lastStartTime = generationStartTime
       if (population.population(0).fitness > epsilon) {
 
         nextGeneration(population, buffer)

@@ -43,5 +43,7 @@ class GeneticQueen(boardSize: Int,
   override def randomElement(rand: Random): QueenPermutation = QueenPermutation.getPermutationRandomly(boardSize, rand)
 
   override def show(gene: QueenPermutation): String = gene.permutation.mkString("[", ",", "]")
+
+  override def showScientific(): Boolean = false
 }
 

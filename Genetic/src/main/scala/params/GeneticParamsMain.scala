@@ -12,7 +12,7 @@ class GeneticParamsMain(geneticMeta: GeneticMetadata[_], geneticAlgParams: Param
 
   override def genetic: Parametric[Genetic[Params]] =
     for {
-      rounds              <- intParam   ("Rounds (for stability)", default = 10, minValue = 1, maxValue = 100)
+      rounds              <- intParam   ("Rounds (for stability)", default = 10, minValue = 1, maxValue = 50)
       intsMutationSize    <- doubleParam("Ints Mutation Size"              , 0.1)
       doublesMutationSize <- doubleParam("Doubles Mutation Size "          , 0.1)
       mutationRate        <- doubleParam("Mutation Rate"                   , 0.5)
@@ -28,6 +28,10 @@ class GeneticParamsMain(geneticMeta: GeneticMetadata[_], geneticAlgParams: Param
 
   // To be overwritten to provide problem-specific defaults.
   override def intNamesDefaults: Map[String, Int] = Map(
+    "Population Size" -> 15
+  )
+
+  override def intsNamesMax: Map[String, Int] = Map(
     "Population Size" -> 30
   )
 }

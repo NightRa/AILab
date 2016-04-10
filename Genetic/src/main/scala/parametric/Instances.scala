@@ -2,7 +2,7 @@ package parametric
 
 import java.util.Random
 
-import genetic.fitnessMapping.{Aging, Niching, Windowing}
+import genetic.fitnessMapping._
 import genetic.generation.Generation
 import genetic.localOptima.{DistanceSimilarityDetector, IgnoreLocalOptima, LocalOptimaSignal, StdDevLocalOptimaDetector}
 import genetic.mutation.RegularMutation
@@ -61,7 +61,7 @@ object Instances {
 
   def tournament: Parametric[Tournament] =
     for {
-      tournamentSize <- intParam("Tournament Size", default = 4, minValue = 1, maxValue = 100)
+      tournamentSize <- intParam("Tournament Size", default = 4, minValue = 1, maxValue = 20)
     } yield new Tournament(tournamentSize)
 
   def mutation: Parametric[RegularMutation] =
@@ -78,6 +78,17 @@ object Instances {
     Parametric.point {
       new Windowing()
     }
+
+  def exponentialScaling: Parametric[ExponentialScaling] =
+    Parametric.point {
+      new ExponentialScaling()
+    }
+
+  def sigmaScaling: Parametric[SigmaScaling] = {
+    Parametric.point {
+      new SigmaScaling()
+    }
+  }
 
   def aging: Parametric[Aging] =
     for {

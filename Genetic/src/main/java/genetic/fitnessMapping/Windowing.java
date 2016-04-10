@@ -13,7 +13,7 @@ public class Windowing implements FitnessMapping {
         if (gene.fitness == 0)
             return 0;
         else {
-            double fitness = 1 + gene.fitness - population.worstMaxFitness();
+            double fitness = 1 + gene.fitness - population.worstMaxFitness() - 0.01;
             return Math.max(fitness, epsilon);
         }
     }

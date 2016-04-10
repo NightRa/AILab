@@ -36,6 +36,8 @@ class GeneticBaldwin(maxIterations: Int,
     }.mkString
   }
 
+  override def showScientific: Boolean = false
+
   override def mutate(a: Array[Byte]): Array[Byte] = {
     val index = rand.nextInt(a.length)
     a(index) = BaldwinBit.genBaldwinBit(rand)

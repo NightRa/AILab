@@ -7,7 +7,7 @@ import baldwin.BaldwinMain
 import func.{Func, GeneticFuncMain, HoldersTableFunction, LabTestFunction}
 import genetic.fitnessMapping.FitnessMapping
 import genetic.generation.{Crossover, Generation}
-import genetic.localOptima.{IgnoreLocalOptima, LocalOptimaSignal}
+import genetic.localOptima.LocalOptimaSignal
 import genetic.selection.ParentSelection
 import genetic.survivors.SurvivorSelection
 import genetic.types.Population
@@ -23,16 +23,19 @@ import scala.annotation.tailrec
 import scala.util.Try
 import scalaz.std.list.listInstance
 
-object UserMain extends App {
-  val in = new Scanner(System.in)
+object UserMain {
+  var in: Scanner = new Scanner(System.in)
 
-  println()
-  println("Genetic Algorithms Lab 1 by Ilan Godik & Yuval Alfassi")
+  def main(args: Array[String]) {
+    println()
+    println("Genetic Algorithms Lab 2 by Ilan Godik & Yuval Alfassi")
 
-  mainMenu()
+    mainMenu()
 
-  println("Press any key to exit")
-  in.nextLine()
+    println("Press any key to exit")
+    in.nextLine()
+  }
+
 
   def mainMenu(): Unit = {
     println()
@@ -127,7 +130,7 @@ object UserMain extends App {
     def chooseBinaryString(): Array[Byte] = {
       println("\nChoose a binary string to search (blank for 20 x 0's): ")
       val secret = in.nextLine()
-      if(secret.isEmpty) Array.fill(20)(0)
+      if (secret.isEmpty) Array.fill(20)(0)
       else if (secret.forall(c => c == '0' || c == '1')) {
         secret.iterator.map[Byte] {
           case '0' => 0
@@ -292,24 +295,30 @@ object UserMain extends App {
   def chooseFitnessMappings(): Parametric[List[FitnessMapping]] = {
     def optional[A](select: Boolean, element: A): List[A] = if (select) List(element) else Nil
     @tailrec
-    def go(windowing: Boolean, aging: Boolean, niching: Boolean): List[Parametric[FitnessMapping]] = {
+    def go(windowing: Boolean, exponential: Boolean, sigma: Boolean, aging: Boolean, niching: Boolean): List[Parametric[FitnessMapping]] = {
       println("\n# Choose Fitness Mappings:")
       println("1. Windowing " + (if (windowing) "(*)" else ""))
-      println("2. Aging " + (if (aging) "(*)" else ""))
-      println("3. Niching " + (if (niching) "(*)" else ""))
+      println("2. Exponential Scaling " + (if (exponential) "(*)" else ""))
+      println("3. Sigma Scaling " + (if (sigma) "(*)" else ""))
+      println("4. Aging " + (if (aging) "(*)" else ""))
+      println("5. Niching " + (if (niching) "(*)" else ""))
       print("Enter what you want to choose (multiple selection, blank to continue): ")
       tryReadInt() match {
-        case Some(1) => go(!windowing, aging, niching)
-        case Some(2) => go(windowing, !aging, niching)
-        case Some(3) => go(windowing, aging, !niching)
-        case Some(_) => go(windowing, aging, niching)
+        case Some(1) => go(!windowing, exponential, sigma, aging, niching)
+        case Some(2) => go(windowing, !exponential, sigma, aging, niching)
+        case Some(3) => go(windowing, exponential, !sigma, aging, niching)
+        case Some(4) => go(windowing, exponential, sigma, !aging, niching)
+        case Some(5) => go(windowing, exponential, sigma, aging, !niching)
+        case Some(_) => go(windowing, exponential, sigma, aging, niching)
         case None =>
           optional(windowing, Instances.windowing) ++
+            optional(exponential, Instances.exponentialScaling) ++
+            optional(sigma, Instances.sigmaScaling) ++
             optional(aging, Instances.aging) ++
             optional(niching, Instances.niching)
       }
     }
-    val mappings: List[Parametric[FitnessMapping]] = go(windowing = false, aging = false, niching = false)
+    val mappings: List[Parametric[FitnessMapping]] = go(windowing = false, exponential = false, sigma = false, aging = false, niching = false)
     Parametric.parametricMonad.sequence(mappings)
   }
 
@@ -423,7 +432,7 @@ object UserMain extends App {
 
   def bench(alg: Parametric[GeneticAlg[_]]): Unit = {
     val rounds = readIntWithDefault("Enter the number of rounds (1000 default): ", 1000)
-    val maxTime = readDoubleWithDefault("Enter the time limit per run (0.3 default): " , 0.3)
+    val maxTime = readDoubleWithDefault("Enter the time limit per run (0.3 default): ", 0.3)
     val time = Util.avgExecutionTime(alg.applyDefaults().run(printEvery = 0, maxTime), rounds)
     println(JavaUtil.formatDouble(time * 1000, 4) + " ms")
   }

@@ -15,4 +15,6 @@ public interface Genetic<A> {
     A randomElement(Random rand);
 
     String show(A gene);
+
+    boolean showScientific();
 }

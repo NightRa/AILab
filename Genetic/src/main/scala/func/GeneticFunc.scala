@@ -29,4 +29,6 @@ class GeneticFunc(func: Func, MutationSize: Double, rand: Random) extends Geneti
   override def randomElement(rand: Random): FuncSolution = FuncSolution.genFuncSolution(func, rand)
 
   override def show(funcSolution: FuncSolution): String = funcSolution.toString
+
+  override def showScientific: Boolean = true
 }

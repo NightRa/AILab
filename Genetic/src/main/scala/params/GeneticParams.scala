@@ -20,7 +20,7 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
 
   var lastAvgTime: Double = InitialTimeLimit
 
-  def currentTimeLimit: Double = (pressure * 10) * lastAvgTime
+  def currentTimeLimit: Double = Math.min((pressure * 10) * lastAvgTime, InitialTimeLimit)
 
   def currentTimeFraction(timeS: Double) = timeS / currentTimeLimit
 
@@ -96,6 +96,8 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
   override def randomElement(rand: Random): Params = GeneticParams.randomParams(geneticParam, rand)
 
   override def show(gene: Params): String = geneticParam.updateArrayParams(gene).toString
+
+  override def showScientific(): Boolean = false
 }
 
 object GeneticParams {

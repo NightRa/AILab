@@ -45,4 +45,6 @@ class GeneticKnapsack(instance: KnapsackInstance,
   override def randomElement(rand: Random): KnapsackElement = KnapsackElement.randomKnapsack(instance, rand)
 
   override def show(gene: KnapsackElement): String = gene.toString
+
+  override def showScientific: Boolean = false
 }

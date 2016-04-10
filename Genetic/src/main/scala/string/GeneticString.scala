@@ -33,4 +33,6 @@ class GeneticString(targetString: Array[Char],
   override def randomElement(rand: Random): Array[Char] = Util.randString(targetString.length, rand)
 
   override def show(charArr: Array[Char]): String = charArr.mkString
+
+  override def showScientific(): Boolean = false
 }
