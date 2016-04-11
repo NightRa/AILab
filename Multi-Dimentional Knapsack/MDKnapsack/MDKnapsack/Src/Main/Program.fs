@@ -29,7 +29,7 @@ module Program =
             |> File.ReadAllText
             |> parseToKnapsackProblem
         
-        let solution = knapsack |> dfs time (optimumFunc knapsack.Items)
+        let solution = dfs knapsack time (optimumFunc knapsack.Items) 
         (solution, knapsack)
     
     let testingProblem () =

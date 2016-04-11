@@ -1,7 +1,6 @@
 ﻿namespace MDKnapsack
 
 open System.Collections.Generic
-open System
 open System.Text
 
 [<Class>]

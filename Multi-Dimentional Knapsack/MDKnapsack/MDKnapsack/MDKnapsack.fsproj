@@ -9,10 +9,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>MDKnapsack</RootNamespace>
     <AssemblyName>MDKnapsack</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <Name>MDKnapsack</Name>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,18 +55,20 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <Compile Include="Src\Util.fs" />
+    <Compile Include="Src\Utils\Util.fs" />
     <Compile Include="Src\Knapsack\Knapsack.fs" />
     <Compile Include="Src\Knapsack\Item.fs" />
     <Compile Include="Src\Knapsack\KnapsackProblem.fs" />
-    <Compile Include="Src\Knapsack\PasingUtil.fs" />
-    <Compile Include="Src\Knapsack\Parsing.fs" />
-    <Compile Include="Src\Solution.fs" />
-    <Compile Include="Src\Branch.fs" />
-    <Compile Include="Src\Bound.fs" />
-    <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Program.fs" />
-    <Content Include="App.config" />
+    <Compile Include="Src\Knapsack\Parsing\PasingUtil.fs" />
+    <Compile Include="Src\Knapsack\Parsing\Parsing.fs" />
+    <Compile Include="Src\BranchAndBound\Solution.fs" />
+    <Compile Include="Src\BranchAndBound\Branch.fs" />
+    <Compile Include="Src\BranchAndBound\Bound.fs" />
+    <Compile Include="Src\Export\AlgParameters.fs" />
+    <Compile Include="Src\Export\RunAlgorithm.fs" />
+    <Content Include="Src\Main\App.config" />
+    <Compile Include="Src\Main\AssemblyInfo.fs" />
+    <Compile Include="Src\Main\Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

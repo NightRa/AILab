@@ -1,13 +1,15 @@
 ﻿namespace MDKnapsack
 
 module ParsingUtil = 
+    open System
+
     type StringOrInt = 
         | Integer of int
         | String of string
     
     let toStringOrInt str = 
         let res = ref 0
-        match System.Int32.TryParse(str, res) with
+        match Int32.TryParse(str, res) with
         | true -> Integer(!res)
         | false -> String(str)
     
@@ -16,12 +18,6 @@ module ParsingUtil =
         | [] -> failwith "get int on End of data"
         | (Integer i) :: rest -> (i, rest)
         | (String str) :: rest -> failwith ("get int on string: " + str)
-    
-    let getString (tokens : StringOrInt list) : string * StringOrInt list = 
-        match tokens with
-        | [] -> failwith "get int on End of data"
-        | (Integer i) :: rest -> (i.ToString(), rest)
-        | (String str) :: rest -> (str, rest)
     
     let getInts1 num tokens = 
         let numList = new System.Collections.Generic.List<int>()

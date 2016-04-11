@@ -4,13 +4,15 @@ open System.Text
 open System.Collections
 
 type Solution(itemsTaken : BitArray, items : Item array) = 
-    static member Empty(items : Item array) = (new BitArray(items.Length, false), items) |> Solution
     
-    member x.Price = 
+    let price = 
         let mutable sum = 0
         for i = 0 to items.Length - 1 do
             if itemsTaken.[i] then sum <- sum + items.[i].Price
         sum
+    
+    member x.Price = price
+    static member Empty(items : Item array) = (new BitArray(items.Length, false), items) |> Solution
     
     member this.With itemIndex = 
         if itemsTaken.[itemIndex] then this

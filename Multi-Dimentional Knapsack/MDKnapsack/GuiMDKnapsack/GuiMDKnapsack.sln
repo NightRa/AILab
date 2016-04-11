@@ -3,12 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MDKnapsack", "MDKnapsack\MDKnapsack.fsproj", "{1548FBA4-C1AA-444D-88D5-22D18ADE9965}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuiMDKnapsack", "GuiMDKnapsack\GuiMDKnapsack\GuiMDKnapsack.csproj", "{600904DB-0F3E-4CAA-867F-BA28F3A95AC6}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1548FBA4-C1AA-444D-88D5-22D18ADE9965} = {1548FBA4-C1AA-444D-88D5-22D18ADE9965}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuiMDKnapsack", "GuiMDKnapsack\GuiMDKnapsack.csproj", "{600904DB-0F3E-4CAA-867F-BA28F3A95AC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1548FBA4-C1AA-444D-88D5-22D18ADE9965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1548FBA4-C1AA-444D-88D5-22D18ADE9965}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1548FBA4-C1AA-444D-88D5-22D18ADE9965}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1548FBA4-C1AA-444D-88D5-22D18ADE9965}.Release|Any CPU.Build.0 = Release|Any CPU
 		{600904DB-0F3E-4CAA-867F-BA28F3A95AC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{600904DB-0F3E-4CAA-867F-BA28F3A95AC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{600904DB-0F3E-4CAA-867F-BA28F3A95AC6}.Release|Any CPU.ActiveCfg = Release|Any CPU

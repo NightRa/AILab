@@ -15,8 +15,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GuiMDKnapsack.Charting;
+using MDKnapsack;
 using Microsoft.FSharp.Core;
 using Microsoft.Win32;
+using Sparrow.Chart;
 
 namespace GuiMDKnapsack
 {
@@ -58,6 +61,9 @@ namespace GuiMDKnapsack
 
         private void RunButton_Click(object sender, RoutedEventArgs e)
         {
+            var chartWindow = new ViewChart();
+            chartWindow.ShowDialog();
+            return;
             if (FSharpOption<string[]>.get_IsNone(maybeFileNames))
             {
                 MessageBox.Show("You didnt select input DAT files for the knapsack algorithm");
@@ -72,24 +78,15 @@ namespace GuiMDKnapsack
             TimeSpan runningTime = maybeRunTime.Value;
             string[] filenames = maybeFileNames.Value;
             Alg alg = GetAlg();
-            KnapsackBound bound = GetBound();
-            SortItems sortItems = GetSortItems();
-            AlgParameters parameters = new AlgParameters(filenames, alg, sortItems, bound, runningTime);
+            BoundKnapsack bound = GetBound();
+            AlgParameters parameters = new AlgParameters(alg, bound, filenames, runningTime);
             RunWithParameters(parameters);
         }
 
         private void RunWithParameters(AlgParameters parameters)
         {
-            //throw new NotImplementedException();
-        }
-
-        private SortItems GetSortItems()
-        {
-            if (SortedItems.IsChecked.GetValueOrDefault(false))
-                return SortItems.Sort;
-            if (UnSortedItems.IsChecked.GetValueOrDefault(false))
-                return SortItems.DontSort;
-            throw new Exception("Programming Exception");
+            var results = RunAlgorithm.runAlgorithm(parameters);
+            //ChartPoint point = new ChartPo
         }
 
         private Alg GetAlg()
@@ -101,12 +98,12 @@ namespace GuiMDKnapsack
             throw new Exception("Programming Exception");
         }
 
-        private KnapsackBound GetBound()
+        private BoundKnapsack GetBound()
         {
             if (UnboundKnapsack.IsChecked.GetValueOrDefault(false))
-                return KnapsackBound.Unbound;
+                return BoundKnapsack.Unbounded;
             if (FractionalKnapsack.IsChecked.GetValueOrDefault(false))
-                return KnapsackBound.Fractional;
+                return BoundKnapsack.Fractional;
             throw new Exception("Programming Exception");
         }
 

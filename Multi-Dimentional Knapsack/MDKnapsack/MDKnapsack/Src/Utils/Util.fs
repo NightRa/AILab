@@ -1,7 +1,4 @@
-﻿
-namespace MDKnapsack.Util
-
-
+﻿namespace MDKnapsack.Util
 
 module Dictionary =
 
@@ -28,7 +25,7 @@ module List =
         | x::xs -> x.ToString() + seperator + (mkString seperator xs)
 
 
-namespace MDKapsack.Util
+namespace MDKnapsack.Util
 [<AutoOpen>]
 module General =
     let asPair i j = (i,j)

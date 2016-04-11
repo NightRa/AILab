@@ -12,18 +12,6 @@ type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack arr
     member x.Knapsacks = knapsacks
     member x.Optimal = optimal
     
-    member x.AsInput() = 
-        [ knapsacks.Length.ToString() ] 
-        @ [ items.Length.ToString() ] 
-          @ (items
-             |> Array.map (fun i -> i.Price.ToString())
-             |> Array.toList)
-            @ (knapsacks
-               |> Array.map (fun k -> k.Capacity.ToString())
-               |> Array.toList)
-              @ ((knapsacks |> Array.collect (fun k -> items |> Array.map (fun i -> (i.ConstraintOf k).ToString()))) 
-                 |> Array.toList) @ [ optimal.ToString() ] @ [ name ]
-    
     override x.ToString() = 
         let strBuilder = new StringBuilder()
         strBuilder.AppendLine("Name: " + name) |> ignore
@@ -45,7 +33,7 @@ type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack arr
             |> Seq.toArray
         assert (numOfItems = prices.Length)
         assert (numOfKnapsacks = constraints.Length)
-        let constraints = Array.inverse constraints
+        let constraints = MDKnapsack.Util.Array.inverse constraints
         assert (constraints.Length = numOfItems)
         let items = 
             constraints
@@ -53,3 +41,16 @@ type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack arr
             |> Seq.mapi (fun i c -> Item(prices.[i], Dictionary.from knapsacks c))
             |> Seq.toArray
         KnapsackProblem(nameOfGame, items, knapsacks, optimum)
+
+    member x.AsInput() = 
+        [ knapsacks.Length.ToString() ] 
+        @ [ items.Length.ToString() ] 
+          @ (items
+             |> Array.map (fun i -> i.Price.ToString())
+             |> Array.toList)
+            @ (knapsacks
+               |> Array.map (fun k -> k.Capacity.ToString())
+               |> Array.toList)
+              @ ((knapsacks |> Array.collect (fun k -> items |> Array.map (fun i -> (i.ConstraintOf k).ToString()))) 
+                 |> Array.toList) @ [ optimal.ToString() ] @ [ name ]
+    
