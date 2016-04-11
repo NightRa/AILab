@@ -1,8 +1,11 @@
-﻿namespace MDKapsack
+﻿namespace MDKnapsack
 
 open System
-open MDKapsack.Util
+open MDKnapsack.Util
+open System.Text
 
+[<Class>]
+[<Sealed>]
 type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack array, optimal : int) = 
     member x.Name = name
     member x.Items = items
@@ -19,19 +22,26 @@ type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack arr
                |> Array.map (fun k -> k.Capacity.ToString())
                |> Array.toList)
               @ ((knapsacks |> Array.collect (fun k -> items |> Array.map (fun i -> (i.ConstraintOf k).ToString()))) 
-                 |> Array.toList)
-                @ [optimal.ToString ()]
-                    @ [name]
+                 |> Array.toList) @ [ optimal.ToString() ] @ [ name ]
     
     override x.ToString() = 
-        (sprintf "Name: %s" name) + Environment.NewLine + (sprintf "items: %A" items) + Environment.NewLine 
-        + (sprintf "knapsacks: %A" knapsacks) + Environment.NewLine + (sprintf "optimal: %d" optimal)
+        let strBuilder = new StringBuilder()
+        strBuilder.AppendLine("Name: " + name) |> ignore
+        strBuilder.AppendLine("optimal: " + optimal.ToString()) |> ignore
+        strBuilder.AppendLine("knapsacks: ") |> ignore
+        for knapsack in knapsacks do
+            strBuilder.AppendLine("\t" + knapsack.ToString()) |> ignore
+        strBuilder.AppendLine("items: ") |> ignore
+        for item in items do
+            strBuilder.AppendLine("\t" + item.ToString()) |> ignore
+        strBuilder.ToString()
+    
     static member Create(nameOfGame : string, numOfKnapsacks : int, numOfItems : int, capacities : int [], 
                          prices : int [], constraints : int [] [], optimum : int) : KnapsackProblem = 
         assert (numOfKnapsacks = capacities.Length)
         let knapsacks = 
             seq { 1..numOfKnapsacks }
-            |> Seq.map (fun i -> Knapsack("Knasack" + i.ToString(), capacities.[i - 1]))
+            |> Seq.map (fun i -> Knapsack(capacities.[i - 1]))
             |> Seq.toArray
         assert (numOfItems = prices.Length)
         assert (numOfKnapsacks = constraints.Length)
@@ -40,6 +50,6 @@ type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack arr
         let items = 
             constraints
             |> Array.toSeq
-            |> Seq.mapi (fun i c -> Item("Item" + i.ToString(), prices.[i], Dictionary.from knapsacks c))
+            |> Seq.mapi (fun i c -> Item(prices.[i], Dictionary.from knapsacks c))
             |> Seq.toArray
         KnapsackProblem(nameOfGame, items, knapsacks, optimum)

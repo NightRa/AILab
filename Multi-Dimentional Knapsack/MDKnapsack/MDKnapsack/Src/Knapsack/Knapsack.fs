@@ -1,18 +1,7 @@
-﻿namespace MDKapsack
+﻿namespace MDKnapsack
 
-[<Struct>]
-[<CustomEquality>]
-[<NoComparison>]
-type Knapsack(name : string, capacity : int) =
-    member x.Name = name
+[<Class>]
+[<Sealed>]
+type Knapsack(capacity : int) = 
     member x.Capacity = capacity
-    override x.GetHashCode () =
-        name.GetHashCode ()
-    override x.Equals obj = 
-        match obj with
-        |(:? Knapsack as knapsack) ->  knapsack.Name.Equals name
-        | _ -> false
-    override x.ToString () =
-        sprintf "name: %s, capacity: %d" name capacity
-
-
+    override x.ToString() = sprintf "knapsack: capacity = %d" capacity

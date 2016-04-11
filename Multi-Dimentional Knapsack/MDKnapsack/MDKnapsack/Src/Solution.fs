@@ -1,55 +1,49 @@
-﻿namespace MDKapsack
+﻿namespace MDKnapsack
 
 open System.Text
+open System.Collections
 
-type Solution(items : Map<Item, IsTaking>) = 
+type Solution(itemsTaken : BitArray, items : Item array) = 
+    static member Empty(items : Item array) = (new BitArray(items.Length, false), items) |> Solution
     
-    static member Empty(items : Item array) = 
-        items
-        |> Array.fold (fun map item -> Map.add item (IsTaking.No) map) Map.empty
-        |> Solution
+    member x.Price = 
+        let mutable sum = 0
+        for i = 0 to items.Length - 1 do
+            if itemsTaken.[i] then sum <- sum + items.[i].Price
+        sum
     
-    member x.Takings = 
-        items
-        |> Map.toSeq
-        |> Seq.filter (fun (item, isTaking) -> isYes isTaking)
-        |> Seq.map fst
+    member this.With itemIndex = 
+        if itemsTaken.[itemIndex] then this
+        else 
+            let newBitArray = itemsTaken.Clone() :?> BitArray
+            newBitArray.[itemIndex] <- true
+            Solution(newBitArray, items)
     
-    member x.Price = x.Takings |> Seq.sumBy (fun item -> item.Price)
-    
-    member x.With item = 
-        match items.[item] with
-        | IsTaking.No -> 
-            items
-            |> Map.add item (IsTaking.Yes)
-            |> Solution
-        | IsTaking.Yes -> x
-        | _ -> failwith "incomplete pattern"
-    
-    member x.Without item = 
-        match items.[item] with
-        | IsTaking.Yes -> 
-            items
-            |> Map.add item (IsTaking.No)
-            |> Solution
-        | IsTaking.No -> x
-        | _ -> failwith "incomplete pattern"
+    member this.Without itemIndex = 
+        if not itemsTaken.[itemIndex] then this
+        else 
+            let newBitArray = itemsTaken.Clone() :?> BitArray
+            newBitArray.[itemIndex] <- false
+            Solution(newBitArray, items)
     
     member x.IsValid(optimums : (Knapsack * int) array) = 
-        optimums
-        |> Seq.ofArray
-        |> Seq.forall (fun (k, max) -> 
-               let sumOfConstraints = x.Takings |> Seq.sumBy (fun i -> i.ConstraintOf k)
-               sumOfConstraints < k.Capacity && sumOfConstraints < max)
+        optimums |> Array.forall (fun (knapsack, maxBound) -> 
+                        let mutable sumOfConstraints = 0
+                        for i = 0 to items.Length - 1 do
+                            if itemsTaken.[i] then 
+                                sumOfConstraints <- sumOfConstraints + items.[i].ConstraintOf knapsack
+                        sumOfConstraints < knapsack.Capacity && sumOfConstraints < maxBound)
     
     override x.ToString() = 
         let strBuilder = new StringBuilder()
         strBuilder.AppendLine("Price: " + x.Price.ToString()) |> ignore
-        items
-        |> Map.toSeq
-        |> Seq.map 
-               (fun (item, isTaking) -> 
-               "item " + item.Name + ", is taking: " + (asString isTaking) + ", price: " + item.Price.ToString())
-        |> Seq.map strBuilder.AppendLine
+        seq { 0..itemsTaken.Length - 1 }
+        |> Seq.map (fun i -> (i, itemsTaken.[i]))
+        |> Seq.sortByDescending snd
+        |> Seq.map (fun (i, isTaken) -> 
+               match isTaken with
+               | true -> "\tTaken: " + items.[i].Price.ToString()
+               | false -> "\tNot Taken: " + items.[i].Price.ToString())
+        |> Seq.map (strBuilder.AppendLine)
         |> Seq.iter ignore
         strBuilder.ToString()

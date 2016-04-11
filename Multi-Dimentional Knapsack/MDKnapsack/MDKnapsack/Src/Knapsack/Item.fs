@@ -1,32 +1,18 @@
-﻿namespace MDKapsack
+﻿namespace MDKnapsack
 
 open System.Collections.Generic
 open System
+open System.Text
 
-[<Struct>]
-[<CustomEquality>]
-[<CustomComparison>]
-type Item(name : string, price : int, constraints : Dictionary<Knapsack, int>) = 
-    member x.Name = name
+[<Class>]
+[<Sealed>]
+type Item(price : int, constraints : Dictionary<Knapsack, int>) = 
     member x.Price = price
-    
-    member x.ConstraintOf(knapsack : Knapsack) = 
-        if constraints.ContainsKey knapsack then constraints.[knapsack]
-        else failwith <| sprintf "knapsack wasnt found :(. constraints: %A" constraints
-    
-    override x.GetHashCode() = name.GetHashCode()
-    override x.Equals obj = 
-        match obj with
-        | (:? Item as item) -> item.Name.Equals name
-        | _ -> false
-    override x.ToString () =
-        (sprintf "Name: %s" name) + ", " +
-        (sprintf "price: %A" price) + ", " +
-        (sprintf "constraints: %A" (constraints |> Seq.toList))
-    interface IComparable<Item> with
-        member x.CompareTo other = name.CompareTo (other.Name)
-    interface IComparable with
-        member x.CompareTo obj = 
-            match box obj with
-            |(:? Item as item) -> (x :> IComparable<Item>).CompareTo item
-            | _ -> failwith "Unauthorized comparison"
+    member x.ConstraintOf(knapsack : Knapsack) = constraints.[knapsack]
+    override x.ToString() = 
+        let strBuilder = new StringBuilder()
+        strBuilder.AppendLine("Item: price = " + price.ToString() + " ") |> ignore
+        for knapsack in constraints.Keys do
+            strBuilder.AppendLine("\t\t" + (constraints.[knapsack].ToString()) + "/ " + knapsack.Capacity.ToString()) 
+            |> ignore
+        strBuilder.ToString()

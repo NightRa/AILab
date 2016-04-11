@@ -1,5 +1,7 @@
 ﻿
-namespace MDKapsack.Util
+namespace MDKnapsack.Util
+
+
 
 module Dictionary =
 
@@ -10,7 +12,7 @@ module Dictionary =
             dict.Add (keys.[i], values.[i])
         dict
 
-namespace MDKapsack.Util
+namespace MDKnapsack.Util
 module Array =
     let inverse (a : 'a[][]) : 'a[][] =
         let rows = a.Length
@@ -18,10 +20,15 @@ module Array =
         Array.init cols (fun i -> Array.init rows (fun j -> a.[j].[i]))
 
 
-namespace MDKapsack.Util
+namespace MDKnapsack.Util
 module List =
     let rec mkString seperator = function
         | [] -> ""
         | [x] -> x.ToString ()
         | x::xs -> x.ToString() + seperator + (mkString seperator xs)
 
+
+namespace MDKapsack.Util
+[<AutoOpen>]
+module General =
+    let asPair i j = (i,j)

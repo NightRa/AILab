@@ -1,13 +1,8 @@
-﻿namespace MDKapsack
+﻿namespace MDKnapsack
 
 module Parsing = 
     open System
     open ParsingUtil
-    
-    
-    
-    //  let getInts num1 num2 tokens = 
-    //      failwith "??"
     
     let parseToKnapsackProblem (data : string) : KnapsackProblem = 
         let dataStream = 
@@ -27,4 +22,4 @@ module Parsing =
         let (constraints, dataStream) = getInts2 numOfKnapsacks numOfObjects dataStream
         let (optimum, dataStream) = getInt dataStream
         let nameOfGame = getRest dataStream
-        KnapsackProblem.Create (nameOfGame, numOfKnapsacks, numOfObjects, capacities, prices, constraints, optimum)
+        KnapsackProblem.Create(nameOfGame, numOfKnapsacks, numOfObjects, capacities, prices, constraints, optimum)
