@@ -1,0 +1,29 @@
+1. Data flow / Architecture:
+   Genetic Problem & Representation:
+   - Fitness
+   - Mating
+   - Metric
+   - Random element
+   - Show (toString)
+   Generation:
+   - Fitness Mapping Functions
+   - Breeding: Population => Stream[Child]
+     - Choose Parents: Population => Parent
+     - Crossover: Parent, Parent => Child
+     - Mutation: Child => Mutate
+   - Survivor Selection: Population, Children => new Population
+   Genetic Engine:
+   - Local Optima Detection
+   - Normal Generation
+   - Local Optima Generation
+   Genetic Alg:
+   - Genetic Problem & Representation
+   - Genetic Engine
+
+2. Independance of Genetic Engine / Genetic problem & representation at hand: can switch on the fly.
+3. Local Optima: Switching the whole Engine / Generation stepper, with independant parameters.
+4. Parametric Applicative: Safe & Compositional Parametric representations.
+5. Parallelism: Parallel Sort, Analysis, Benchmarking, Meta Genetic Iterations
+6. Performance analysis & profiling successes
+7. Meta Genetic: Pressure and relief
+8. Example of minimal new problem definition.
