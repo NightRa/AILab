@@ -4,13 +4,28 @@ open System
 open System.IO
 
 type Alg = 
-    | Dfs = 0
-    | Bfs = 1
+    | DfsSorted = 0
+    | DfsNotSorted = 1
+    | BestFirst = 2
+
+[<CompilationRepresentation (CompilationRepresentationFlags.ModuleSuffix)>]
+module Alg =
+    let asString = function
+        | Alg.DfsSorted -> "DFS sorted"
+        | Alg.DfsNotSorted -> "DFS not sorted"
+        | Alg.BestFirst -> "Best first"
+        | _ -> failwith "Incomplete pattern"
 
 type BoundKnapsack = 
     | Unbounded = 0
     | Fractional = 1
 
+[<CompilationRepresentation (CompilationRepresentationFlags.ModuleSuffix)>]
+module BoundKnapsack =
+    let asString = function
+        | BoundKnapsack.Unbounded -> "Unbound knapsack"
+        | BoundKnapsack.Fractional -> "Bounded knapsack - fractional filled"
+        | _ -> failwith "Incomplete pattern"
 [<Class>]
 [<Sealed>]
 type AlgParameters(alg : Alg,

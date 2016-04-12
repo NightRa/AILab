@@ -1,0 +1,3 @@
+- bitvector
+- recurison to while loop
+- first implemented High level, and then optimize runtime

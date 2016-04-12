@@ -15,11 +15,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GuiMDKnapsack.Charting;
 using MDKnapsack;
 using Microsoft.FSharp.Core;
 using Microsoft.Win32;
-using Sparrow.Chart;
 
 namespace GuiMDKnapsack
 {
@@ -61,9 +59,9 @@ namespace GuiMDKnapsack
 
         private void RunButton_Click(object sender, RoutedEventArgs e)
         {
-            var chartWindow = new ViewChart();
-            chartWindow.ShowDialog();
-            return;
+          //  var chart = new LightningChartUltimate();
+           // chart.Dispose();
+          //  return;
             if (FSharpOption<string[]>.get_IsNone(maybeFileNames))
             {
                 MessageBox.Show("You didnt select input DAT files for the knapsack algorithm");
@@ -92,9 +90,11 @@ namespace GuiMDKnapsack
         private Alg GetAlg()
         {
             if (DfsAlg.IsChecked.GetValueOrDefault(false))
-                return Alg.Dfs;
+                return Alg.DfsNotSorted;
             if (BfsAlg.IsChecked.GetValueOrDefault(false))
-                return Alg.Bfs;
+                return Alg.BestFirst;
+            if (DfsSortedAlg.IsChecked.GetValueOrDefault(false))
+                return Alg.DfsSorted;
             throw new Exception("Programming Exception");
         }
 

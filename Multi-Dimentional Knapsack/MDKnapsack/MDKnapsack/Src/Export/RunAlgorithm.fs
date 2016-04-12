@@ -8,8 +8,9 @@ module RunAlgorithm =
     
     let public runAlgorithm (parameters : AlgParameters) =
         let alg = match parameters.Alg with
-                    | Alg.Bfs -> bfs
-                    | Alg.Dfs -> dfs
+                    | Alg.BestFirst -> runAlg bestFirst
+                    | Alg.DfsNotSorted -> runAlg dfs
+                    | Alg.DfsSorted -> dfsSorted
                     | _ -> failwith "Incomplete pattern"
         let optimumFunc =  match parameters.BoundKnapsack with
                             | BoundKnapsack.Unbounded -> Bound.unboundedKnapsack
@@ -27,6 +28,6 @@ module RunAlgorithm =
         seq {
             for (filename, prob) in problems ->
                 let solution, maybeTime = alg prob time (optimumFunc prob.Items)
-                in (solution, filename, maybeTime)
+                in (filename, prob, solution,  maybeTime)
         }
 

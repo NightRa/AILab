@@ -100,6 +100,9 @@
                     <RadioButton VerticalContentAlignment="Center" Name="DfsAlg" Margin="5">
                         <TextBlock FontSize="22">Depth First</TextBlock>
                     </RadioButton>
+                    <RadioButton VerticalContentAlignment="Center" Name="DfsSortedAlg" Margin="5">
+                        <TextBlock FontSize="22">Depth First Sorted</TextBlock>
+                    </RadioButton>
                     <RadioButton VerticalContentAlignment="Center" Name="BfsAlg" Margin="5" IsChecked="True">
                         <TextBlock FontSize="22">Best First</TextBlock>
                     </RadioButton>
