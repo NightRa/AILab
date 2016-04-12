@@ -24,8 +24,8 @@ class GeneticKnapsack(instance: KnapsackInstance,
   }
 
   // TODO: Check whether working
-  override def metric(): Metric[KnapsackElement] = new Metric[KnapsackElement] {
-    override def distance(x: KnapsackElement, y: KnapsackElement): Double = {
+  override def metric(): Metric[KnapsackElement] =
+    (x: KnapsackElement, y: KnapsackElement) => {
       val instance = x.instance
       val capacity = instance.capacity
       def percentFull(index: Int, amounts: Array[Int]): Double = {
@@ -40,7 +40,6 @@ class GeneticKnapsack(instance: KnapsackInstance,
       assert(dist >= 0 && dist <= 1)
       dist
     }
-  }
 
   override def randomElement(rand: Random): KnapsackElement = KnapsackElement.randomKnapsack(instance, rand)
 

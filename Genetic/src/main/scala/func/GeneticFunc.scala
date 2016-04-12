@@ -10,8 +10,8 @@ class GeneticFunc(func: Func, MutationSize: Double, rand: Random) extends Geneti
 
   def fitness(gene: FuncSolution): Double = func.calc(gene)
 
-  def mate(x: FuncSolution, y: FuncSolution): FuncSolution = {
-    FuncSolution(randAvg(x.x, y.x, rand), randAvg(x.y, y.y, rand), func)
+  def mate(v: FuncSolution, w: FuncSolution): FuncSolution = {
+    FuncSolution(randAvg(v.x, w.x, rand), randAvg(v.y, w.y, rand), func)
   }
 
   def mutate(a: FuncSolution): FuncSolution = {
@@ -30,5 +30,5 @@ class GeneticFunc(func: Func, MutationSize: Double, rand: Random) extends Geneti
 
   override def show(funcSolution: FuncSolution): String = funcSolution.toString
 
-  override def showScientific: Boolean = true
+  override def showScientific: Boolean = func.showScientific
 }
