@@ -121,12 +121,14 @@ object Instances {
 
   def geneticEngine(localOptimaSignal: Parametric[LocalOptimaSignal], normalGeneration: Parametric[Generation], localOptimaGeneration: Parametric[Generation]): Parametric[GeneticEngine] =
     for {
-    // The ordering here is important, so that consequent ones can read Population Size for example in tournament selection.
       popSize <- intParam("Population Size", default = 100, minValue = 3, maxValue = 256)
       localOptimaSignal <- localOptimaSignal
       normalGeneration <- normalGeneration
       localOptimumGeneration <- localOptimaGeneration
-    } yield new GeneticEngine(localOptimaSignal, normalGeneration, localOptimumGeneration, popSize)
+    } yield new GeneticEngine(localOptimaSignal,
+                              normalGeneration,
+                              localOptimumGeneration,
+                              popSize)
 
   def defaultGeneticEngine: Parametric[GeneticEngine] =
     geneticEngine(geneSimilarity, defaultNormalGeneration, defaultLocalOptimaGeneration)
