@@ -29,3 +29,18 @@ namespace MDKnapsack.Util
 [<AutoOpen>]
 module General =
     let asPair i j = (i,j)
+
+    
+namespace MDKnapsack.Util
+    [<AutoOpen>]
+    module StringExt =
+        let public newLine = System.Environment.NewLine
+        open System
+
+        type System.String with
+            member x.SplitToLines () =
+                x.Split([|"\r\n"; "\n"; "\r"|], StringSplitOptions.None)
+            member x.FillLinesWithTabs () =
+                x.SplitToLines ()
+                |> Array.map (fun s -> "\t" + s)
+                |> Array.fold (fun acc line -> acc + newLine + line) ""

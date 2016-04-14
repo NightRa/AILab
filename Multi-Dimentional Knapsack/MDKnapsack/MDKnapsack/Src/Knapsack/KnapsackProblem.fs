@@ -7,14 +7,23 @@ open System.Text
 [<Class>]
 [<Sealed>]
 type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack array, optimal : int) = 
-    member x.Name = name
+    
+    member x.Name = 
+        if not <| name.EndsWith " ok" then name
+        else 
+            name
+            |> Seq.rev
+            |> Seq.skip 3
+            |> Seq.toArray
+            |> string
+    
     member x.Items = items
     member x.Knapsacks = knapsacks
     member x.Optimal = optimal
     
     override x.ToString() = 
         let strBuilder = new StringBuilder()
-        strBuilder.AppendLine("Name: " + name) |> ignore
+        strBuilder.AppendLine("Name: " + x.Name) |> ignore
         strBuilder.AppendLine("optimal: " + optimal.ToString()) |> ignore
         strBuilder.AppendLine("knapsacks: ") |> ignore
         for knapsack in knapsacks do
@@ -22,6 +31,15 @@ type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack arr
         strBuilder.AppendLine("items: ") |> ignore
         for item in items do
             strBuilder.AppendLine("\t" + item.ToString()) |> ignore
+        strBuilder.ToString()
+    
+    member x.AsString() = 
+        let strBuilder = new StringBuilder()
+        strBuilder.AppendLine("Name: " + name) |> ignore
+        strBuilder.AppendLine("optimal: " + optimal.ToString()) |> ignore
+        strBuilder.AppendLine("knapsacks: ") |> ignore
+        for knapsack in knapsacks do
+            strBuilder.AppendLine("\t" + knapsack.ToString()) |> ignore
         strBuilder.ToString()
     
     static member Create(nameOfGame : string, numOfKnapsacks : int, numOfItems : int, capacities : int [], 
@@ -41,7 +59,7 @@ type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack arr
             |> Seq.mapi (fun i c -> Item(prices.[i], Dictionary.from knapsacks c))
             |> Seq.toArray
         KnapsackProblem(nameOfGame, items, knapsacks, optimum)
-
+    
     member x.AsInput() = 
         [ knapsacks.Length.ToString() ] 
         @ [ items.Length.ToString() ] 
@@ -53,4 +71,3 @@ type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack arr
                |> Array.toList)
               @ ((knapsacks |> Array.collect (fun k -> items |> Array.map (fun i -> (i.ConstraintOf k).ToString()))) 
                  |> Array.toList) @ [ optimal.ToString() ] @ [ name ]
-    

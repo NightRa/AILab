@@ -34,7 +34,7 @@ module BoundKnapsack =
 type AlgParameters(alg : Alg, boundKnapsack : BoundKnapsack, algTime : TimeSpan) = 
     
     static member AllParams(time) : AlgParameters array = 
-        [| for alg in [ Alg.DfsSorted; Alg.BestFirst; Alg.DfsSorted ] do
+        [| for alg in [ Alg.DfsNotSorted; Alg.BestFirst; Alg.DfsSorted ] do
                for bound in [ BoundKnapsack.Fractional; BoundKnapsack.Unbounded ] do
                    yield AlgParameters(alg, bound, time) |]
     

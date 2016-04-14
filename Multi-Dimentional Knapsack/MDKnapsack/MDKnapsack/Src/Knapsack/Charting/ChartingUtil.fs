@@ -23,17 +23,19 @@ module ChartingUtil =
            |> fun chart -> charts <- chart :: charts
         Chart.Combine charts*)
     let asSingleChartColumn chartName (names : string[], results : float[]) : GenericChart =
+        let results = results |> Array.map (fun r -> r * 100.0)
         let chart = Chart.Column (results, Name = chartName, Labels = names)
         let chart = chart.WithDataPointLabels (LabelPosition = LabelPosition.Bottom)
         let chart = chart.WithXAxis (Enabled = false)
-        let chart = chart.WithYAxis (Enabled = true, Title = "Price Percent", Min = 0.0, Max = 1.0, TitleFontSize = 16.0)
+        let chart = chart.WithYAxis (Enabled = true, Title = "Price Percent", Min = 0.0, Max = 100.0, TitleFontSize = 16.0)
         chart
 
     let asSingleChartLine chartName (names : string[], results : float[]) : GenericChart =
+        let results = results |> Array.map (fun r -> r * 100.0)
         let chart = Chart.Line (results, Name = chartName, Labels = names)
         let chart = chart.WithDataPointLabels (LabelPosition = LabelPosition.Bottom)
         let chart = chart.WithXAxis (Enabled = false)
-        let chart = chart.WithYAxis (Enabled = true, Title = "Price Percent", Min = 0.0, Max = 1.0, TitleFontSize = 16.0)
+        let chart = chart.WithYAxis (Enabled = true, Title = "Price Percent", Min = 0.0, Max = 100.0, TitleFontSize = 16.0)
         chart
 
     let showChartBlocking (chart : GenericChart) = 

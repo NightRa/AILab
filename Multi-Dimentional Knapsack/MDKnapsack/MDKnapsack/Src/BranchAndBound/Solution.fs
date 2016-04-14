@@ -2,6 +2,8 @@
 
 open System.Text
 open System.Collections
+open MDKnapsack.Util
+open Bound
 
 type Solution(itemsTaken : BitArray, items : Item array) = 
 
@@ -22,11 +24,12 @@ type Solution(itemsTaken : BitArray, items : Item array) =
                                 sumOfConstraints <- sumOfConstraints + items.[i].ConstraintOf knapsack
                         sumOfConstraints < knapsack.Capacity)
 
-    member x.ShouldPrune (doneUntilIndex : int, currentPrice : int) : bool =
+    member x.ShouldPrune (doneUntilIndex : int, currentPrice : int, prunning : PrunningFunc, knapsacks : Knapsack[]) : bool =
         let mutable restPotentialPrice = 0
         for i = doneUntilIndex + 1 to itemsTaken.Length - 1 do
             restPotentialPrice <- restPotentialPrice + items.[i].Price
-        price + restPotentialPrice < currentPrice
+        let maxPossible = price + restPotentialPrice
+        maxPossible < currentPrice && maxPossible < prunning knapsacks currentPrice items doneUntilIndex
     
     member x.Branch (index : int) =
         let newCopy = itemsTaken.Clone () :?> BitArray
@@ -46,8 +49,8 @@ type Solution(itemsTaken : BitArray, items : Item array) =
         |> Seq.sortByDescending snd
         |> Seq.map (fun (i, isTaken) -> 
                match isTaken with
-               | true -> "\tTaken: " + items.[i].Price.ToString()
-               | false -> "\tNot Taken: " + items.[i].Price.ToString())
+               | true -> "\tTaken: " + items.[i].ToString().FillLinesWithTabs()
+               | false -> "\tNot Taken: " + items.[i].ToString())
         |> Seq.map (strBuilder.AppendLine)
         |> Seq.iter ignore
         strBuilder.ToString()
