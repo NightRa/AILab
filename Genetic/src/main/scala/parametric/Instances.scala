@@ -38,7 +38,7 @@ object Instances {
       elitismRate <- doubleParam("Elitism Rate", 0.5)
     } yield new Elitism(elitismRate)
 
-  def randomImmigrantsElitism[A]: Parametric[ElitismRandomImmigrants] =
+  def randomImmigrantsElitism: Parametric[ElitismRandomImmigrants] =
     for {
       elitismRate <- doubleParam("Elitism Rate", 0.0)
       randomImmigrantsRate <- doubleParam("Immigrants Rate", 0.5)

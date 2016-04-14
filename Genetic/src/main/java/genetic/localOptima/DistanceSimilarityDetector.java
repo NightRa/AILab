@@ -30,4 +30,5 @@ public class DistanceSimilarityDetector implements LocalOptimaSignal {
         double stdDev = Math.sqrt(variance);
         return stdDev < distanceThresh;
     }
+
 }
