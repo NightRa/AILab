@@ -4,8 +4,8 @@ module Bound =
     open System
     
     type PrunningFunc = Knapsack[] -> int -> Item[] -> int -> int
-    let unboundedKnapsack  (_ : Knapsack[]) (_ : int) (_ : Item[]) (_ : int) : int =
-        Int32.MaxValue
+    let unboundedKnapsack : PrunningFunc =
+        fun _ _ _ _ -> Int32.MaxValue / 2
     
     // TODO: Check a 10000 times. test, refine + define
     let fractionedFilledKnapsack (items : Item array) (knapsack : Knapsack) (takenUntil : int) : int = 
