@@ -47,7 +47,6 @@ module Branch =
         
         let sortedItems = problem.Items |> Array.sortByDescending (itemHeuristicValue)
         let newProblem = KnapsackProblem(problem.Name, sortedItems, problem.Knapsacks, problem.Optimal)
-        //System.Windows.Forms.MessageBox.Show (newProblem.ToString ()) |> ignore
         runAlg dfs prunning newProblem
     
     let bestFirst (prunning : PrunningFunc) (endTime : DateTime) (items : Item array) (knapsacks : Knapsack array) (knownOpt : int) : Solution * DateTime option = 

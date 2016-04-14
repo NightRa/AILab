@@ -24,12 +24,12 @@ type Solution(itemsTaken : BitArray, items : Item array) =
                                 sumOfConstraints <- sumOfConstraints + items.[i].ConstraintOf knapsack
                         sumOfConstraints < knapsack.Capacity)
 
-    member x.ShouldPrune (doneUntilIndex : int, currentPrice : int, prunning : PrunningFunc, knapsacks : Knapsack[]) : bool =
+    member x.ShouldPrune (doneUntilIndex : int, bestPrice : int, prunning : PrunningFunc, knapsacks : Knapsack[]) : bool =
         let mutable restPotentialPrice = 0
         for i = doneUntilIndex + 1 to itemsTaken.Length - 1 do
             restPotentialPrice <- restPotentialPrice + items.[i].Price
         let maxPossible = price + restPotentialPrice
-        maxPossible < currentPrice && maxPossible < prunning knapsacks currentPrice items doneUntilIndex
+        maxPossible < bestPrice || prunning knapsacks price items doneUntilIndex < bestPrice
     
     member x.Branch (index : int) =
         let newCopy = itemsTaken.Clone () :?> BitArray
