@@ -21,11 +21,11 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /** A simplified and streamlined version of {@link java.util.BitSet}. */
-final class BitSet implements Serializable, Cloneable {
+final public class BitSet implements Serializable, Cloneable {
 
     private final long[] bits;
 
-    BitSet(int numBits) {
+    public BitSet(int numBits) {
         int numLongs = numBits >>> 6;
         if ((numBits & 0x3F) != 0) {
             numLongs++;
@@ -37,22 +37,22 @@ final class BitSet implements Serializable, Cloneable {
         this.bits = bits;
     }
 
-    boolean get(int index) {
+    public boolean get(int index) {
         // skipping range check for speed
         return (bits[index >>> 6] & 1L << (index & 0x3F)) != 0L;
     }
 
-    void set(int index) {
+    public void set(int index) {
         // skipping range check for speed
         bits[index >>> 6] |= 1L << (index & 0x3F);
     }
 
-    void clear(int index) {
+    public void clear(int index) {
         // skipping range check for speed
         bits[index >>> 6] &= ~(1L << (index & 0x3F));
     }
 
-    void clear() {
+    public void clear() {
         int length = bits.length;
         for (int i = 0; i < length; i++) {
             bits[i] = 0L;
