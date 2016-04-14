@@ -269,13 +269,15 @@ object UserMain {
       """1. Top Selection (*)
         |2. Roulette Wheel Selection - RWS
         |3. Stochastic Universal Sampling - SUS
-        |4. Tournament
+        |4. Ranking
+        |5. Tournament
       """.stripMargin)
     readIntWithDefault("Choose a parent selection strategy (default 1): ", 1) match {
       case 1 => Instances.topSelection
       case 2 => Instances.rws
       case 3 => Instances.sus
-      case 4 => Instances.tournament
+      case 4 => Instances.ranking
+      case 5 => Instances.tournament
       case _ => chooseParentSelection()
     }
   }

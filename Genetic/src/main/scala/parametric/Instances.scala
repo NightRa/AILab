@@ -6,7 +6,7 @@ import genetic.fitnessMapping._
 import genetic.generation.Generation
 import genetic.localOptima.{DistanceSimilarityDetector, IgnoreLocalOptima, LocalOptimaSignal, StdDevLocalOptimaDetector}
 import genetic.mutation.RegularMutation
-import genetic.selection.{RouletteWheelSelection, StochasticUniversalSampling, TopSelection, Tournament}
+import genetic.selection._
 import genetic.survivors.{Elitism, ElitismRandomImmigrants}
 import genetic.{Genetic, GeneticAlg, GeneticEngine}
 import parametric.Parametric._
@@ -57,6 +57,11 @@ object Instances {
   def sus: Parametric[StochasticUniversalSampling] =
     Parametric.point {
       new StochasticUniversalSampling()
+    }
+
+  def ranking: Parametric[Ranking] =
+    Parametric.point {
+      new Ranking()
     }
 
   def tournament: Parametric[Tournament] =
