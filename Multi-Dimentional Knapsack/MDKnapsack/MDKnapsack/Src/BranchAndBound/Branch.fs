@@ -21,7 +21,7 @@ module Branch =
                 let with1, with0 = sol.Branch nextIndex
                 if with0.IsValid knapsacks && not <| with0.ShouldPrune(nextIndex, bestSolution.Price) then 
                     solutionsToBranch.Push(with0, nextIndex)
-                if with1.IsValid knapsacks && not <| with0.ShouldPrune(nextIndex, bestSolution.Price) then 
+                if with1.IsValid knapsacks && not <| with1.ShouldPrune(nextIndex, bestSolution.Price) then 
                     solutionsToBranch.Push(with1, nextIndex)
             ()
         (bestSolution, maybeFindingTime)
@@ -31,9 +31,8 @@ module Branch =
         let startingTime = DateTime.Now
         let endTime = startingTime + time
         let (sol, maybeTime) = alg endTime (items) (problem.Knapsacks) (problem.Optimal)
-        match maybeTime with
-        | None -> (sol, None)
-        | Some findingTime -> (sol, Some <| findingTime - startingTime)
+        let timeToFind = maybeTime |> Option.map (fun findingTime -> findingTime - startingTime)
+        (sol, timeToFind)
     
     let dfsSorted (problem : KnapsackProblem) = 
         let itemHeuristicValue (item : Item) = 
@@ -63,7 +62,7 @@ module Branch =
                 let with1, with0 = sol.Branch nextIndex
                 if with0.IsValid knapsacks && not <| with0.ShouldPrune(nextIndex, bestSolution.Price) then 
                     solutionsToBranch.Enqueue ((with0, nextIndex), 1.0 / float with0.Price)
-                if with1.IsValid knapsacks && not <| with0.ShouldPrune(nextIndex, bestSolution.Price) then 
+                if with1.IsValid knapsacks && not <| with1.ShouldPrune(nextIndex, bestSolution.Price) then 
                     solutionsToBranch.Enqueue ((with1, nextIndex), 1.0 / float with1.Price)
             ()
         (bestSolution, maybeFindingTime)

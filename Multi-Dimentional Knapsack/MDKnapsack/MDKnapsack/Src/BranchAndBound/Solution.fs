@@ -25,8 +25,7 @@ type Solution(itemsTaken : BitArray, items : Item array) =
     member x.ShouldPrune (doneUntilIndex : int, currentPrice : int) : bool =
         let mutable restPotentialPrice = 0
         for i = doneUntilIndex + 1 to itemsTaken.Length - 1 do
-            if itemsTaken.[i] then
-                restPotentialPrice <- restPotentialPrice + items.[i].Price
+            restPotentialPrice <- restPotentialPrice + items.[i].Price
         price + restPotentialPrice < currentPrice
     
     member x.Branch (index : int) =

@@ -71,7 +71,7 @@ namespace GuiMDKnapsack
                 MessageBox.Show("Not a valid value of alg run time");
                 return;
             }
-
+            this.Cursor = Cursors.Wait;
             string[] filenames = maybeFileNames.Value;
             TimeSpan runningTime = maybeRunTime.Value;
             if (AnalizeCheckBox.IsChecked.GetValueOrDefault(false))
@@ -84,34 +84,45 @@ namespace GuiMDKnapsack
                 if (filenames.Length == 1)
                     RunWithParameters(parameters, filenames[0]);
                 else
-                    RunWith(filenames, runningTime, alg,bound);
+                    RunWith(parameters, filenames);
             }
+            this.Cursor = Cursors.Arrow;
         }
 
-        private void RunWith(string[] filenames, TimeSpan runningTime, Alg alg, BoundKnapsack bound)
+        private void RunWith(AlgParameters parameters, string[] filenames)
         {
-            throw new NotImplementedException();
+            CatchErrors(() =>
+            {
+                var chart = RunAlgorithm.runAlgorithmMultipleDats(parameters, filenames, Respond);
+                Chart.Show(chart);
+            });
         }
 
         private void Analization(string filename, TimeSpan runningTime)
         {
-            var parameters = AlgParameters.AllParams(runningTime);
-            var chart = RunAlgorithm.runAlgorithmOnParams(parameters, filename);
-            Chart.Show(chart);
+            CatchErrors(() =>
+            {
+                var parameters = AlgParameters.AllParams(runningTime);
+                var chart = RunAlgorithm.runAlgorithmOnParams(parameters, filename, Respond);
+                Chart.Show(chart);
+            });
         }
 
         private void RunWithParameters(AlgParameters parameters, string filename)
         {
-            var result = RunAlgorithm.runAlgorithmSingle(parameters, filename);
-            string[] data = RunAlgorithm.asString(Tuple.Create(result));
-            ListView view = new ListView();
-            view.FontSize = 14;
-            foreach (var str in data)
-                view.Items.Add(str);
-            var window = new Window();
-            window.Content = view;
-            window.ShowInTaskbar = false;
-            window.Show();
+            CatchErrors(() =>
+            {
+                var result = RunAlgorithm.runAlgorithmSingle(parameters, filename, Respond);
+                string[] data = RunAlgorithm.asString(Tuple.Create(result));
+                ListView view = new ListView();
+                view.FontSize = 14;
+                foreach (var str in data)
+                    view.Items.Add(str);
+                var window = new Window();
+                window.Content = view;
+                window.ShowInTaskbar = false;
+                window.Show();
+            });
         }
 
         private Alg GetAlg()
@@ -165,7 +176,24 @@ namespace GuiMDKnapsack
                 foreach (var radioButton in AllRadioButtons(innerPannel))
                     yield return radioButton;
 
-        } 
+        }
+
+        private void CatchErrors(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception exeption)
+            {
+                MessageBox.Show("An error occurred: " + Environment.NewLine + exeption);
+            }
+        }
+
+        private void Respond()
+        {
+            this.Dispatcher.InvokeAsync(() => { });
+        }
     }
 
 

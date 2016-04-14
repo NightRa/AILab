@@ -31,25 +31,27 @@ module RunAlgorithm =
         let prob = parseToKnapsackProblem text
         (prob, alg, time)
     
-    let public runAlgorithmSingle (parameters : AlgParameters, datFile : string) = 
+    let public runAlgorithmSingle (parameters : AlgParameters, datFile : string, respond : Action) = 
+        respond.Invoke ()
         let prob, alg, time = getProb (parameters, datFile)
         let solution, maybeTime = alg prob time
+        respond.Invoke ()
         (prob, solution, maybeTime, parameters)
     
-    let public runAlgorithmOnParams (parameters : AlgParameters [], datFile : string) = 
+    let public runAlgorithmOnParams (parameters : AlgParameters [], datFile : string, respond : Action) = 
         let name = ref "No Name"
         parameters
-        |> Array.map (fun p -> runAlgorithmSingle (p, datFile))
+        |> Array.map (fun p -> runAlgorithmSingle (p, datFile, respond))
         |> Array.map (fun (prob, sol, _, par) -> 
                name := prob.Name
                (par.AsString(), float sol.Price / float prob.Optimal))
         |> Array.unzip
         |> asSingleChartColumn (!name)
     
-    let public runAlgorithmMultipleDats (parameters : AlgParameters, datFiles : string []) = 
+    let public runAlgorithmMultipleDats (parameters : AlgParameters, datFiles : string [], respond : Action) = 
         let name = ref "No Name"
         datFiles
-        |> Array.map (fun d -> runAlgorithmSingle (parameters, d))
+        |> Array.map (fun d -> runAlgorithmSingle (parameters, d, respond))
         |> Array.map (fun (prob, sol, _, par) -> 
                name := par.AsString()
                (prob.Name, float sol.Price / float prob.Optimal))
