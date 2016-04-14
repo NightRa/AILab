@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using FSharp.Charting;
 using MDKnapsack;
 using Microsoft.FSharp.Core;
 using Microsoft.Win32;
@@ -59,9 +60,6 @@ namespace GuiMDKnapsack
 
         private void RunButton_Click(object sender, RoutedEventArgs e)
         {
-          //  var chart = new LightningChartUltimate();
-           // chart.Dispose();
-          //  return;
             if (FSharpOption<string[]>.get_IsNone(maybeFileNames))
             {
                 MessageBox.Show("You didnt select input DAT files for the knapsack algorithm");
@@ -73,18 +71,47 @@ namespace GuiMDKnapsack
                 MessageBox.Show("Not a valid value of alg run time");
                 return;
             }
-            TimeSpan runningTime = maybeRunTime.Value;
+
             string[] filenames = maybeFileNames.Value;
-            Alg alg = GetAlg();
-            BoundKnapsack bound = GetBound();
-            AlgParameters parameters = new AlgParameters(alg, bound, filenames, runningTime);
-            RunWithParameters(parameters);
+            TimeSpan runningTime = maybeRunTime.Value;
+            if (AnalizeCheckBox.IsChecked.GetValueOrDefault(false))
+                Analization(filenames[0], runningTime);
+            else
+            {
+                Alg alg = GetAlg();
+                BoundKnapsack bound = GetBound();
+                var parameters = new AlgParameters(alg, bound, runningTime);
+                if (filenames.Length == 1)
+                    RunWithParameters(parameters, filenames[0]);
+                else
+                    RunWith(filenames, runningTime, alg,bound);
+            }
         }
 
-        private void RunWithParameters(AlgParameters parameters)
+        private void RunWith(string[] filenames, TimeSpan runningTime, Alg alg, BoundKnapsack bound)
         {
-            var results = RunAlgorithm.runAlgorithm(parameters);
-            //ChartPoint point = new ChartPo
+            throw new NotImplementedException();
+        }
+
+        private void Analization(string filename, TimeSpan runningTime)
+        {
+            var parameters = AlgParameters.AllParams(runningTime);
+            var chart = RunAlgorithm.runAlgorithmOnParams(parameters, filename);
+            Chart.Show(chart);
+        }
+
+        private void RunWithParameters(AlgParameters parameters, string filename)
+        {
+            var result = RunAlgorithm.runAlgorithmSingle(parameters, filename);
+            string[] data = RunAlgorithm.asString(Tuple.Create(result));
+            ListView view = new ListView();
+            view.FontSize = 14;
+            foreach (var str in data)
+                view.Items.Add(str);
+            var window = new Window();
+            window.Content = view;
+            window.ShowInTaskbar = false;
+            window.Show();
         }
 
         private Alg GetAlg()
@@ -117,6 +144,29 @@ namespace GuiMDKnapsack
                 return FSharpOption<TimeSpan>.Some(TimeSpan.FromSeconds(res));
             }
             return FSharpOption<TimeSpan>.None;
+        }
+
+        private void AnalizeCheckBox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            var dec = TextDecorations.Underline[0];
+            if (AnalizeText.TextDecorations.Contains(dec))
+                AnalizeText.TextDecorations.Remove(dec);
+            else
+                AnalizeText.TextDecorations.Add(dec);
+            foreach (var radioButton in AllRadioButtons(MainGrid))
+                radioButton.IsEnabled = radioButton.IsEnabled ^ true;
+        }
+
+        private IEnumerable<RadioButton> AllRadioButtons(Panel panel)
+        {
+            foreach (var radioButton in panel.Children.OfType<RadioButton>())
+                yield return radioButton;
+            foreach (var innerPannel in panel.Children.OfType<Panel>())
+                foreach (var radioButton in AllRadioButtons(innerPannel))
+                    yield return radioButton;
+
         } 
     }
+
+
 }

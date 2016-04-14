@@ -4,7 +4,7 @@ open System.Text
 open System.Collections
 
 type Solution(itemsTaken : BitArray, items : Item array) = 
-    
+
     let price = 
         let mutable sum = 0
         for i = 0 to items.Length - 1 do
@@ -14,13 +14,20 @@ type Solution(itemsTaken : BitArray, items : Item array) =
     member x.Price = price
     static member Empty(items : Item array) = (new BitArray(items.Length, false), items) |> Solution
     
-    member x.IsValid (optimums : (Knapsack * int) array) = 
-        optimums |> Array.forall (fun (knapsack, maxBound) -> 
+    member x.IsValid (knapsacks : Knapsack array) = 
+        knapsacks |> Array.forall (fun knapsack -> 
                         let mutable sumOfConstraints = 0
                         for i = 0 to items.Length - 1 do
                             if itemsTaken.[i] then 
                                 sumOfConstraints <- sumOfConstraints + items.[i].ConstraintOf knapsack
-                        sumOfConstraints < knapsack.Capacity && sumOfConstraints < maxBound)
+                        sumOfConstraints < knapsack.Capacity)
+
+    member x.ShouldPrune (doneUntilIndex : int, currentPrice : int) : bool =
+        let mutable restPotentialPrice = 0
+        for i = doneUntilIndex + 1 to itemsTaken.Length - 1 do
+            if itemsTaken.[i] then
+                restPotentialPrice <- restPotentialPrice + items.[i].Price
+        price + restPotentialPrice < currentPrice
     
     member x.Branch (index : int) =
         let newCopy = itemsTaken.Clone () :?> BitArray

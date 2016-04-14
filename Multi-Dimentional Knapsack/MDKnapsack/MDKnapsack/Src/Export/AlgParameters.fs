@@ -8,34 +8,44 @@ type Alg =
     | DfsNotSorted = 1
     | BestFirst = 2
 
-[<CompilationRepresentation (CompilationRepresentationFlags.ModuleSuffix)>]
-module Alg =
-    let asString = function
-        | Alg.DfsSorted -> "DFS sorted"
-        | Alg.DfsNotSorted -> "DFS not sorted"
-        | Alg.BestFirst -> "Best first"
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Alg = 
+    let asString = 
+        function 
+        | Alg.DfsSorted -> "DFS" + Environment.NewLine + "sorted"
+        | Alg.DfsNotSorted -> "DFS" + Environment.NewLine + "not sorted"
+        | Alg.BestFirst -> "BFS"
         | _ -> failwith "Incomplete pattern"
 
 type BoundKnapsack = 
     | Unbounded = 0
     | Fractional = 1
 
-[<CompilationRepresentation (CompilationRepresentationFlags.ModuleSuffix)>]
-module BoundKnapsack =
-    let asString = function
-        | BoundKnapsack.Unbounded -> "Unbound knapsack"
-        | BoundKnapsack.Fractional -> "Bounded knapsack - fractional filled"
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module BoundKnapsack = 
+    let asString b = 
+        match b with
+        | BoundKnapsack.Unbounded -> "Unbounded"
+        | BoundKnapsack.Fractional -> "Bounded"
         | _ -> failwith "Incomplete pattern"
+
 [<Class>]
 [<Sealed>]
-type AlgParameters(alg : Alg,
-                     boundKnapsack : BoundKnapsack,
-                     datFilePaths : string array,
-                     algTime : TimeSpan) = 
-    do assert (datFilePaths.Length > 0)
-    do assert (datFilePaths |> Array.forall (File.Exists))
-
+type AlgParameters(alg : Alg, boundKnapsack : BoundKnapsack, algTime : TimeSpan) = 
+    
+    static member AllParams(time) : AlgParameters array = 
+        [| for alg in [ Alg.DfsSorted; Alg.BestFirst; Alg.DfsSorted ] do
+               for bound in [ BoundKnapsack.Fractional; BoundKnapsack.Unbounded ] do
+                   yield AlgParameters(alg, bound, time) |]
+    
     member x.Alg = alg
     member x.BoundKnapsack = boundKnapsack
-    member x.DatFilePathes = datFilePaths
     member x.AlgTime = algTime
+    member x.AsString() = (Alg.asString alg) + Environment.NewLine + (BoundKnapsack.asString boundKnapsack)
+    
+    override x.Equals obj = 
+        match obj with
+        | (:? AlgParameters as par) -> par.Alg.Equals alg
+        | _ -> false
+    
+    override x.GetHashCode() = (alg, boundKnapsack, algTime).GetHashCode()

@@ -1,33 +1,72 @@
 ﻿namespace MDKnapsack
 
-module RunAlgorithm =
+module RunAlgorithm = 
     open Branch
     open System.IO
     open Parsing
     open MDKnapsack
+    open System
+    open ChartingUtil
+    open System.Text
     
-    let public runAlgorithm (parameters : AlgParameters) =
-        let alg = match parameters.Alg with
-                    | Alg.BestFirst -> runAlg bestFirst
-                    | Alg.DfsNotSorted -> runAlg dfs
-                    | Alg.DfsSorted -> dfsSorted
-                    | _ -> failwith "Incomplete pattern"
-        let optimumFunc =  match parameters.BoundKnapsack with
-                            | BoundKnapsack.Unbounded -> Bound.unboundedKnapsack
-                            | BoundKnapsack.Fractional -> Bound.fractionedFilledKnapsack
-                            | _ -> failwith "Incomplete pattern"
-                        
+    let getAlg = 
+        function 
+        | Alg.BestFirst -> runAlg bestFirst
+        | Alg.DfsNotSorted -> runAlg dfs
+        | Alg.DfsSorted -> dfsSorted
+        | _ -> failwith "Incomplete pattern"
+    
+    let getPruneFunc = 
+        function 
+        | BoundKnapsack.Unbounded -> Bound.unboundedKnapsack
+        | BoundKnapsack.Fractional -> Bound.unboundedKnapsack
+        | _ -> failwith "Incomplete pattern"
+    
+    let getProb (parameters : AlgParameters, datFile : string) = 
+        assert (File.Exists datFile)
+        let alg = getAlg (parameters.Alg)
         let time = parameters.AlgTime
-
-        let problems = parameters.DatFilePathes
-                        |> Seq.ofArray
-                        |> Seq.map (fun f -> (f, File.ReadAllText f))
-                        |> Seq.map (fun (f, str) -> (f, parseToKnapsackProblem str))
-                        |> Seq.toArray
-
-        seq {
-            for (filename, prob) in problems ->
-                let solution, maybeTime = alg prob time (optimumFunc prob.Items)
-                in (filename, prob, solution,  maybeTime)
-        }
-
+        let filename = datFile
+        let text = File.ReadAllText filename
+        let prob = parseToKnapsackProblem text
+        (prob, alg, time)
+    
+    let public runAlgorithmSingle (parameters : AlgParameters, datFile : string) = 
+        let prob, alg, time = getProb (parameters, datFile)
+        let solution, maybeTime = alg prob time
+        (prob, solution, maybeTime, parameters)
+    
+    let public runAlgorithmOnParams (parameters : AlgParameters [], datFile : string) = 
+        let name = ref "No Name"
+        parameters
+        |> Array.map (fun p -> runAlgorithmSingle (p, datFile))
+        |> Array.map (fun (prob, sol, _, par) -> 
+               name := prob.Name
+               (par.AsString(), float sol.Price / float prob.Optimal))
+        |> Array.unzip
+        |> asSingleChartColumn (!name)
+    
+    let public runAlgorithmMultipleDats (parameters : AlgParameters, datFiles : string []) = 
+        let name = ref "No Name"
+        datFiles
+        |> Array.map (fun d -> runAlgorithmSingle (parameters, d))
+        |> Array.map (fun (prob, sol, _, par) -> 
+               name := par.AsString()
+               (prob.Name, float sol.Price / float prob.Optimal))
+        |> Array.unzip
+        |> asSingleChartColumn (!name)
+    
+    let public asString (x : Tuple<KnapsackProblem * Solution * TimeSpan option * AlgParameters>) : string [] = 
+        let (prob, sol, maybeTime, algParams) = x.Item1
+        let strBuilder = new StringBuilder()
+        let strBuilder = strBuilder.AppendLine <| "Problem name: " + (prob.Name)
+        let strBuilder = strBuilder.AppendLine <| "Optimal: " + (prob.Optimal.ToString())
+        
+        let strBuilder = 
+            strBuilder.AppendLine <| match maybeTime with
+                                     | None -> "Didnt find optimal, found: " + (sol.Price.ToString())
+                                     | Some t -> "Found optimal in " + (t.TotalSeconds.ToString()) + "sec"
+        
+        let strBuilder = strBuilder.AppendLine <| "Parameters: " + (algParams.AsString())
+        let strBuilder = strBuilder.AppendLine <| "Problem: " + (prob.ToString())
+        strBuilder.ToString().Split([|"\r\n"; "\n"; "\r"|], StringSplitOptions.None)
