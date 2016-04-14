@@ -1,5 +1,7 @@
 package genetic;
 
+import genetic.types.Population;
+
 import java.util.Random;
 
 public interface Genetic<A> {
@@ -17,4 +19,8 @@ public interface Genetic<A> {
     String show(A gene);
 
     boolean showScientific();
+
+    default void postGenerationEffect(int generation, Population<A> before, Population<A> after){}
+
+    default void endAlgEffect(){}
 }

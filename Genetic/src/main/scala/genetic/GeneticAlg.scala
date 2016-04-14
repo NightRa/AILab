@@ -45,6 +45,7 @@ class GeneticAlg[A](val genetic: Genetic[A],
 
     val initialBuffer = new Population[A](Array.fill(popSize)(new Gene[A](null.asInstanceOf[A], 0)))
     val (bestPop, iterations) = goRun(population, initialBuffer, 0, endTime, printEvery)
+    genetic.endAlgEffect()
     (bestPop, iterations)
   }
 
@@ -61,6 +62,9 @@ class GeneticAlg[A](val genetic: Genetic[A],
       if (population.population(0).fitness > epsilon) {
 
         nextGeneration(population, buffer)
+
+        genetic.postGenerationEffect(i, population, buffer)
+
         goRun(buffer, population, i + 1, endTime, printEvery)
 
       } else
