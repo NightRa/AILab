@@ -35,8 +35,19 @@ public class StochasticUniversalSampling implements ParentSelection {
         };
         List<A> parents = Stream.generate(supplier).limit(size).collect(Collectors.toList());
         Collections.shuffle(parents);
-        Iterator<A> iterator = parents.iterator();
-        return iterator::next;
+
+        return new Supplier<A>() {
+            Iterator<A> iterator = parents.iterator();
+            @Override
+            public A get() {
+                if (iterator.hasNext())
+                    return iterator.next();
+                else {
+                    iterator = parents.iterator();
+                    return iterator.next();
+                }
+            }
+        };
     }
 
     private static class RoulettePosition {
