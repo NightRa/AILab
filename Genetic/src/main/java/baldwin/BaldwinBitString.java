@@ -24,7 +24,7 @@ public class BaldwinBitString {
     public static boolean localSearch(byte[] baldwinString, byte[] target, Random rand) {
         for (int i = 0; i < baldwinString.length; i++) {
             byte currentBit = baldwinString[i];
-            if(currentBit == 2) {
+            if(currentBit == QuestionMark) {
                 byte setBit = genBit(rand);
                 if(target[i] != setBit) return false;
             } else if (currentBit != target[i]) return false;
