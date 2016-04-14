@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using FSharp.Charting;
 using MDKnapsack;
 using Microsoft.FSharp.Core;
@@ -120,6 +121,9 @@ namespace GuiMDKnapsack
                     view.Items.Add(str);
                 var window = new Window();
                 window.Content = view;
+                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                window.Width = 500;
+                window.Height = 400;
                 window.ShowInTaskbar = false;
                 window.Show();
             });
@@ -186,13 +190,13 @@ namespace GuiMDKnapsack
             }
             catch (Exception exeption)
             {
-                MessageBox.Show("An error occurred: " + Environment.NewLine + exeption);
+                MessageBox.Show("An error occurred: " + Environment.NewLine + exeption.Message);
             }
         }
 
         private void Respond()
         {
-            this.Dispatcher.InvokeAsync(() => { });
+            Application.Current.Dispatcher.Invoke(() => { }, DispatcherPriority.Background);
         }
     }
 

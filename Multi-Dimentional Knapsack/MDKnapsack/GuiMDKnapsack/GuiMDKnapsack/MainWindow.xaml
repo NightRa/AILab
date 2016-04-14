@@ -30,7 +30,7 @@
             <TextBlock Margin="2" FontWeight="Bold" Foreground="#FFD4B006" Text="Yuval Alfassi: 318401015"/>
         </Viewbox>
         <Viewbox Grid.Row="2">
-            <TextBlock Margin="2" FontWeight="Bold" Foreground="#FFD4B006" Text="Ilan Godik: 31631532"/>
+            <TextBlock Margin="2" FontWeight="Bold" Foreground="#FFD4B006" Text="Ilan Godik: 316315332"/>
         </Viewbox>
         <Grid Grid.Row="3">
             <Grid.RowDefinitions>
@@ -58,7 +58,7 @@
                         Choose DAT files
                     </TextBlock>
                 </Viewbox>
-                <ListView Grid.Row="1" Name="DatFilesListView" Margin="10" Background="#FFE7ECF3"></ListView>
+                <ListView Grid.Row="1" Name="DatFilesListView" Margin="10" FontSize="18" Background="#FFE7ECF3"></ListView>
                 <Button Grid.Row="2" Margin="10,0,10,10" Name="ChooseDatFilesButton" Click="ChooseDatFilesButton_Click" Background="#FFC4D4EC">
                     <Viewbox>
                         <TextBlock>
@@ -120,7 +120,7 @@
                     </TextBlock>
                 </Viewbox>
                 <DockPanel Grid.Row="1" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Center">
-                    <TextBox Width="100" FontSize="22" TextAlignment="Center" Name="AlgRunTime" Background="#FFE7ECF3">1.5</TextBox>
+                    <TextBox Width="100" FontSize="22" TextAlignment="Center" Name="AlgRunTime" Background="#FFE7ECF3">0.5</TextBox>
                     <TextBlock FontSize="22" Margin="2">
                         sec
                     </TextBlock>

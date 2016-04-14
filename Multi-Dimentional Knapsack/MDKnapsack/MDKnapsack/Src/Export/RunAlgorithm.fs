@@ -46,7 +46,9 @@ module RunAlgorithm =
     let public runAlgorithmOnParams (parameters : AlgParameters [], datFile : string, respond : Action) = 
         let name = ref "No Name"
         parameters
-        |> Array.map (fun p -> runAlgorithmSingle (p, datFile, respond))
+        |> Array.map (fun p -> 
+                        respond.Invoke()
+                        runAlgorithmSingle (p, datFile, respond))
         |> Array.map (fun (prob, sol, _, par) -> 
                name := prob.Name
                (par.AsString(), float sol.Price / float prob.Optimal))
@@ -59,7 +61,8 @@ module RunAlgorithm =
         |> Array.map (fun d -> 
                respond.Invoke()
                runAlgorithmSingle (parameters, d, respond))
-        |> Array.map (fun (prob, sol, _, par) -> 
+        |> Array.map (fun (prob, sol, _, par) ->
+               respond.Invoke ()
                name := par.AsString()
                (prob.Name, float sol.Price / float prob.Optimal))
         |> Array.unzip

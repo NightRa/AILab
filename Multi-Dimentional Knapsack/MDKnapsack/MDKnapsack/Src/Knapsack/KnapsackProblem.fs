@@ -9,13 +9,15 @@ open System.Text
 type KnapsackProblem(name : string, items : Item array, knapsacks : Knapsack array, optimal : int) = 
     
     member x.Name = 
-        if not <| name.EndsWith " ok" then name
+        if not <| name.EndsWith " ok " then
+            name
         else 
             name
             |> Seq.rev
-            |> Seq.skip 3
+            |> Seq.skip 4
+            |> Seq.rev
             |> Seq.toArray
-            |> string
+            |> fun a -> new string (a)
     
     member x.Items = items
     member x.Knapsacks = knapsacks
