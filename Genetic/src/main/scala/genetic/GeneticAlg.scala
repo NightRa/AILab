@@ -27,12 +27,20 @@ class GeneticAlg[A](val genetic: Genetic[A],
     val generationTime = System.currentTimeMillis() - lastStartTime
     val (avg, theStdDev) = stdDev(population.population)((x: Gene[A]) => x.fitness)
     val fitness: Double = population.population(0).fitness
+    val meaningfulFitness: Double = genetic.meaningfulFitness(population.population(0).gene)
     val showFitness =
       if(genetic.showScientific())
         formatScientific(fitness, 3)
       else
         JavaUtil.formatDouble(fitness, 4)
-    println(f"Best ($i): ${genetic.show(population.population(0).gene)}; fitness: $showFitness; time: $generationTime ms; avg: $avg%.3f; stdDev: $theStdDev%.3f")
+
+    val showMeaningfulFitness =
+      if(genetic.showScientific())
+        formatScientific(meaningfulFitness, 3)
+      else
+        JavaUtil.formatDouble(meaningfulFitness, 4)
+
+    println(f"Best ($i): ${genetic.show(population.population(0).gene)}; fitness: $showFitness; meaningful: $showMeaningfulFitness, time: $generationTime ms; avg: $avg%.3f; stdDev: $theStdDev%.3f")
   }
 
   def run(printEvery: Int, MaxTimeSecs: Double): (Population[A], Int) = {

@@ -1,7 +1,11 @@
 package main
 
+import java.io.IOException
+import java.nio.charset.StandardCharsets
+import java.nio.file.{Files, Paths}
 import java.util.{ArrayList, Random, Scanner}
 
+import mdKnapsack.{MDKnapsackMain, MDKnapsackParser}
 import analysys.Analysis
 import baldwin.BaldwinMain
 import func.{Func, GeneticFuncMain, HoldersTableFunction, LabTestFunction}
@@ -96,14 +100,31 @@ object UserMain {
       """1. String searching
         |2. Function optimization
         |3. N-Queens
-        |4. Knapsack""".stripMargin)
+        |4. Knapsack
+        |5. Multi-Dimentional Knapsack""".stripMargin)
     val algNum = readIntLoop("What problem do you want to solve? ")
     algNum match {
       case 1 => chooseStringAlg()
       case 2 => chooseFunctionAlg()
       case 3 => chooseNQueensAlg()
       case 4 => chooseKnapsackAlg()
+      case 5 => chooseMDKnapsackAlg()
       case _ => chooseGeneticMetadata()
+    }
+  }
+
+  def chooseMDKnapsackAlg(): GeneticMetadata[_] = {
+    println("Choose an instance (file name): ")
+    val fileName = in.next()
+    try {
+      val filePath = Paths.get("res/samples/").resolve(fileName)
+      val data = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8)
+      val instance = MDKnapsackParser.parse(data)
+      new MDKnapsackMain(instance)
+    } catch {
+      case e: IOException =>
+        println("Invalid file.")
+        chooseMDKnapsackAlg()
     }
   }
 
@@ -469,6 +490,7 @@ object UserMain {
 
   def runGenetic(main: GeneticMetadata[_], algParams: Parametric[GeneticAlg[_]], maxTime: Double, printEvery: Int): Params = {
     val alg = algParams.applyDefaults()
+    val genetic: Genetic[Object] = alg.genetic.asInstanceOf[Genetic[Object]]
 
     val start = System.currentTimeMillis
 
@@ -479,7 +501,10 @@ object UserMain {
 
     val popSize = population.population.length
     println(s"Best ${5 min popSize}:")
-    println(population.population.sortBy(_.fitness).take(5).map(gene => alg.genetic.asInstanceOf[Genetic[Object]].show(gene.gene.asInstanceOf[Object]) + ", fitness = " + gene.fitness).mkString("\n"))
+    println(population.population.sortBy(_.fitness).take(5).map { gene =>
+      val geneObj = gene.gene.asInstanceOf[Object]
+      genetic.show(geneObj) + ", fitness = " + genetic.fitness(geneObj) + ", meaningful fitness = " + genetic.meaningfulFitness(geneObj)
+    }.mkString("\n"))
     println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + main.seed)
     if (main.isOpt) {
       population.asInstanceOf[Population[Params]].population(0).gene

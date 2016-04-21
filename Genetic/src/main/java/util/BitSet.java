@@ -19,13 +19,16 @@ package util;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Random;
 
 /** A simplified and streamlined version of {@link java.util.BitSet}. */
-final public class BitSet implements Serializable, Cloneable {
+public final class BitSet implements Serializable, Cloneable {
 
     private final long[] bits;
+    public final int numBits;
 
     public BitSet(int numBits) {
+        this.numBits = numBits;
         int numLongs = numBits >>> 6;
         if ((numBits & 0x3F) != 0) {
             numLongs++;
@@ -33,8 +36,21 @@ final public class BitSet implements Serializable, Cloneable {
         bits = new long[numLongs];
     }
 
-    private BitSet(long[] bits) {
+    public BitSet(int numBits, long[] bits) {
+        this.numBits = numBits;
         this.bits = bits;
+    }
+
+    public static BitSet randomBitSet(int numBits, Random rand) {
+        int numLongs = numBits >>> 6;
+        if ((numBits & 0x3F) != 0) {
+            numLongs++;
+        }
+        long[] bits = new long[numLongs];
+        for (int i = 0; i < numLongs; i++) {
+            bits[i] = rand.nextLong();
+        }
+        return new BitSet(numBits, bits);
     }
 
     public boolean get(int index) {
@@ -61,7 +77,7 @@ final public class BitSet implements Serializable, Cloneable {
 
     @Override
     public BitSet clone() {
-        return new BitSet(bits.clone());
+        return new BitSet(numBits, bits.clone());
     }
 
     @Override
@@ -81,8 +97,9 @@ final public class BitSet implements Serializable, Cloneable {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder(64 * bits.length);
+        int i = 0;
         for (long l : bits) {
-            for (int j = 0; j < 64; j++) {
+            for (int j = 0; j < 64 && i < numBits; j++, i++) {
                 result.append((l & 1L << j) == 0 ? '0' : '1');
             }
             result.append(' ');
@@ -90,4 +107,13 @@ final public class BitSet implements Serializable, Cloneable {
         return result.toString();
     }
 
+    public int lowestBit() {
+        int lowestBit = 0;
+        for (int i = 0; i < bits.length; i++) {
+            int index = Long.numberOfTrailingZeros(bits[i]);
+            lowestBit += index;
+            if(index != 64 && lowestBit < numBits) return index;
+        }
+        return -1;
+    }
 }

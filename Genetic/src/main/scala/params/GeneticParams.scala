@@ -38,18 +38,16 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
     if (timeFraction > 0.99) {
       lastAvgTime *= (1 + relief)
       lastAvgTime = Math.min(lastAvgTime, InitialTimeLimit)
-      1
     }
     // Finished => [0,0.5], Not finished => [0.5,1]
-    else 0.5 * timeFraction + 0.5 * population.population.minBy(_.fitness).fitness
+    0.5 * timeFraction + 0.5 * population.population.minBy(_.fitness).fitness
   }
 
   def fitness(gene: Params): Double = {
     var sum = 0.0
     for (i <- 0 until Rounds) {
       val result = fitnessOnce(gene)
-      if (result == 1) return 1
-      else sum += result
+      sum += result
     }
     val avgTime = sum / Rounds
     lastAvgTime = lastAvgTime min avgTime
