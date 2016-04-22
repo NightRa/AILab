@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,6 +49,11 @@ public final class BitSet implements Serializable, Cloneable {
         long[] bits = new long[numLongs];
         for (int i = 0; i < numLongs; i++) {
             bits[i] = rand.nextLong();
+        }
+        // Clear all the irrelevant bits in the last block.
+        // For canonicity of representation.
+        if ((numBits & 0x3F) != 0) {
+            bits[numLongs - 1] &= (1 << (numBits & 0x3F)) - 1;
         }
         return new BitSet(numBits, bits);
     }
@@ -112,8 +117,37 @@ public final class BitSet implements Serializable, Cloneable {
         for (int i = 0; i < bits.length; i++) {
             int index = Long.numberOfTrailingZeros(bits[i]);
             lowestBit += index;
-            if(index != 64 && lowestBit < numBits) return index;
+            if (index != 64 && lowestBit < numBits) return lowestBit;
         }
         return -1;
+    }
+
+    // Crossover operation, @i being the number of bits of @x to be copied. The rest are from @y.
+    public static BitSet crossOver(BitSet x, BitSet y, int i) {
+        if(x.numBits != y.numBits) {
+            throw new IllegalArgumentException("The BitSets must have the same size");
+        }
+        int crossoverBlock = i >>> 6;
+        int crossoverIndex = i & 0x1F;
+        long bx = x.bits[crossoverBlock];
+        long by = y.bits[crossoverBlock];
+        long crossoverMask = (1 << crossoverIndex) - 1;
+        long newCrossoverBlock = (crossoverMask & bx) | (~crossoverMask & by);
+        long[] newBits = new long[x.bits.length];
+        System.arraycopy(x.bits, 0, newBits, 0, crossoverBlock);
+        newBits[crossoverBlock] = newCrossoverBlock;
+        System.arraycopy(y.bits, crossoverBlock + 1, newBits, crossoverBlock + 1, y.bits.length - (crossoverBlock + 1));
+        return new BitSet(x.numBits, newBits);
+    }
+
+    public static int hammingDistance(BitSet x, BitSet y) {
+        if(x.numBits != y.numBits) {
+            throw new IllegalArgumentException("The BitSets must have the same size");
+        }
+        int distance = 0;
+        for (int i = 0; i < x.bits.length; i++) {
+            distance += Long.bitCount(x.bits[i] ^ y.bits[i]);
+        }
+        return distance;
     }
 }

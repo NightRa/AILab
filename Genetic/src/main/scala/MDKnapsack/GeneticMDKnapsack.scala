@@ -2,6 +2,7 @@ package mdKnapsack
 
 import java.util.Random
 
+import genetic.types.Gene
 import genetic.{Genetic, Metric}
 import util.BitSet
 
@@ -17,8 +18,8 @@ class GeneticMDKnapsack(instance: MDKnapsackInstance, rand: Random) extends Gene
     -instance.value(gene).toDouble / instance.optimum + 1
   }
 
-  override def meaningfulFitness(gene: BitSet): Double = {
-    instance.value(gene)
+  override def meaningfulFitness(gene: Gene[BitSet]): Double = {
+    instance.value(gene.gene)
   }
 
   override def randomElement(rand: Random): BitSet = {
@@ -38,7 +39,9 @@ class GeneticMDKnapsack(instance: MDKnapsackInstance, rand: Random) extends Gene
   }
 
   override def metric(): Metric[BitSet] = new Metric[BitSet] {
-    override def distance(x: BitSet, y: BitSet): Double = 1
+    override def distance(x: BitSet, y: BitSet): Double = {
+      BitSet.hammingDistance(x, y).toDouble / x.numBits
+    }
   }
 
   override def show(gene: BitSet): String = instance.values.indices.map(i => if (gene.get(i)) '1' else '0').mkString

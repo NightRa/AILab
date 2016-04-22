@@ -27,7 +27,7 @@ class GeneticAlg[A](val genetic: Genetic[A],
     val generationTime = System.currentTimeMillis() - lastStartTime
     val (avg, theStdDev) = stdDev(population.population)((x: Gene[A]) => x.fitness)
     val fitness: Double = population.population(0).fitness
-    val meaningfulFitness: Double = genetic.meaningfulFitness(population.population(0).gene)
+    val meaningfulFitness: Double = genetic.meaningfulFitness(population.population(0))
     val showFitness =
       if(genetic.showScientific())
         formatScientific(fitness, 3)

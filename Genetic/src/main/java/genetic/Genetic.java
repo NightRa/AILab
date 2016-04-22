@@ -1,12 +1,14 @@
 package genetic;
 
+import genetic.types.Gene;
+
 import java.util.Random;
 
 public interface Genetic<A> {
     double fitness(A gene);
 
-    default double meaningfulFitness(A gene) {
-        return fitness(gene);
+    default double meaningfulFitness(Gene<A> gene) {
+        return gene.fitness;
     }
 
     A mate(A x, A y);

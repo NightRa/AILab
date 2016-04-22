@@ -14,7 +14,7 @@ import genetic.generation.{Crossover, Generation}
 import genetic.localOptima.LocalOptimaSignal
 import genetic.selection.ParentSelection
 import genetic.survivors.SurvivorSelection
-import genetic.types.Population
+import genetic.types.{Gene, Population}
 import genetic.{Genetic, GeneticAlg, GeneticEngine, GeneticMetadata}
 import knapsack.{GeneticKnapsackMain, Item}
 import parametric.{Instances, Parametric}
@@ -114,8 +114,9 @@ object UserMain {
   }
 
   def chooseMDKnapsackAlg(): GeneticMetadata[_] = {
-    println("Choose an instance (file name): ")
+    print("\nChoose an instance (file name): ")
     val fileName = in.next()
+    in.skip("\n|\r\n")
     try {
       val filePath = Paths.get("res/samples/").resolve(fileName)
       val data = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8)
@@ -503,7 +504,7 @@ object UserMain {
     println(s"Best ${5 min popSize}:")
     println(population.population.sortBy(_.fitness).take(5).map { gene =>
       val geneObj = gene.gene.asInstanceOf[Object]
-      genetic.show(geneObj) + ", fitness = " + genetic.fitness(geneObj) + ", meaningful fitness = " + genetic.meaningfulFitness(geneObj)
+      genetic.show(geneObj) + ", fitness = " + genetic.fitness(geneObj) + ", meaningful fitness = " + genetic.meaningfulFitness(gene.asInstanceOf[Gene[Object]])
     }.mkString("\n"))
     println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + main.seed)
     if (main.isOpt) {
