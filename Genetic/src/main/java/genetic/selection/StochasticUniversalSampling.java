@@ -13,8 +13,7 @@ import java.util.stream.Stream;
 
 // SUS - Stochastic Universal Sampling
 public class StochasticUniversalSampling implements ParentSelection {
-    @Override
-    public <A> Supplier<A> chooseParents(Population<A> population, int size, Random rand) {
+    private <A> Iterator<A> susIterator(Population<A> population, int size, Random rand) {
         // Calculate the sum of all fitness values.
         double fitnessSum = 0;
         for (Gene<A> candidate : population.population) {
@@ -35,15 +34,19 @@ public class StochasticUniversalSampling implements ParentSelection {
         };
         List<A> parents = Stream.generate(supplier).limit(size).collect(Collectors.toList());
         Collections.shuffle(parents);
+        return parents.iterator();
+    }
 
+    @Override
+    public <A> Supplier<A> chooseParents(Population<A> population, int size, Random rand) {
         return new Supplier<A>() {
-            Iterator<A> iterator = parents.iterator();
+            Iterator<A> iterator = susIterator(population, size, rand);
             @Override
             public A get() {
                 if (iterator.hasNext())
                     return iterator.next();
                 else {
-                    iterator = parents.iterator();
+                    iterator = susIterator(population, size, rand);
                     return iterator.next();
                 }
             }
