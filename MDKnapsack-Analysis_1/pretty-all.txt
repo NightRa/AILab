@@ -1,0 +1,641 @@
+Rounds: 1000
+Time limit: 1 second
+
+## Starting Problem: FLEI
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 2139.000
+  - Avg success time: 51.974 ms
+  - Avg success iterations: 187.5
+        
+
+## Starting Problem: HP1
+Success Rate: 98.70%
+  - 987/1000
+
+Successes:
+  - Best score: 3418.000
+  - Avg success time: 78.502 ms
+  - Avg success iterations: 272.3
+        
+Failures:
+  - Highest score achieved: 3404.000
+  - Avg score achieved: 3404.000
+  - Best fitness achieved: 0.004
+  - Avg fitness achieved: 0.0041
+  - Avg iterations: 3224.6
+        
+## Starting Problem: HP2
+Success Rate: 94.50%
+  - 945/1000
+
+Successes:
+  - Best score: 3186.000
+  - Avg success time: 358.599 ms
+  - Avg success iterations: 1338.9
+        
+Failures:
+  - Highest score achieved: 3168.000
+  - Avg score achieved: 3126.582
+  - Best fitness achieved: 0.006
+  - Avg fitness achieved: 0.0186
+  - Avg iterations: 3780.5
+        
+## Starting Problem: PB1
+Success Rate: 99.10%
+  - 991/1000
+
+Successes:
+  - Best score: 3090.000
+  - Avg success time: 64.829 ms
+  - Avg success iterations: 247.9
+        
+Failures:
+  - Highest score achieved: 3076.000
+  - Avg score achieved: 3076.000
+  - Best fitness achieved: 0.005
+  - Avg fitness achieved: 0.0045
+  - Avg iterations: 3509.3
+        
+## Starting Problem: PB2
+Success Rate: 97.40%
+  - 974/1000
+
+Successes:
+  - Best score: 3186.000
+  - Avg success time: 225.685 ms
+  - Avg success iterations: 816.0
+        
+Failures:
+  - Highest score achieved: 3168.000
+  - Avg score achieved: 3141.115
+  - Best fitness achieved: 0.006
+  - Avg fitness achieved: 0.0141
+  - Avg iterations: 3581.8
+        
+## Starting Problem: PB4
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 95168.000
+  - Avg success time: 6.379 ms
+  - Avg success iterations: 43.7
+        
+
+## Starting Problem: PB5
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 2139.000
+  - Avg success time: 46.792 ms
+  - Avg success iterations: 175.9
+        
+
+## Starting Problem: PB6
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 776.000
+  - Avg success time: 52.800 ms
+  - Avg success iterations: 103.6
+        
+
+## Starting Problem: PB7
+Success Rate: 96.80%
+  - 968/1000
+
+Successes:
+  - Best score: 1035.000
+  - Avg success time: 255.780 ms
+  - Avg success iterations: 252.8
+        
+Failures:
+  - Highest score achieved: 1034.000
+  - Avg score achieved: 1033.969
+  - Best fitness achieved: 0.001
+  - Avg fitness achieved: 0.0010
+  - Avg iterations: 970.1
+        
+## Starting Problem: PET2
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 87061.000
+  - Avg success time: 0.664 ms
+  - Avg success iterations: 1.8
+        
+
+## Starting Problem: PET3
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 4015.000
+  - Avg success time: 3.002 ms
+  - Avg success iterations: 9.9
+        
+
+## Starting Problem: PET4
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 6120.000
+  - Avg success time: 8.172 ms
+  - Avg success iterations: 29.0
+        
+
+## Starting Problem: PET5
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 12400.000
+  - Avg success time: 20.271 ms
+  - Avg success iterations: 47.4
+        
+
+## Starting Problem: PET6
+Success Rate: 95.70%
+  - 957/1000
+
+Successes:
+  - Best score: 10618.000
+  - Avg success time: 210.528 ms
+  - Avg success iterations: 484.0
+        
+Failures:
+  - Highest score achieved: 10605.000
+  - Avg score achieved: 10601.860
+  - Best fitness achieved: 0.001
+  - Avg fitness achieved: 0.0015
+  - Avg iterations: 2220.0
+        
+## Starting Problem: PET7
+Success Rate: 80.60%
+  - 806/1000
+
+Successes:
+  - Best score: 16537.000
+  - Avg success time: 629.246 ms
+  - Avg success iterations: 1312.5
+        
+Failures:
+  - Highest score achieved: 16520.000
+  - Avg score achieved: 16476.015
+  - Best fitness achieved: 0.001
+  - Avg fitness achieved: 0.0037
+  - Avg iterations: 2103.8
+        
+## Starting Problem: SENTO1
+Success Rate: 95.70%
+  - 957/1000
+
+Successes:
+  - Best score: 7772.000
+  - Avg success time: 382.767 ms
+  - Avg success iterations: 297.6
+        
+Failures:
+  - Highest score achieved: 7761.000
+  - Avg score achieved: 7761.000
+  - Best fitness achieved: 0.001
+  - Avg fitness achieved: 0.0014
+  - Avg iterations: 760.3
+        
+## Starting Problem: SENTO2
+Success Rate: 75.10%
+  - 751/1000
+
+Successes:
+  - Best score: 8722.000
+  - Avg success time: 569.026 ms
+  - Avg success iterations: 255.4
+        
+Failures:
+  - Highest score achieved: 8722.000
+  - Avg score achieved: 8712.779
+  - Best fitness achieved: 0.000
+  - Avg fitness achieved: 0.0011
+  - Avg iterations: 437.9
+        
+## Starting Problem: WEING1
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 141278.000
+  - Avg success time: 7.294 ms
+  - Avg success iterations: 46.3
+        
+
+## Starting Problem: WEING2
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 130883.000
+  - Avg success time: 7.132 ms
+  - Avg success iterations: 52.1
+        
+
+## Starting Problem: WEING3
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 95677.000
+  - Avg success time: 4.934 ms
+  - Avg success iterations: 42.5
+        
+
+## Starting Problem: WEING4
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 119337.000
+  - Avg success time: 7.156 ms
+  - Avg success iterations: 49.4
+        
+
+## Starting Problem: WEING5
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 98796.000
+  - Avg success time: 6.183 ms
+  - Avg success iterations: 47.8
+        
+
+## Starting Problem: WEING6
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 130623.000
+  - Avg success time: 8.220 ms
+  - Avg success iterations: 60.1
+        
+
+## Starting Problem: WEING7
+Success Rate: 85.90%
+  - 859/1000
+
+Successes:
+  - Best score: 1095445.000
+  - Avg success time: 653.885 ms
+  - Avg success iterations: 983.5
+        
+Failures:
+  - Highest score achieved: 1095382.000
+  - Avg score achieved: 1095382.000
+  - Best fitness achieved: 0.000
+  - Avg fitness achieved: 0.0001
+  - Avg iterations: 1490.8
+        
+## Starting Problem: WEING8
+Success Rate: 93.00%
+  - 930/1000
+
+Successes:
+  - Best score: 624319.000
+  - Avg success time: 397.891 ms
+  - Avg success iterations: 1550.5
+        
+Failures:
+  - Highest score achieved: 621086.000
+  - Avg score achieved: 619489.271
+  - Best fitness achieved: 0.005
+  - Avg fitness achieved: 0.0077
+  - Avg iterations: 3809.4
+        
+## Starting Problem: WEISH01
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 4554.000
+  - Avg success time: 8.801 ms
+  - Avg success iterations: 38.7
+        
+
+## Starting Problem: WEISH02
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 4536.000
+  - Avg success time: 11.733 ms
+  - Avg success iterations: 49.9
+        
+
+## Starting Problem: WEISH03
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 4115.000
+  - Avg success time: 7.424 ms
+  - Avg success iterations: 38.7
+        
+
+## Starting Problem: WEISH04
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 4561.000
+  - Avg success time: 5.865 ms
+  - Avg success iterations: 31.5
+        
+
+## Starting Problem: WEISH05
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 4514.000
+  - Avg success time: 6.074 ms
+  - Avg success iterations: 33.1
+        
+
+## Starting Problem: WEISH06
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 5557.000
+  - Avg success time: 23.340 ms
+  - Avg success iterations: 79.9
+        
+
+## Starting Problem: WEISH07
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 5567.000
+  - Avg success time: 21.026 ms
+  - Avg success iterations: 75.0
+        
+
+## Starting Problem: WEISH08
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 5605.000
+  - Avg success time: 25.099 ms
+  - Avg success iterations: 77.8
+        
+
+## Starting Problem: WEISH09
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 5246.000
+  - Avg success time: 13.006 ms
+  - Avg success iterations: 54.9
+        
+
+## Starting Problem: WEISH10
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 6339.000
+  - Avg success time: 30.983 ms
+  - Avg success iterations: 103.6
+        
+
+## Starting Problem: WEISH11
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 5643.000
+  - Avg success time: 35.904 ms
+  - Avg success iterations: 136.8
+        
+
+## Starting Problem: WEISH12
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 6339.000
+  - Avg success time: 29.923 ms
+  - Avg success iterations: 100.8
+        
+
+## Starting Problem: WEISH13
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 6159.000
+  - Avg success time: 30.495 ms
+  - Avg success iterations: 98.8
+        
+
+## Starting Problem: WEISH14
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 6954.000
+  - Avg success time: 71.251 ms
+  - Avg success iterations: 203.7
+        
+
+## Starting Problem: WEISH15
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 7486.000
+  - Avg success time: 53.486 ms
+  - Avg success iterations: 149.8
+        
+
+## Starting Problem: WEISH16
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 7289.000
+  - Avg success time: 67.570 ms
+  - Avg success iterations: 177.2
+        
+
+## Starting Problem: WEISH17
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 8633.000
+  - Avg success time: 78.281 ms
+  - Avg success iterations: 136.7
+        
+
+## Starting Problem: WEISH18
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 9580.000
+  - Avg success time: 164.584 ms
+  - Avg success iterations: 282.7
+        
+
+## Starting Problem: WEISH19
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 7698.000
+  - Avg success time: 60.424 ms
+  - Avg success iterations: 161.2
+        
+
+## Starting Problem: WEISH20
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 9450.000
+  - Avg success time: 111.741 ms
+  - Avg success iterations: 225.4
+        
+
+## Starting Problem: WEISH21
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 9074.000
+  - Avg success time: 126.533 ms
+  - Avg success iterations: 270.7
+        
+
+## Starting Problem: WEISH22
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 8947.000
+  - Avg success time: 101.168 ms
+  - Avg success iterations: 213.5
+        
+
+## Starting Problem: WEISH23
+Success Rate: 96.80%
+  - 968/1000
+
+Successes:
+  - Best score: 8344.000
+  - Avg success time: 410.749 ms
+  - Avg success iterations: 876.0
+        
+Failures:
+  - Highest score achieved: 8341.000
+  - Avg score achieved: 8341.000
+  - Best fitness achieved: 0.000
+  - Avg fitness achieved: 0.0004
+  - Avg iterations: 2103.1
+        
+## Starting Problem: WEISH24
+Success Rate: 99.60%
+  - 996/1000
+
+Successes:
+  - Best score: 10220.000
+  - Avg success time: 355.455 ms
+  - Avg success iterations: 511.7
+        
+Failures:
+  - Highest score achieved: 10215.000
+  - Avg score achieved: 10215.000
+  - Best fitness achieved: 0.000
+  - Avg fitness achieved: 0.0005
+  - Avg iterations: 1257.0
+        
+## Starting Problem: WEISH25
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 9939.000
+  - Avg success time: 246.342 ms
+  - Avg success iterations: 421.1
+        
+
+## Starting Problem: WEISH26
+Success Rate: 99.40%
+  - 994/1000
+
+Successes:
+  - Best score: 9584.000
+  - Avg success time: 221.031 ms
+  - Avg success iterations: 406.5
+        
+Failures:
+  - Highest score achieved: 9581.000
+  - Avg score achieved: 9553.167
+  - Best fitness achieved: 0.000
+  - Avg fitness achieved: 0.0032
+  - Avg iterations: 1764.8
+        
+## Starting Problem: WEISH27
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 9819.000
+  - Avg success time: 111.860 ms
+  - Avg success iterations: 211.2
+        
+
+## Starting Problem: WEISH28
+Success Rate: 99.90%
+  - 999/1000
+
+Successes:
+  - Best score: 9492.000
+  - Avg success time: 166.054 ms
+  - Avg success iterations: 299.1
+        
+Failures:
+  - Highest score achieved: 9469.000
+  - Avg score achieved: 9469.000
+  - Best fitness achieved: 0.002
+  - Avg fitness achieved: 0.0024
+  - Avg iterations: 1436.0
+        
+## Starting Problem: WEISH29
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 9410.000
+  - Avg success time: 168.649 ms
+  - Avg success iterations: 302.8
+        
+
+## Starting Problem: WEISH30
+Success Rate: 100.00%
+  - 1000/1000
+
+Successes:
+  - Best score: 11191.000
+  - Avg success time: 257.669 ms
+  - Avg success iterations: 340.1

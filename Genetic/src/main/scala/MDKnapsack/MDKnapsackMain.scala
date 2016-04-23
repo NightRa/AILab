@@ -34,21 +34,6 @@ class MDKnapsackMain(instance: MDKnapsackInstance) extends GeneticMetadata[BitSe
     "Top Ratio" -> 0.988
   )
 
-  /*override def intNamesDefaults: Map[String, Int] = Map(
-    "Population Size" -> 54
-  )
-
-  override def doubleNamesDefaults: Map[String, Double] = Map(
-    "Elitism Rate" -> 0.035,
-    "Gene Similarity Threshold" -> 0.318,
-    "Local Optimum: Elitism Rate" -> 0.181,
-    "Local Optimum: Hyper Mutation Rate" -> 0.71,
-    "Local Optimum: Immigrants Rate" -> 0.123,
-    "Local Optimum: Top Ratio" -> 0.787,
-    "Mutation Rate" -> 0.245,
-    "Top Ratio" -> 0.929
-  )*/
-
   // To be overwritten with problem-specific defaults.
   override def defaultEngine: Parametric[GeneticEngine] = {
     val normalGeneration = for {
