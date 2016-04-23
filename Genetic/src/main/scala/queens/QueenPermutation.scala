@@ -4,7 +4,7 @@ import java.util.Random
 
 import util.JavaUtil
 
-class QueenPermutation(val permutation: Array[Int]) {
+case class QueenPermutation(permutation: Array[Int]) {
   val size = permutation.length
 
   override def toString: String = permutation.mkString("[", ",", "]")

@@ -31,4 +31,6 @@ class GeneticFunc(func: Func, MutationSize: Double, rand: Random) extends Geneti
   override def show(funcSolution: FuncSolution): String = funcSolution.toString
 
   override def showScientific: Boolean = func.showScientific
+
+  override def hash(gene: FuncSolution): Int = gene.hashCode()
 }

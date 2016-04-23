@@ -7,7 +7,8 @@ import genetic.generation.Generation
 import genetic.localOptima.{DistanceSimilarityDetector, IgnoreLocalOptima, LocalOptimaSignal, StdDevLocalOptimaDetector}
 import genetic.mutation.RegularMutation
 import genetic.selection._
-import genetic.survivors.{Elitism, ElitismRandomImmigrants}
+import genetic.survivors.construction.NormalConstruction
+import genetic.survivors.{Elitism, RandomImmigrants}
 import genetic.{Genetic, GeneticAlg, GeneticEngine}
 import parametric.Parametric._
 
@@ -38,11 +39,11 @@ object Instances {
       elitismRate <- doubleParam("Elitism Rate", 0.5)
     } yield new Elitism(elitismRate)
 
-  def randomImmigrantsElitism: Parametric[ElitismRandomImmigrants] =
+  def randomImmigrantsElitism: Parametric[RandomImmigrants] =
     for {
       elitismRate <- doubleParam("Elitism Rate", 0.0)
       randomImmigrantsRate <- doubleParam("Immigrants Rate", 0.5)
-    } yield new ElitismRandomImmigrants(randomImmigrantsRate, elitismRate)
+    } yield new RandomImmigrants(randomImmigrantsRate, elitismRate)
 
   def topSelection: Parametric[TopSelection] =
     for {
@@ -105,23 +106,24 @@ object Instances {
     for {
       selectionStrategy <- topSelection
       mutationStrategy <- mutation
-      survivorSelection <- elitism
+      elitism <- elitism
     //  windowing <- windowing[A]
     // aging <- aging[A]
-    } yield new Generation(selectionStrategy, mutationStrategy, survivorSelection, Array(/*windowing *//*aging*/))
+    } yield new Generation(selectionStrategy, mutationStrategy, Array(elitism), new NormalConstruction, Array())
 
   def localOptimumParams[A](parametric: Parametric[A]): Parametric[A] =
     parametric.prefixed("Local Optimum: ")
 
   def defaultLocalOptimaGeneration: Parametric[Generation] = {
-    localOptimumParams(for {
+    for {
       selectionStrategy <- topSelection
       mutationStrategy <- hyperMutation
-      survivorSelection <- randomImmigrantsElitism
+      elitism <- elitism
+      immigrants <- randomImmigrantsElitism
     // windowing <- windowing[A]
     // aging <- aging[A]
     // niching <- niching(alg)
-    } yield new Generation(selectionStrategy, mutationStrategy, survivorSelection, Array(/*windowing *//*aging*//*niching*/)))
+    } yield new Generation(selectionStrategy, mutationStrategy, Array(elitism, immigrants), new NormalConstruction, Array())
   }
 
   def geneticEngine(localOptimaSignal: Parametric[LocalOptimaSignal], normalGeneration: Parametric[Generation], localOptimaGeneration: Parametric[Generation]): Parametric[GeneticEngine] =
@@ -129,7 +131,7 @@ object Instances {
       popSize <- intParam("Population Size", default = 100, minValue = 3, maxValue = 256)
       localOptimaSignal <- localOptimaSignal
       normalGeneration <- normalGeneration
-      localOptimumGeneration <- localOptimaGeneration
+      localOptimumGeneration <- localOptimumParams(localOptimaGeneration)
     } yield new GeneticEngine(localOptimaSignal,
                               normalGeneration,
                               localOptimumGeneration,

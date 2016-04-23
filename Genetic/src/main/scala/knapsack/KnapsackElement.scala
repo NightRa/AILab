@@ -3,6 +3,7 @@ package knapsack
 import java.util.Random
 
 import util.JavaUtil.formatDouble
+import java.util
 
 class KnapsackElement(val amounts: Array[Int], val instance: KnapsackInstance) {
   def isValid(): Boolean = totalWeight() < instance.capacity
@@ -45,6 +46,21 @@ class KnapsackElement(val amounts: Array[Int], val instance: KnapsackInstance) {
         val item = instance.items(i)
         "(" + item.weight + "," + item.value + ")" + "->" + amount
     }.mkString("[", ", ", "]")
+  }
+
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[KnapsackElement]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: KnapsackElement =>
+      (that canEqual this) &&
+        util.Arrays.equals(amounts, that.amounts)  &&
+        instance == that.instance
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    util.Arrays.hashCode(amounts) * 31 + instance.hashCode()
   }
 }
 

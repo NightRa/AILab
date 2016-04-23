@@ -4,7 +4,7 @@ import genetic.types.{Gene, Population}
 import it.unimi.dsi.Util
 import it.unimi.dsi.util.XorShift128PlusRandom
 import parametric.Instances._
-import parametric.Parametric
+import parametric.{Instances, Parametric}
 
 abstract class GeneticMetadata[A] {
   val seed = Util.randomSeed()
@@ -21,11 +21,14 @@ abstract class GeneticMetadata[A] {
   def intsNamesMax: Map[String, Int] = Map.empty
   def doubleNamesDefaults: Map[String, Double] = Map.empty
 
+  // To be overwritten with problem-specific defaults.
+  def defaultEngine: Parametric[GeneticEngine] = Instances.defaultGeneticEngine
+
   def alg(engine: Parametric[GeneticEngine]): Parametric[GeneticAlg[A]] =
     geneticAlg(genetic, engine, rand).updateDefaults(intNamesDefaults, intsNamesMax, doubleNamesDefaults)
 
   def defaultGeneticAlgParametric: Parametric[GeneticAlg[A]] =
-    defaultGeneticAlg(genetic, rand).updateDefaults(intNamesDefaults, intsNamesMax, doubleNamesDefaults)
+    alg(defaultEngine)
 }
 
 object GeneticMain {

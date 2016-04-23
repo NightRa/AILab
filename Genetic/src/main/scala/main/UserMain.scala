@@ -5,18 +5,19 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 import java.util.{ArrayList, Random, Scanner}
 
-import mdKnapsack.{MDKnapsackMain, MDKnapsackParser}
-import analysys.Analysis
+import analysys.{Analysis, Benchmark, BenchmarkResult}
 import baldwin.BaldwinMain
 import func.{Func, GeneticFuncMain, HoldersTableFunction, LabTestFunction}
 import genetic.fitnessMapping.FitnessMapping
 import genetic.generation.{Crossover, Generation}
 import genetic.localOptima.LocalOptimaSignal
 import genetic.selection.ParentSelection
-import genetic.survivors.SurvivorSelection
+import genetic.survivors.SurvivorSelectionStrategy
+import genetic.survivors.construction.{DeduplicatedConstruction, NormalConstruction, PopulationConstruction}
 import genetic.types.{Gene, Population}
 import genetic.{Genetic, GeneticAlg, GeneticEngine, GeneticMetadata}
 import knapsack.{GeneticKnapsackMain, Item}
+import mdKnapsack.{MDKnapsackMain, MDKnapsackParser}
 import parametric.{Instances, Parametric}
 import params.{GeneticParamsMain, Params}
 import queens.{GeneticQueenMain, QueenMating, QueenMutation}
@@ -63,7 +64,7 @@ object UserMain {
             selection <- Instances.rws
             mutation <- Instances.mutation.updateDefaults(Map.empty, Map.empty, Map("Mutation Rate" -> 0.0))
             survivorSelection <- Instances.elitism.updateDefaults(Map.empty, Map.empty, Map("Elitism Rate" -> 0.0))
-          } yield new Generation(selection, mutation, survivorSelection, Array.empty)
+          } yield new Generation(selection, mutation, Array(survivorSelection), new NormalConstruction, Array.empty)
 
         val engine = Instances.geneticEngine(Instances.ignoreLocalOptima, generation, generation)
         val geneticAlg = baldwin.alg(engine)
@@ -304,14 +305,14 @@ object UserMain {
     }
   }
 
-  def chooseSurvivorSelection(localOptimum: Boolean): Parametric[SurvivorSelection] = {
+  def chooseSurvivorSelection(localOptimum: Boolean): Parametric[Array[SurvivorSelectionStrategy]] = {
     println("\n# Choose Survivor Selection Algorithm:")
     val default = if (!localOptimum) 1 else 2
     println("1. Elitism " + (if (!localOptimum) "(*)" else ""))
     println("2. Elitism with Random Immigrants " + (if (localOptimum) "(*)" else ""))
     readIntWithDefault(s"Choose a survivor selection strategy (default $default): ", default) match {
-      case 1 => Instances.elitism
-      case 2 => Instances.randomImmigrantsElitism
+      case 1 => Instances.elitism.map(Array(_))
+      case 2 => Parametric.map2(Instances.elitism, Instances.randomImmigrantsElitism)(Array(_, _))
       case _ => chooseSurvivorSelection(localOptimum)
     }
   }
@@ -346,11 +347,22 @@ object UserMain {
     Parametric.parametricMonad.sequence(mappings)
   }
 
+  def choosePopulationConstruction(): PopulationConstruction = {
+    print("\nDo you want to deduplicate genes? (y/n, default n): ")
+    val answer = in.nextLine().trim
+    answer.toLowerCase match {
+      case "y" | "yes" | "1" | "true" => new DeduplicatedConstruction
+      case "n" | "no" | "0" | "false" | "" => new NormalConstruction
+      case _ => choosePopulationConstruction()
+    }
+  }
+
   def chooseGeneration(localOptimum: Boolean): Parametric[Generation] = {
     if (!localOptimum) println("\n### Choosing Normal Generation ###") else println("\n### Choosing Local Optimum Generation ###")
 
     val parentSelectionParam: Parametric[ParentSelection] = chooseParentSelection()
-    val survivorSelectionParam: Parametric[SurvivorSelection] = chooseSurvivorSelection(localOptimum)
+    val survivorSelectionParam: Parametric[Array[SurvivorSelectionStrategy]] = chooseSurvivorSelection(localOptimum)
+    val populationConstruction: PopulationConstruction = choosePopulationConstruction()
     val fitnessMappingsParam: Parametric[List[FitnessMapping]] = chooseFitnessMappings()
     val mutationStrategy = if (!localOptimum) Instances.mutation else Instances.hyperMutation
     for {
@@ -358,7 +370,7 @@ object UserMain {
       mutationStrategy <- mutationStrategy
       survivorSelection <- survivorSelectionParam
       fitnessMappings <- fitnessMappingsParam
-    } yield new Generation(parentSelection, mutationStrategy, survivorSelection, fitnessMappings.toArray)
+    } yield new Generation(parentSelection, mutationStrategy, survivorSelection, populationConstruction, fitnessMappings.toArray)
   }
 
   def chooseLocalOptimumSignal(): (Boolean, Parametric[LocalOptimaSignal]) = {
@@ -382,7 +394,7 @@ object UserMain {
     val (detectLocalOptimum, localOptimumSignal) = chooseLocalOptimumSignal()
     val localOptimumGeneration =
       if (detectLocalOptimum)
-        Instances.localOptimumParams(chooseGeneration(localOptimum = true))
+        chooseGeneration(localOptimum = true)
       else
         normalGeneration
     Instances.geneticEngine(localOptimumSignal, normalGeneration, localOptimumGeneration)
@@ -457,8 +469,9 @@ object UserMain {
   def bench(alg: Parametric[GeneticAlg[_]]): Unit = {
     val rounds = readIntWithDefault("Enter the number of rounds (1000 default): ", 1000)
     val maxTime = readDoubleWithDefault("Enter the time limit per run (0.3 default): ", 0.3)
-    val time = Util.avgExecutionTime(alg.applyDefaults().run(printEvery = 0, maxTime), rounds)
-    println(JavaUtil.formatDouble(time * 1000, 4) + " ms")
+    val benchmark = Benchmark.benchmark(alg.asInstanceOf[Parametric[GeneticAlg[Object]]], rounds, maxTime)
+    println()
+    println(benchmark.prettyFormat)
   }
 
   def modifyParams[A](params: Parametric[A]): Parametric[A] = {
@@ -504,7 +517,7 @@ object UserMain {
     println(s"Best ${5 min popSize}:")
     println(population.population.sortBy(_.fitness).take(5).map { gene =>
       val geneObj = gene.gene.asInstanceOf[Object]
-      genetic.show(geneObj) + ", fitness = " + genetic.fitness(geneObj) + ", meaningful fitness = " + genetic.meaningfulFitness(gene.asInstanceOf[Gene[Object]])
+      genetic.show(geneObj) + ", fitness = " + genetic.fitness(geneObj) + ", meaningful fitness = " + genetic.score(gene.asInstanceOf[Gene[Object]])
     }.mkString("\n"))
     println(time + "ms, " + iterations + " iterations\t\t\t\tseed: " + main.seed)
     if (main.isOpt) {

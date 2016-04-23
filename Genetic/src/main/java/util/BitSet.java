@@ -53,7 +53,7 @@ public final class BitSet implements Serializable, Cloneable {
         // Clear all the irrelevant bits in the last block.
         // For canonicity of representation.
         if ((numBits & 0x3F) != 0) {
-            bits[numLongs - 1] &= (1 << (numBits & 0x3F)) - 1;
+            bits[numLongs - 1] &= (1L << (numBits & 0x3F)) - 1L;
         }
         return new BitSet(numBits, bits);
     }

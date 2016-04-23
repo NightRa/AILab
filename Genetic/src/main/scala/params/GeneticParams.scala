@@ -18,11 +18,11 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
                     relief: Double,
                     logTimeSec: (Double, Double, Params) => Unit, rand: Random) extends Genetic[Params] {
 
-  var lastAvgTime: Double = InitialTimeLimit
+  val timeLimit = InitialTimeLimit
 
-  def currentTimeLimit: Double = Math.min((pressure * 10) * lastAvgTime, InitialTimeLimit)
+  var lastAvgTime: Double = timeLimit
 
-  def currentTimeFraction(timeS: Double) = timeS / currentTimeLimit
+  def currentTimeLimit: Double = Math.min((pressure * 10) * lastAvgTime, timeLimit)
 
   def fitnessOnce(gene: Params): Double = {
     val before: Long = System.nanoTime()
@@ -31,13 +31,13 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
     val time: Long = after - before
 
     val timeS = time.toDouble / 1e9
-    val timeFraction = currentTimeFraction(timeS)
+    val timeFraction = timeS / timeLimit
 
     logTimeSec(timeS, timeFraction, gene)
 
     if (timeFraction > 0.99) {
       lastAvgTime *= (1 + relief)
-      lastAvgTime = Math.min(lastAvgTime, InitialTimeLimit)
+      lastAvgTime = Math.min(lastAvgTime, timeLimit)
     }
     // Finished => [0,0.5], Not finished => [0.5,1]
     0.5 * timeFraction + 0.5 * population.population.minBy(_.fitness).fitness
@@ -96,6 +96,8 @@ class GeneticParams(geneticParam: Parametric[GeneticAlg[_]],
   override def show(gene: Params): String = geneticParam.updateArrayParams(gene).toString
 
   override def showScientific(): Boolean = false
+
+  override def hash(gene: Params): Int = gene.hashCode()
 }
 
 object GeneticParams {

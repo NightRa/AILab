@@ -1,5 +1,6 @@
 package baldwin
 
+import java.util
 import java.util.Random
 
 import genetic.generation.Crossover
@@ -43,4 +44,6 @@ class GeneticBaldwin(maxIterations: Int,
     a(index) = BaldwinBit.genBaldwinBit(rand)
     a
   }
+
+  override def hash(gene: Array[Byte]): Int = util.Arrays.hashCode(gene)
 }

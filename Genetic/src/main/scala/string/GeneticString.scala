@@ -4,6 +4,7 @@ import java.util.Random
 
 import genetic.{Genetic, Metric}
 import util.Util
+import java.util
 
 class GeneticString(targetString: Array[Char],
                     heuristic: Array[Char] => Double,
@@ -35,4 +36,6 @@ class GeneticString(targetString: Array[Char],
   override def show(charArr: Array[Char]): String = charArr.mkString
 
   override def showScientific(): Boolean = false
+
+  override def hash(gene: Array[Char]): Int = util.Arrays.hashCode(gene)
 }

@@ -85,7 +85,7 @@ object Parametric {
   def point[A](a: => A): Parametric[A] =
     Parametric((ints, doubles) => a, SortedMap.empty, SortedMap.empty, SortedMap.empty, SortedMap.empty)
 
-  def map2[A, B, C](p1: Parametric[A], p2: Parametric[B], f: (A, B) => C): Parametric[C] = {
+  def map2[A, B, C](p1: Parametric[A], p2: Parametric[B])(f: (A, B) => C): Parametric[C] = {
     Parametric((ints, doubles) => f(p1.applyParams(ints, doubles), p2.applyParams(ints, doubles)), p1.intNamesDefaults ++ p2.intNamesDefaults, p1.intsMin ++ p2.intsMin, p1.intsMax ++ p2.intsMax, p1.doubleNamesDefaults ++ p2.doubleNamesDefaults)
   }
 

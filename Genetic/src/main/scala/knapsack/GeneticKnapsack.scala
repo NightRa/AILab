@@ -47,4 +47,6 @@ class GeneticKnapsack(instance: KnapsackInstance,
   override def show(gene: KnapsackElement): String = gene.toString
 
   override def showScientific: Boolean = false
+
+  override def hash(gene: KnapsackElement): Int = gene.hashCode()
 }

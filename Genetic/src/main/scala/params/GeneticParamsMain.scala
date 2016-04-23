@@ -28,11 +28,11 @@ class GeneticParamsMain(geneticMeta: GeneticMetadata[_], geneticAlgParams: Param
 
   // To be overwritten to provide problem-specific defaults.
   override def intNamesDefaults: Map[String, Int] = Map(
-    "Population Size" -> 15
+    "Population Size" -> 5
   )
 
   override def intsNamesMax: Map[String, Int] = Map(
-    "Population Size" -> 30
+    "Population Size" -> 10
   )
 }
 

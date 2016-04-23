@@ -45,5 +45,7 @@ class GeneticQueen(boardSize: Int,
   override def show(gene: QueenPermutation): String = gene.permutation.mkString("[", ",", "]")
 
   override def showScientific(): Boolean = false
+
+  override def hash(gene: QueenPermutation): Int = gene.hashCode()
 }
 

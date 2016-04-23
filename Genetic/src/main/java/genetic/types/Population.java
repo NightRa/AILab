@@ -22,7 +22,6 @@ public class Population<A> {
         maxFitness = Double.NEGATIVE_INFINITY;
         for (Gene<A> gene : population) {
             gene.fitness = alg.fitness(gene.gene);
-            gene.age += 1;
             if (gene.fitness < minFitness) minFitness = gene.fitness;
             if (gene.fitness > maxFitness) maxFitness = gene.fitness;
         }

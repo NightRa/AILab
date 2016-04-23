@@ -1,8 +1,11 @@
 package mdKnapsack
 
-import genetic.{Genetic, GeneticMetadata}
-import parametric.Parametric
+import genetic.{Genetic, GeneticEngine, GeneticMetadata}
+import parametric.{Instances, Parametric}
 import util.BitSet
+import Instances._
+import genetic.generation.Generation
+import genetic.survivors.construction.{DeduplicatedConstruction, NormalConstruction}
 
 class MDKnapsackMain(instance: MDKnapsackInstance) extends GeneticMetadata[BitSet] {
   override def name: String = "Multi-Dimensional Knapsack"
@@ -17,17 +20,51 @@ class MDKnapsackMain(instance: MDKnapsackInstance) extends GeneticMetadata[BitSe
 
   // To be overwritten to provide problem-specific defaults.
   override def intNamesDefaults: Map[String, Int] = Map(
-    "Population Size" -> 160
+    "Population Size" -> 216
   )
 
   override def doubleNamesDefaults: Map[String, Double] = Map(
-    "Elitism Rate" -> 0.825,
-    "Gene Similarity Threshold" -> 0.434,
-    "Local Optimum: Elitism Rate" -> 0.105,
-    "Local Optimum: Hyper Mutation Rate" -> 0.417,
-    "Local Optimum: Immigrants Rate" -> 0.362,
-    "Local Optimum: Top Ratio" -> 0.99,
-    "Mutation Rate" -> 0.512,
-    "Top Ratio" -> 0.2
+    "Elitism Rate" -> 0.34,
+    "Gene Similarity Threshold" -> 0.025,
+    "Local Optimum: Elitism Rate" -> 0.525,
+    "Local Optimum: Hyper Mutation Rate" -> 0.52,
+    "Local Optimum: Immigrants Rate" -> 0.074,
+    "Local Optimum: Top Ratio" -> 0.064,
+    "Mutation Rate" -> 0.624,
+    "Top Ratio" -> 0.988
   )
+
+  /*override def intNamesDefaults: Map[String, Int] = Map(
+    "Population Size" -> 54
+  )
+
+  override def doubleNamesDefaults: Map[String, Double] = Map(
+    "Elitism Rate" -> 0.035,
+    "Gene Similarity Threshold" -> 0.318,
+    "Local Optimum: Elitism Rate" -> 0.181,
+    "Local Optimum: Hyper Mutation Rate" -> 0.71,
+    "Local Optimum: Immigrants Rate" -> 0.123,
+    "Local Optimum: Top Ratio" -> 0.787,
+    "Mutation Rate" -> 0.245,
+    "Top Ratio" -> 0.929
+  )*/
+
+  // To be overwritten with problem-specific defaults.
+  override def defaultEngine: Parametric[GeneticEngine] = {
+    val normalGeneration = for {
+      selectionStrategy <- topSelection
+      mutationStrategy <- mutation
+      elitism <- elitism
+    } yield new Generation(selectionStrategy, mutationStrategy, Array(elitism), new DeduplicatedConstruction, Array())
+
+    val localOptimaGeneration = for {
+      selectionStrategy <- topSelection
+      mutationStrategy <- hyperMutation
+      elitism <- elitism
+      immigrants <- randomImmigrantsElitism
+    } yield new Generation(selectionStrategy, mutationStrategy, Array(elitism, immigrants), new DeduplicatedConstruction, Array())
+
+    geneticEngine(geneSimilarity, normalGeneration, localOptimaGeneration)
+  }
+
 }

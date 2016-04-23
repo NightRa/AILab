@@ -7,7 +7,7 @@ import java.util.Random;
 public interface Genetic<A> {
     double fitness(A gene);
 
-    default double meaningfulFitness(Gene<A> gene) {
+    default double score(Gene<A> gene) {
         return gene.fitness;
     }
 
@@ -23,4 +23,6 @@ public interface Genetic<A> {
     String show(A gene);
 
     boolean showScientific();
+
+    int hash(A gene);
 }

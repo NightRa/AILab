@@ -16,18 +16,18 @@ object Util {
   def avgExecutionTime[A](value: => A, rounds: Int): Double = {
     var sum = 0.0
     for (i <- (0 until rounds).par) {
-      val result = timeExecution(value)
+      val (result, _) = timeExecution(value)
       sum += result
     }
     sum / rounds
   }
 
   // Returns time in seconds.
-  def timeExecution[A](value: => A): Double = {
+  def timeExecution[A](value: => A): (Double, A) = {
     val before = System.nanoTime()
-    value
+    val res = value
     val after = System.nanoTime()
-    (after - before).toDouble / 1e9
+    ((after - before).toDouble / 1e9, res)
   }
 
   def randString(size: Int, rand: Random): Array[Char] = {

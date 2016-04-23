@@ -9,14 +9,13 @@ case class Sack(capacity: Int, itemWeights: Array[Int]) {
 }
 
 case class MDKnapsackInstance(name: String, values: Array[Int], sacks: Array[Sack], optimum: Int) {
-  val itemsBuffer = new IntBuffer(values.length)
 
-  def trim(items: BitSet, rand: Random): BitSet = {
+  def trim(items: BitSet, itemsBuffer: IntBuffer, rand: Random): BitSet = {
     MDKnapsack.trim(items, sacks, itemsBuffer, rand)
     items
   }
 
-  def value(chosen: BitSet): Int = {
+  def value(chosen: BitSet, itemsBuffer: IntBuffer): Int = {
     MDKnapsack.takenItems(chosen, itemsBuffer)
     MDKnapsack.valueOfItems(itemsBuffer, values) // proof: we just calculated takenItems.
   }
