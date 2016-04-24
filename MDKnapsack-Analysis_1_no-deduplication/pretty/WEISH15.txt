@@ -1,8 +1,0 @@
-Success Rate: 100.00%
-  - 200/200
-
-Successes:
-  - Best score: 7486.000
-  - Avg success time: 72.992 ms
-  - Avg success iterations: 215.9
-        
