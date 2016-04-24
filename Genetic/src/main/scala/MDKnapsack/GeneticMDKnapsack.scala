@@ -22,7 +22,7 @@ class GeneticMDKnapsack(instance: MDKnapsackInstance, rand: Random) extends Gene
 
   // @Requires a proof of ownership for the IntBuffer: Cannot be fulfilled, Abstraction boundary.
   override def fitness(gene: BitSet): Double = {
-    -instance.value(gene, itemsBuffer).toDouble / instance.optimum + 1
+    1 - instance.value(gene, itemsBuffer).toDouble / instance.optimum
   }
 
   // @Requires a proof of ownership for the IntBuffer: Cannot be fulfilled, Abstraction boundary.

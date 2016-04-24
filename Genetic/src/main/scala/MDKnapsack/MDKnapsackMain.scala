@@ -1,11 +1,11 @@
 package mdKnapsack
 
-import genetic.{Genetic, GeneticEngine, GeneticMetadata}
-import parametric.{Instances, Parametric}
-import util.BitSet
-import Instances._
 import genetic.generation.Generation
-import genetic.survivors.construction.{DeduplicatedConstruction, NormalConstruction}
+import genetic.survivors.construction.DeduplicatedConstruction
+import genetic.{Genetic, GeneticEngine, GeneticMetadata}
+import parametric.Instances._
+import parametric.Parametric
+import util.BitSet
 
 class MDKnapsackMain(instance: MDKnapsackInstance) extends GeneticMetadata[BitSet] {
   override def name: String = "Multi-Dimensional Knapsack"
