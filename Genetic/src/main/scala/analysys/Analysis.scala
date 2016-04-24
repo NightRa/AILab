@@ -45,8 +45,7 @@ class Analysis(name: String,
     for {
       value <- (3 to intsMax(paramName) by intsStepSize).par
     } {
-      val alg = geneticParam.applyParams(ints.updated(paramName, value), doubles)
-      val time = avgExecutionTime(alg.run(printEvery = 0, maxTime), rounds)
+      val time = avgExecutionTime(geneticParam.applyParams(ints.updated(paramName, value), doubles).run(printEvery = 0, maxTime), rounds)
       println(s"Int param '$paramName' = $value, Time = ${formatDouble(time * 1000, 3)} ms.")
       file.println(s"$value, $time")
     }
@@ -58,8 +57,7 @@ class Analysis(name: String,
     for {
       value <- (0.0 to 1 by doublesStep).par
     } {
-      val alg = geneticParam.applyParams(ints, doubles.updated(paramName, value))
-      val time = avgExecutionTime(alg.run(printEvery = 0, maxTime), rounds)
+      val time = avgExecutionTime(geneticParam.applyParams(ints, doubles.updated(paramName, value)).run(printEvery = 0, maxTime), rounds)
       println(s"Double param '$paramName' = ${formatDouble(value, 3)}, Time = ${formatDouble(time * 1000, 3)} ms.")
       file.println(s"$value, $time")
     }

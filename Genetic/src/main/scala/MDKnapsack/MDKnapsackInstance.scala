@@ -10,11 +10,13 @@ case class Sack(capacity: Int, itemWeights: Array[Int]) {
 
 case class MDKnapsackInstance(name: String, values: Array[Int], sacks: Array[Sack], optimum: Int) {
 
+  // @Requires a proof of ownership for the IntBuffer
   def trim(items: BitSet, itemsBuffer: IntBuffer, rand: Random): BitSet = {
     MDKnapsack.trim(items, sacks, itemsBuffer, rand)
     items
   }
 
+  // @Requires a proof of ownership for the IntBuffer
   def value(chosen: BitSet, itemsBuffer: IntBuffer): Int = {
     MDKnapsack.takenItems(chosen, itemsBuffer)
     MDKnapsack.valueOfItems(itemsBuffer, values) // proof: we just calculated takenItems.

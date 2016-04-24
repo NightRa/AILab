@@ -13,6 +13,7 @@ public class MDKnapsack {
         return BitSet.crossOver(x, y, index);
     }
 
+    // @Requires a proof of ownership for the IntBuffer
     public static void takenItems(BitSet items, IntBuffer takenItemsBuffer) {
         takenItemsBuffer.clear();
         BitSet cloned_items = items.clone();
@@ -50,10 +51,12 @@ public class MDKnapsack {
         return sum;
     }
 
+    // @Requires a proof of ownership for the IntBuffer
     public static void trim(BitSet items, Sack[] sacks, IntBuffer takenItemsBuffer, Random rand) {
         // Trim to each sack at a time.
         for (Sack sack : sacks) {
             // Inside, because it changes, and weightOfItems requires the correct one.
+            // @Requires a proof of ownership for the IntBuffer
             takenItems(items, takenItemsBuffer);
 
             int[] itemWeights = sack.itemWeights();

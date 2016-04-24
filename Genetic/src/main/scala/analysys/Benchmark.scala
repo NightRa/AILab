@@ -59,7 +59,7 @@ object Benchmark {
       i =>
         val alg = geneticAlg.applyDefaults()
         val (time: Double, (population: Population[_], iterations: Int)) = Util.timeExecution(alg.run(0, maxTime))
-        val isSuccess = (maxTime - time) > GeneticAlg.epsilon
+        val isSuccess = population.population(0).fitness < GeneticAlg.epsilon
         (time,
           population.population(0),
           iterations,

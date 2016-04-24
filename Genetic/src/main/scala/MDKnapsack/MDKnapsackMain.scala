@@ -23,6 +23,11 @@ class MDKnapsackMain(instance: MDKnapsackInstance) extends GeneticMetadata[BitSe
     "Population Size" -> 216
   )
 
+
+  override def intsNamesMax: Map[String, Int] = Map(
+    "Population Size" -> 512
+  )
+
   override def doubleNamesDefaults: Map[String, Double] = Map(
     "Elitism Rate" -> 0.34,
     "Gene Similarity Threshold" -> 0.025,
