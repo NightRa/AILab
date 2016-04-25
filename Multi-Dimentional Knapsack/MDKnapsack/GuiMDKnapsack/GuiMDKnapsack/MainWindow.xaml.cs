@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using FSharp.Charting;
 using MDKnapsack;
+using MDKnapsack.Main;
 using Microsoft.FSharp.Core;
 using Microsoft.Win32;
 using static Microsoft.FSharp.Core.OptimizedClosures;

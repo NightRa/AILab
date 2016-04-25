@@ -33,11 +33,11 @@ module Program =
     [<EntryPoint>]
     let main argv =
         printfn "Enter samples directory path"
-        //filesDirPath <- Console.ReadLine ()
+        filesDirPath <- Console.ReadLine ()
         printfn "Enter output csv directory path"
-       // csvOutputPath <- Path.Combine (Console.ReadLine (), "AI.csv")
+        csvOutputPath <- Path.Combine (Console.ReadLine (), "AI.csv")
         printfn "Enter time for each alg"
-        //time <- TimeSpan.FromSeconds (Double.Parse (Console.ReadLine ()))
+        time <- TimeSpan.FromSeconds (Double.Parse (Console.ReadLine ()))
 
         let get1  (a, _, _) = a
         let get23 (_, b, c) = (b, c)

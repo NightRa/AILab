@@ -9,7 +9,6 @@ module Bound =
             restPotentialPrice <- restPotentialPrice + sol.Prob.Items.[i].Price
         sol.Price + restPotentialPrice
     
-    let partialDensity = unboundedKnapsack
 
     let fractionedFilledKnapsack (sol : Solution) (knapsack : Knapsack) : int =
         let openedBits = sol.OpenBits
@@ -37,10 +36,13 @@ module Bound =
                 index <- index + 1
             ()
         sol.Price + totalPrice
+
     
     let upperBoundFractional (sol : Solution) : int =
         sol.Prob.Knapsacks
         |> Seq.ofArray
         |> Seq.map (fun k -> fractionedFilledKnapsack sol k)
         |> Seq.min
+
+    let partialDensity = upperBoundFractional
         
