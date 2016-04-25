@@ -10,18 +10,18 @@ module RunAlgorithm =
     open System.Text
     open MDKnapsack.Util
     open Bound
-    
-    let getPruneFunc = 
-        function 
+
+    let getPruneFunc =  function 
         | BoundKnapsack.Unbounded -> Bound.unboundedKnapsack
         | BoundKnapsack.Fractional -> Bound.upperBoundFractional
         | _ -> failwith "Incomplete pattern"
     
-    let getAlg (prunning : PrunningFunc) = 
+    let getAlg upperBoundFunc = 
         function 
-        | Alg.BestFirst -> runAlg bestFirst prunning
-        | Alg.DfsNotSorted -> runAlg dfs prunning
-        | Alg.DfsSorted -> dfsSorted prunning
+        | Alg.BestFirstNotSorted -> runAlg bestFirst upperBoundFunc
+        | Alg.BestFirstSorted -> runSorted bestFirst upperBoundFunc
+        | Alg.DfsNotSorted -> runAlg dfs upperBoundFunc
+        | Alg.DfsSorted -> runSorted dfs upperBoundFunc
         | _ -> failwith "Incomplete pattern"
     
     let getProb (parameters : AlgParameters, datFile : string) = 
@@ -36,18 +36,16 @@ module RunAlgorithm =
             (prob, alg, time)
         with _ -> raise <| Exception("Error in file: " + datFile)
     
-    let public runAlgorithmSingle (parameters : AlgParameters, datFile : string, respond : Action) = 
-        respond.Invoke()
+    let public runAlgorithmSingle (parameters : AlgParameters, datFile : string, uiRespond : Action) = 
+        UiRespond.respond <- fun () -> uiRespond.Invoke ()
         let prob, alg, time = getProb (parameters, datFile)
         let solution, maybeTime = alg prob time
-        respond.Invoke()
         (prob, solution, maybeTime, parameters)
     
     let public runAlgorithmOnParams (parameters : AlgParameters [], datFile : string, respond : Action) = 
         let name = ref "No Name"
         parameters
         |> Array.map (fun p -> 
-                        respond.Invoke()
                         runAlgorithmSingle (p, datFile, respond))
         |> Array.map (fun (prob, sol, _, par) -> 
                name := prob.Name
@@ -59,10 +57,8 @@ module RunAlgorithm =
         let name = ref "No Name"
         datFiles
         |> Array.map (fun d -> 
-               respond.Invoke()
                runAlgorithmSingle (parameters, d, respond))
         |> Array.map (fun (prob, sol, _, par) ->
-               respond.Invoke ()
                name := par.AsString()
                (prob.Name, float sol.Price / float prob.Optimal))
         |> Array.unzip

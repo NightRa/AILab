@@ -9,12 +9,6 @@ module Dictionary =
             dict.Add (keys.[i], values.[i])
         dict
 
-namespace MDKnapsack.Util
-module Array =
-    let inverse (a : 'a[][]) : 'a[][] =
-        let rows = a.Length
-        let cols = a.[0].Length
-        Array.init cols (fun i -> Array.init rows (fun j -> a.[j].[i]))
 
 
 namespace MDKnapsack.Util
@@ -23,6 +17,17 @@ module List =
         | [] -> ""
         | [x] -> x.ToString ()
         | x::xs -> x.ToString() + seperator + (mkString seperator xs)
+
+namespace MDKnapsack.Util
+module Array =
+    let inverse (a : 'a[][]) : 'a[][] =
+        let rows = a.Length
+        let cols = a.[0].Length
+        Array.init cols (fun i -> Array.init rows (fun j -> a.[j].[i]))
+    let rec mkString seperator arr =
+        arr
+        |> List.ofArray
+        |> List.mkString seperator
 
 
 namespace MDKnapsack.Util
@@ -44,3 +49,9 @@ namespace MDKnapsack.Util
                 x.SplitToLines ()
                 |> Array.map (fun s -> "\t" + s)
                 |> Array.fold (fun acc line -> acc + newLine + line) ""
+
+
+namespace MDKnapsack
+    [<AutoOpen>]
+    module UiRespond =
+        let mutable public respond = fun () -> ()

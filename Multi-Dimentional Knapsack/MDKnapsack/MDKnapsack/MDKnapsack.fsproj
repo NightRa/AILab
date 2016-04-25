@@ -62,8 +62,8 @@
     <Compile Include="Src\Knapsack\KnapsackProblem.fs" />
     <Compile Include="Src\Knapsack\Parsing\PasingUtil.fs" />
     <Compile Include="Src\Knapsack\Parsing\Parsing.fs" />
-    <Compile Include="Src\BranchAndBound\Bound.fs" />
     <Compile Include="Src\BranchAndBound\Solution.fs" />
+    <Compile Include="Src\BranchAndBound\Bound.fs" />
     <Compile Include="Src\BranchAndBound\Branch.fs" />
     <Compile Include="Src\Export\AlgParameters.fs" />
     <Compile Include="Src\Export\RunAlgorithm.fs" />

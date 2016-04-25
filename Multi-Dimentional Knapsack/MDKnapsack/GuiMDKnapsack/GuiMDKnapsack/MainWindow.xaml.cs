@@ -20,6 +20,7 @@ using FSharp.Charting;
 using MDKnapsack;
 using Microsoft.FSharp.Core;
 using Microsoft.Win32;
+using static Microsoft.FSharp.Core.OptimizedClosures;
 
 namespace GuiMDKnapsack
 {
@@ -133,10 +134,12 @@ namespace GuiMDKnapsack
         {
             if (DfsAlg.IsChecked.GetValueOrDefault(false))
                 return Alg.DfsNotSorted;
-            if (BfsAlg.IsChecked.GetValueOrDefault(false))
-                return Alg.BestFirst;
             if (DfsSortedAlg.IsChecked.GetValueOrDefault(false))
                 return Alg.DfsSorted;
+            if (BfsAlgNotSorted.IsChecked.GetValueOrDefault(false))
+                return Alg.BestFirstNotSorted;
+            if (BfsAlgSorted.IsChecked.GetValueOrDefault(false))
+                return Alg.BestFirstSorted;
             throw new Exception("Programming Exception");
         }
 
@@ -191,7 +194,7 @@ namespace GuiMDKnapsack
             catch (Exception exeption)
             {
                 MessageBox.Show("An error occurred: " + Environment.NewLine + exeption.Message);
-            }
+             }
         }
 
         private void Respond()

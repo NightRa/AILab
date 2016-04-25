@@ -103,8 +103,11 @@
                     <RadioButton VerticalContentAlignment="Center" Name="DfsSortedAlg" Margin="5">
                         <TextBlock FontSize="22">Depth First Sorted</TextBlock>
                     </RadioButton>
-                    <RadioButton VerticalContentAlignment="Center" Name="BfsAlg" Margin="5" IsChecked="True">
+                    <RadioButton VerticalContentAlignment="Center" Name="BfsAlgNotSorted" Margin="5">
                         <TextBlock FontSize="22">Best First</TextBlock>
+                    </RadioButton>
+                    <RadioButton VerticalContentAlignment="Center" Name="BfsAlgSorted" Margin="5" IsChecked="True">
+                        <TextBlock FontSize="22">Best First Sorted</TextBlock>
                     </RadioButton>
                 </StackPanel>
             </Grid>

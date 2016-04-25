@@ -6,7 +6,8 @@ open System.IO
 type Alg = 
     | DfsSorted = 0
     | DfsNotSorted = 1
-    | BestFirst = 2
+    | BestFirstNotSorted = 2
+    | BestFirstSorted = 3
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Alg = 
@@ -14,7 +15,15 @@ module Alg =
         function 
         | Alg.DfsSorted -> "DFS" + Environment.NewLine + "sorted"
         | Alg.DfsNotSorted -> "DFS" + Environment.NewLine + "not sorted"
-        | Alg.BestFirst -> "BFS"
+        | Alg.BestFirstNotSorted -> "BFS" + Environment.NewLine + "not sorted"
+        | Alg.BestFirstSorted -> "BFS" + Environment.NewLine + "sorted"
+        | _ -> failwith "Incomplete pattern"
+    let asStringNoNewLine = 
+        function 
+        | Alg.DfsSorted -> "DFS sorted"
+        | Alg.DfsNotSorted -> "DFS not sorted"
+        | Alg.BestFirstNotSorted -> "BFS not sorted"
+        | Alg.BestFirstSorted -> "BFS sorted"
         | _ -> failwith "Incomplete pattern"
 
 type BoundKnapsack = 
@@ -34,7 +43,7 @@ module BoundKnapsack =
 type AlgParameters(alg : Alg, boundKnapsack : BoundKnapsack, algTime : TimeSpan) = 
     
     static member AllParams(time) : AlgParameters array = 
-        [| for alg in [ Alg.DfsNotSorted; Alg.BestFirst; Alg.DfsSorted ] do
+        [| for alg in [ Alg.DfsNotSorted; Alg.DfsSorted; Alg.BestFirstSorted; Alg.BestFirstNotSorted ] do
                for bound in [ BoundKnapsack.Fractional; BoundKnapsack.Unbounded ] do
                    yield AlgParameters(alg, bound, time) |]
     
@@ -42,7 +51,7 @@ type AlgParameters(alg : Alg, boundKnapsack : BoundKnapsack, algTime : TimeSpan)
     member x.BoundKnapsack = boundKnapsack
     member x.AlgTime = algTime
     member x.AsString() = (Alg.asString alg) + Environment.NewLine + (BoundKnapsack.asString boundKnapsack)
-    
+    member x.AsStringNoNewLine () = (Alg.asStringNoNewLine alg) + " " + (BoundKnapsack.asString boundKnapsack)
     override x.Equals obj = 
         match obj with
         | (:? AlgParameters as par) -> par.Alg.Equals alg
