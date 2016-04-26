@@ -115,11 +115,13 @@ object UserMain {
   }
 
   def chooseMDKnapsackAlg(): GeneticMetadata[_] = {
-    print("\nChoose an instance (file name): ")
-    val fileName = in.next()
-    in.skip("\n|\r\n")
+    print("\nChoose an instance (file name, e.g. PET7.dat): ")
+    val fileName = in.nextLine()
     try {
-      val filePath = Paths.get("res/samples/").resolve(fileName)
+      var filePath = Paths.get("samples/").resolve(fileName)
+      if(!Files.exists(filePath))
+        filePath = Paths.get(fileName)
+
       val data = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8)
       val instance = MDKnapsackParser.parse(data)
       new MDKnapsackMain(instance)
