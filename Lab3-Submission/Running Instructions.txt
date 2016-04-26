@@ -1,0 +1,8 @@
+Genetic: Just click the exe.
+
+Branch & Bound:
+1. GuiMDKnapsack.exe for the GUI
+2. MDKnapsack.exe for running an analysis, which outputs a .csv of all the data.
+
+Samples:
+Inside Genetic/samples. (for convenience, can use absolute paths too)

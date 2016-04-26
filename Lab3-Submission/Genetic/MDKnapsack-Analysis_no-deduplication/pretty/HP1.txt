@@ -1,0 +1,16 @@
+Success Rate: 66.00%
+  - 66/100
+
+Successes:
+  - Best score: 3418.000
+  - Avg success time: 146.881 ms
+  - Avg success iterations: 713.6
+        
+Failures:
+  - Highest score achieved: 3405.000
+  - Avg score achieved: 3393.824
+  - Avg score percent of best: 99.293
+  - Best fitness achieved: 0.004
+  - Avg fitness achieved: 0.0071
+  - Avg iterations: 4445.1
+        
